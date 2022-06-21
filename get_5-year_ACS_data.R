@@ -245,10 +245,13 @@ data_acs5_tb <- bind_rows(data_acs5)
 
 saveRDS(data_acs5_tb, "data/data_acs5.rds")
 
+
+
+# plot avondale tracts ----------------------------------------------------
+
+
 Avondale_tracts <- data_acs5_tb %>% 
   filter(GEOID %in% c('39061006600', '39061006800', '39061006900'))
-
-########### plots
 
 plot_est_moe <- function(data, estimate, moe, title){
   
@@ -267,7 +270,7 @@ plot_est_moe <- function(data, estimate, moe, title){
     theme_bw()
   
   return(p)
-}
+} # end of plot_est_moe()
 
 plot_est_moe_fraction <- function(data, estimate, moe, title){
   
@@ -290,8 +293,7 @@ plot_est_moe_fraction <- function(data, estimate, moe, title){
     ylim(0,1)
   
   return(p)
-}
-
+} # end of plot_est_moe_fraction()
 
 est_fraction <- c("fraction_poverty", "fraction_fam_nospouse", "fraction_foodstamp",
                   "fraction_condition","fraction_bf1970", "fraction_vacant",
@@ -337,6 +339,10 @@ pdf ("Output/Plots_comparison_in_Avondale_06162022.pdf", width=9, height=7)
   } 
 
 dev.off()
+
+
+
+
 
 
 
