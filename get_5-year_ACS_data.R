@@ -20,6 +20,12 @@ states_needed <-
   unique() %>%
   pull(state_code)
 
+tracts_needed <-
+  tigris::tracts(year = 2019, cb = TRUE) |>
+  filter(STATEFP %in% states_needed) |>
+  sf::st_drop_geometry() |>
+  pull(GEOID)
+
 my_get_acs <-
   purrr::partial(
     get_acs,
@@ -98,6 +104,13 @@ get_acs_data <- function(censusYr) {
         fraction_insured = n_insured / n_total,
         fraction_insured_moe = moe_prop(n_insured, n_total, n_insured_moe, n_total_moe)
       )
+  } else {
+    acs_perc_insured <-
+      tibble::tibble(
+        GEOID = tracts_needed,
+        fraction_insured = NA,
+        fraction_insured_moe = NA
+      )
   }
 
   # fraction family household with no spouse
@@ -123,6 +136,13 @@ get_acs_data <- function(censusYr) {
         GEOID = GEOID,
         fraction_laborforce = estimate / summary_est,
         fraction_laborforce_moe = moe_prop(estimate, summary_est, moe, summary_moe)
+      )
+  } else {
+    acs_perc_laborforce <-
+      tibble::tibble(
+        GEOID = tracts_needed,
+        fraction_laborforce = NA,
+        fraction_laborforce_moe = NA
       )
   }
 
@@ -217,51 +237,26 @@ get_acs_data <- function(censusYr) {
       fraction_vacant_moe = moe_prop(estimate, summary_est, moe, summary_moe)
     )
 
-  # join
-  if (censusYr >= 2012) {
-    d <- reduce(
-      .x = list(
-        acs_poverty, acs_n_child_lt18, acs_n_hh_lt18,
-        acs_perc_fam_nospouse, acs_perc_foodstamp, acs_median_housingcost,
-        acs_median_grossrent, acs_perc_condition, acs_perc_bf1970, acs_perc_vacant,
-        acs_perc_insured, acs_perc_laborforce
-      ),
-      .f = function(.x, .y) left_join(.x, .y, by = "GEOID")
-    ) %>%
-      mutate(
-        survey = "acs5",
-        dataYr = censusYr
-      )
-  } else if (censusYr == 2011) {
-    d <- reduce(
-      .x = list(
-        acs_poverty, acs_n_child_lt18, acs_n_hh_lt18,
-        acs_perc_fam_nospouse, acs_perc_foodstamp, acs_median_housingcost,
-        acs_median_grossrent, acs_perc_condition, acs_perc_bf1970, acs_perc_vacant,
-        acs_perc_laborforce
-      ),
-      .f = function(.x, .y) left_join(.x, .y, by = "GEOID")
-    ) %>%
-      mutate(
-        survey = "acs5",
-        dataYr = censusYr
-      )
-  } else if (censusYr == 2010) {
-    d <- reduce(
-      .x = list(
-        acs_poverty, acs_n_child_lt18, acs_n_hh_lt18,
-        acs_perc_fam_nospouse, acs_perc_foodstamp, acs_median_housingcost,
-        acs_median_grossrent, acs_perc_condition, acs_perc_bf1970, acs_perc_vacant
-      ),
-      .f = function(.x, .y) left_join(.x, .y, by = "GEOID")
-    ) %>%
-      mutate(
-        survey = "acs5",
-        dataYr = censusYr
-      )
-  }
+  out <-
+    list(
+      tibble::tibble(GEOID = tracts_needed),
+      acs_poverty,
+      acs_n_child_lt18,
+      acs_n_hh_lt18,
+      acs_perc_insured,
+      acs_perc_fam_nospouse,
+      acs_perc_laborforce,
+      acs_perc_foodstamp,
+      acs_median_housingcost,
+      acs_median_grossrent,
+      acs_perc_condition,
+      acs_perc_bf1970,
+      acs_perc_vacant
+    ) |>
+    purrr::reduce(left_join, by = "GEOID")
 
-  return(d)
+  return(out)
+
 }
 ### end of get_acs_data()
 
