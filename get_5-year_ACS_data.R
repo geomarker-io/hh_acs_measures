@@ -20,18 +20,23 @@ states_needed <-
   unique() %>%
   pull(state_code)
 
+my_get_acs <-
+  purrr::partial(
+    get_acs,
+    geography = "tract",
+    state = states_needed,
+    moe_level = 95,
+    survey = "acs5"
+  )
+                             
 # get acs data by year
 get_acs_data <- function(censusYr) {
 
   # fraction_poverty
   # income in past 12 months below poverty level
-  acs_poverty <- get_acs(
-    geography = "tract",
+  acs_poverty <- my_get_acs(
     variables = "B17001_002",
     summary_var = "B17001_001",
-    state = states_needed,
-    moe_level = 95,
-    survey = "acs5",
     year = censusYr
   ) %>%
     transmute(
@@ -43,15 +48,11 @@ get_acs_data <- function(censusYr) {
     )
 
   # Number of children under age 18
-  acs_n_child_lt18 <- get_acs(
-    geography = "tract",
+  acs_n_child_lt18 <- my_get_acs(
     variables = c(
       paste0("B01001_00", 3:6),
       paste0("B01001_0", 27:30)
     ),
-    state = states_needed,
-    moe_level = 95,
-    survey = "acs5",
     year = censusYr
   ) %>%
     group_by(GEOID) %>%
@@ -62,13 +63,9 @@ get_acs_data <- function(censusYr) {
 
   # number of household with children under age 18
   # total number of household
-  acs_n_hh_lt18 <- get_acs(
-    geography = "tract",
+  acs_n_hh_lt18 <- my_get_acs(
     variables = "B11005_002",
     summary_var = "B11005_001",
-    state = states_needed,
-    moe_level = 95,
-    survey = "acs5",
     year = censusYr
   ) %>%
     select(GEOID,
@@ -80,17 +77,13 @@ get_acs_data <- function(censusYr) {
 
   # Fraction insured (2012-2020)
   if (censusYr >= 2012) {
-    acs_perc_insured <- get_acs(
-      geography = "tract",
+    acs_perc_insured <- my_get_acs(
       variables = c(
         paste0("B27001_00", c(4, 7)),
         paste0("B27001_0", seq(10, 28, by = 3)),
         paste0("B27001_0", seq(32, 56, by = 3))
       ),
       summary_var = "B27001_001",
-      state = states_needed,
-      moe_level = 95,
-      survey = "acs5",
       year = censusYr
     ) %>%
       group_by(GEOID) %>%
@@ -108,13 +101,9 @@ get_acs_data <- function(censusYr) {
   }
 
   # fraction family household with no spouse
-  acs_perc_fam_nospouse <- get_acs(
-    geography = "tract",
+  acs_perc_fam_nospouse <- my_get_acs(
     variables = "B11001_004",
     summary_var = "B11001_001",
-    state = states_needed,
-    moe_level = 95,
-    survey = "acs5",
     year = censusYr
   ) %>%
     transmute(
@@ -125,13 +114,9 @@ get_acs_data <- function(censusYr) {
 
   # fraction of population 16 years and Over in labor force (2011-2020)
   if (censusYr >= 2011) {
-    acs_perc_laborforce <- get_acs(
-      geography = "tract",
+    acs_perc_laborforce <- my_get_acs(
       variables = "B23025_002",
       summary_var = "B23025_001",
-      state = states_needed,
-      moe_level = 95,
-      survey = "acs5",
       year = censusYr
     ) %>%
       transmute(
@@ -142,13 +127,9 @@ get_acs_data <- function(censusYr) {
   }
 
   # fraction received food stamps
-  acs_perc_foodstamp <- get_acs(
-    geography = "tract",
+  acs_perc_foodstamp <- my_get_acs(
     variables = "B22003_002",
     summary_var = "B22003_001",
-    state = states_needed,
-    moe_level = 95,
-    survey = "acs5",
     year = censusYr
   ) %>%
     transmute(
@@ -158,12 +139,8 @@ get_acs_data <- function(censusYr) {
     )
 
   # median monthly housing cost
-  acs_median_housingcost <- get_acs(
-    geography = "tract",
+  acs_median_housingcost <- my_get_acs(
     variables = "B25105_001",
-    state = states_needed,
-    moe_level = 95,
-    survey = "acs5",
     year = censusYr
   ) %>%
     transmute(
@@ -173,12 +150,8 @@ get_acs_data <- function(censusYr) {
     )
 
   # median gross rent
-  acs_median_grossrent <- get_acs(
-    geography = "tract",
+  acs_median_grossrent <- my_get_acs(
     variables = "B25113_001",
-    state = states_needed,
-    moe_level = 95,
-    survey = "acs5",
     year = censusYr
   ) %>%
     transmute(
@@ -188,17 +161,13 @@ get_acs_data <- function(censusYr) {
     )
 
   # fraction selected condition
-  acs_perc_condition <- get_acs(
-    geography = "tract",
+  acs_perc_condition <- my_get_acs(
     variables = c(
       paste0("B25123_00", 3:6),
       "B25123_009",
       paste0("B25123_0", 10:12)
     ),
     summary_var = "B25123_001",
-    state = states_needed,
-    moe_level = 95,
-    survey = "acs5",
     year = censusYr
   ) %>%
     group_by(GEOID) %>%
@@ -215,16 +184,12 @@ get_acs_data <- function(censusYr) {
     )
 
   # fraction built before 1970
-  acs_perc_bf1970 <- get_acs(
-    geography = "tract",
+  acs_perc_bf1970 <- my_get_acs(
     variables = c(
       paste0("B25034_00", 7:9),
       "B25034_010"
     ),
     summary_var = "B25034_001",
-    state = states_needed,
-    moe_level = 95,
-    survey = "acs5",
     year = censusYr
   ) %>%
     group_by(GEOID) %>%
@@ -241,13 +206,9 @@ get_acs_data <- function(censusYr) {
     )
 
   # fraction vacant housing
-  acs_perc_vacant <- get_acs(
-    geography = "tract",
+  acs_perc_vacant <- my_get_acs(
     variables = "B25002_003",
     summary_var = "B25002_001",
-    state = states_needed,
-    moe_level = 95,
-    survey = "acs5",
     year = censusYr
   ) %>%
     transmute(
