@@ -255,26 +255,14 @@ get_acs_data <- function(censusYr) {
     ) |>
     purrr::reduce(left_join, by = "GEOID")
 
+  saveRDS(out, paste0("HH_ACS_", censusYr, ".rds"))
+
   return(out)
-
-}
-### end of get_acs_data()
-
-
-# Create data lists to hold data from acs 5-year data
-# Each data list contains data sets from years 2010-2020
-
-data_acs5 <- list()
-for (i in 2010:2020) {
-  dataname <- paste0("data", i)
-  data_acs5[[dataname]] <- get_acs_data(i)
 }
 
-save(data_acs5, file = "data/data_acs5_list.RData")
+# saves all years of data as HH_ACS_{censusYr}.rds files
+purrr::walk(2010:2019, get_acs_data)
 
-# load("data/data_acs5_06152022.RData")
+# TODO special case of 2020 where census tracts ids are different
 
-data_acs5_tb <- bind_rows(data_acs5)
-
-saveRDS(data_acs5_tb, "data/data_acs5.rds")
 
