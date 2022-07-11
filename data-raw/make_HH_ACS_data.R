@@ -201,6 +201,7 @@ d <- d |>
       title = "Harmonized Historical American Community Survey Data",
       url = "https://github.com/geomarker-io/harmonized_historical_ACS_data",
       description = "ACS variables from 2010 - 2019, census tracts for contiguous US",
+      uri = "s3://geomarker-io/harmonized_historical_acs_data.parquet",
       spatial = "census_tract_id_2010",
       temporal = "year"
     )
@@ -262,35 +263,18 @@ d <- d |>
 ##   group_by(year) |>
 ##   arrow::write_dataset(fs::path("data", "harmonized_historical_acs_data"))
 
-# missing years??
-d |>
-  group_by(year) |>
-  summarize(n = n())
+## # missing years??
+## d |>
+##   group_by(year) |>
+##   summarize(n = n())
 
 
+# best file format to write as?  
 arrow::write_parquet(d, fs::path("data", "harmonized_historical_acs_data.parquet"))
 
-d <- arrow::read_parquet(fs::path("data", "harmonized_historical_acs_data.parquet"))
+# how to "sync" with s3 folder structure ?
+# look in metadata to find S3 upload path?
 
-# only read some of the columns from a file:
-arrow::read_parquet("data/harmonized_historical_acs_data.parquet",
-  col_select = c(census_tract_id_2010, year)
-)
-
-# dataset metadata
-attr(d, "codec")
-
-# e.g.
-attr(d, "codec") |>
-  tibble::enframe() |>
-  tidyr::unnest(cols = c(value)) |>
-  knitr::kable()
-
-# column metadata:
-purrr::map_dfr(d, attributes) |>
-  mutate(name = attr(d, "names")) |>
-  relocate(name) |>
-  knitr::kable()
   
 
 

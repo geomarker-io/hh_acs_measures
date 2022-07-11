@@ -6,7 +6,6 @@ library(ggsci)
 ## library(sf)
 library(readxl)
 library(pastecs)
-library(ggsci)
 
 
 
