@@ -1,13 +1,12 @@
 library(dplyr)
 library(tidyr)
 
-d <- arrow::read_parquet(fs::path("data", "harmonized_historical_acs_data.parquet"))
-d <- arrow::read_feather(fs::path("data", "harmonized_historical_acs_data.feather"))
+# TODO function to get schema from metadata first and use that for import of CSV file
+d <- readr::read_csv("harmonized_historical_acs_data.csv")
 
-## # only read some of the columns from a file:
-## arrow::read_parquet("data/harmonized_historical_acs_data.parquet",
-##   col_select = c(census_tract_id_2010, year)
-## )
+# TODO add dataset metadata from data file
+d_metadata <- yaml::read_yaml("tabular-data-resource.yaml")
+
 
 # dataset metadata
 attr(d, "codec")

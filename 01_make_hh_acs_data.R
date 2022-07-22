@@ -3,9 +3,8 @@ library(tigris)
 options(tigris_use_cache = TRUE)
 options(tigris_class = "sf")
 library(tidycensus)
-
 library(purrr)
-library(rlang)
+## library(rlang)
 
 # TODO run check for census api key
 Sys.getenv("CENSUS_API_KEY")
@@ -44,6 +43,8 @@ mappp_dfr <- function(.x, .f) {
     dplyr::bind_rows()
 }
 
+d_acs <- list()
+
 # fraction_poverty
 # income in past 12 months below poverty level
 get_acs_poverty <- function(year = 2019) {
@@ -65,8 +66,7 @@ get_acs_poverty <- function(year = 2019) {
   left_join(tracts_needed, d, by = "census_tract_id_2010")
 }
 
-mappp_dfr(2010:2019, get_acs_poverty) |>
-  saveRDS("data-raw/acs_poverty.rds")
+d_acs$acs_poverty <- mappp_dfr(2010:2019, get_acs_poverty)
 
 get_acs_children <- function(year = 2019) {
   d <-
@@ -88,8 +88,7 @@ get_acs_children <- function(year = 2019) {
   left_join(tracts_needed, d, by = "census_tract_id_2010")
 }
 
-mappp_dfr(2010:2019, get_acs_children) |>
-  saveRDS("data-raw/acs_children.rds")
+d_acs$acs_children <- mappp_dfr(2010:2019, get_acs_children)
 
 # number of household with children under age 18
 # total number of household
@@ -112,8 +111,7 @@ get_acs_households <- function(year = 2019) {
   left_join(tracts_needed, d, by = "census_tract_id_2010")
 }
 
-mappp_dfr(2010:2019, get_acs_households) |>
-  saveRDS("data-raw/acs_households.rds")
+d_acs$acs_households <- mappp_dfr(2010:2019, get_acs_households)
 
 
 # fraction insured (2012 onwards only)
@@ -145,8 +143,7 @@ get_acs_insurance <- function(year = 2019) {
   left_join(tracts_needed, d, by = "census_tract_id_2010")
 }
 
-mappp_dfr(2012:2019, get_acs_insurance) |>
-  saveRDS("data-raw/acs_insurance.rds")
+d_acs$acs_insurance <- mappp_dfr(2012:2019, get_acs_insurance)
 
 # fraction received food stamps or snap
 get_acs_snap <- function(year = 2019) {
@@ -166,114 +163,107 @@ get_acs_snap <- function(year = 2019) {
   left_join(tracts_needed, d, by = "census_tract_id_2010")
 }
 
-mappp_dfr(2010:2019, get_acs_snap) |>
-  saveRDS("data-raw/acs_snap.rds")
+d_acs$acs_snap <- mappp_dfr(2010:2019, get_acs_snap)
 
 # join all
-d <-
-  fs::dir_ls("data-raw", glob = "*acs_*.rds") |>
-  purrr::map(readRDS) |>
-  purrr::reduce(left_join, by = c("census_tract_id_2010", "year"))
+d <- purrr::reduce(d_acs, left_join, by = c("census_tract_id_2010", "year"))
+d <- select(d, -contains("_moe"))
 
+# TODO missing years??
+d |>
+  group_by(year) |>
+  summarize(n = n())
 
-# based on the deprecated rlang::set_attrs()
-set_attrs <- function(.x, ...) {
-  attrs <- rlang::dots_list(...)
-  attributes(.x) <- c(attributes(.x), attrs)
-  .x
-}
-
-# domain-style names?  or is attribute a list?
-## d <- d |>
-##   set_attrs(
-##     codec.name = "harmonized_historical_acs_data",
-##     codec.title = "Harmonized Historical American Community Survey Data",
-##     codec.url = "https://github.com/geomarker-io/harmonized_historical_ACS_data",
-##     codec.description = "ACS variables from 2010 - 2019, census tracts for contiguous US",
-##     codec.version = "0.1"
-##     )
+source("00_helpers.R")
 
 d <- d |>
   set_attrs(
-    codec = list(
-      name = "harmonized_historical_acs_data",
-      version = "0.1",
-      title = "Harmonized Historical American Community Survey Data",
-      url = "https://github.com/geomarker-io/harmonized_historical_ACS_data",
-      description = "ACS variables from 2010 - 2019, census tracts for contiguous US",
-      uri = "s3://geomarker-io/harmonized_historical_acs_data.parquet",
-      spatial = "census_tract_id_2010",
-      temporal = "year"
-    )
+    name = "harmonized_historical_acs_data",
+    path = "s3://geomarker-io/harmonized_historical_ACS_data.csv",
+    # TODO how to utilize object versioning on AWS S3
+    ## version = "0.1",
+    title = "Harmonized Historical American Community Survey Data",
+    description = "ACS variables from 2010 - 2019, census tracts for contiguous US",
+    format = "csv",
+    url = "https://github.com/geomarker-io/harmonized_historical_ACS_data",
+    # TODO change these to use foreign keys specification
+    codec.spatial = "census_tract_id_2010",
+    codec.temporal = "year"
   )
 
+d
 attributes(d)
-attr(d, "codec")
-attr(d, "codec")$name
-attr(d, "codec")$version
-## attr(d, "name")
-## attr(d, "version")
-
-# could we make a cool print method for a data.frame with codec attributes?
-# or with codec variable names?
-
-set_var_attrs <- function(.x, var, ...) {
-  .x[[rlang::enexpr(var)]] <-
-    set_attrs(pull(.x, {{ var }}), ...)
-  .x
-}
-
-d <- select(d, -contains("_moe"))
+attr(d, "name")
+attr(d, "path")
 
 d <- d |>
-  set_var_attrs(census_tract_id_2010,
+  set_col_attrs(census_tract_id_2010,
     title = "Census Tract Identifier (2010)",
     description = "FIPS identifier for census tracts 2010 - 2019"
   ) |>
-  set_var_attrs(n_children_lt18,
+  set_col_attrs(n_children_lt18,
     title = "Number of Children",
     description = "Number of children and adolescents < 18 years of age"
   ) |>
-  set_var_attrs(year,
+  set_col_attrs(year,
     title = "Year",
     description = "Vintage of 5-year ACS estimates"
   ) |>
-  set_var_attrs(n_household_lt18,
+  set_col_attrs(n_household_lt18,
     title = "Number of Households with Children"
   ) |>
-  set_var_attrs(n_household,
+  set_col_attrs(n_household,
     title = "Number of Households"
   ) |>
-  set_var_attrs(fraction_insured,
+  set_col_attrs(fraction_insured,
     title = "Fraction Population with Health Insurance"
   ) |>
-  set_var_attrs(fraction_poverty,
+  set_col_attrs(fraction_poverty,
     title = "Fraction of Households in Poverty"
     ) |>
-  set_var_attrs(n_pop,
+  set_col_attrs(n_pop,
     title = "Number of Total People"
     ) |>
-  set_var_attrs(fraction_snap,
+  set_col_attrs(fraction_snap,
     title = "Fraction of Households Receiving Food Stamps or SNAP Dollars"
   )
 
-# after metadata is set, save to parquet file system
-## fs::dir_delete(fs::path("data", "harmonized_historical_acs_data"))
+## add type (from the Frictionless Table Schema) to each column based on its class
+
+d <- add_type_attrs(d)
+
+## a quick visual check of metadata in a browser
+CB::ltable(make_metadata_from_attr(d))
+
+# write metadata to file
+write_metadata(d, "datapackage.yaml")
+
+# write data to CSV file
+readr::write_csv(d, "harmonized_historical_acs_data.csv")
+
+## # write data to parquet file
+## arrow::write_parquet(d, "harmonized_historical_acs_data.parquet")
+
+## # write data to multi-file parquet system
 ## d |>
-##   group_by(year) |>
-##   arrow::write_dataset(fs::path("data", "harmonized_historical_acs_data"))
+##   dplyr::group_by(year) |>
+##   arrow::write_dataset("harmonized_historical_acs")
 
-## # missing years??
-## d |>
-##   group_by(year) |>
-##   summarize(n = n())
+# wrapper save function that extracts metadata from attributes and then saves the data as a CSV file and the metadata as a datapackage.json
 
 
-# best file format to write as?  
-arrow::write_parquet(d, fs::path("data", "harmonized_historical_acs_data.parquet"))
+# write function that reads in CSV file, assigns all attrs to columns and dataset, and
+# uses the frictionless type to specify classes when reading in data
 
-# how to "sync" with s3 folder structure ?
-# look in metadata to find S3 upload path?
+
+
+
+
+
+
+
+  # best file format to write as?
+
 
   
 
