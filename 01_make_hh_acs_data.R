@@ -179,7 +179,7 @@ source("00_helpers.R")
 d <- d |>
   set_attrs(
     name = "harmonized_historical_acs_data",
-    path = "s3://geomarker-io/harmonized_historical_ACS_data.csv",
+    path = "s3://geomarker-io/data/harmonized_historical_ACS_data.csv",
     # TODO how to utilize object versioning on AWS S3
     ## version = "0.1",
     title = "Harmonized Historical American Community Survey Data",
@@ -241,44 +241,7 @@ write_metadata(d, "datapackage.yaml")
 # write data to CSV file
 readr::write_csv(d, "harmonized_historical_acs_data.csv")
 
-## # write data to parquet file
-## arrow::write_parquet(d, "harmonized_historical_acs_data.parquet")
-
-## # write data to multi-file parquet system
-## d |>
-##   dplyr::group_by(year) |>
-##   arrow::write_dataset("harmonized_historical_acs")
-
-# wrapper save function that extracts metadata from attributes and then saves the data as a CSV file and the metadata as a datapackage.json
-
-
-# write function that reads in CSV file, assigns all attrs to columns and dataset, and
-# uses the frictionless type to specify classes when reading in data
-
-
-
-
-
-
-
-
-  # best file format to write as?
-
-
-  
-
-
-
-
-## arrow::open_dataset("data/hh_acs-parquet") |>
-##   filter(
-##     year >= 2016,
-##     census_tract_id_2010 %in% sf::st_drop_geometry(cincy::tract_tigris_2010)$tract_fips
-##   ) |>
-##   collect()
-
-
-
+# TODO how to upload to s3 location based on metadata$path?
 
 ## # fraction family household with no spouse
 ## acs_perc_fam_nospouse <- my_get_acs(
