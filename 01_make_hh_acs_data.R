@@ -45,7 +45,7 @@ mappp_dfr <- function(.x, .f) {
 }
 
 # cpi for inflation adjustment 
-cpi <- read.csv(file='U:/Investigator Folders/DBE/Cole Brokamp/GRAPPH/harmonized_historical_ACS_data/harmonized_historical_ACS_data/CPI_2010-2020.csv')   
+cpi <- read.csv(file='CPI_2010-2020.csv')   
 cpi <- cpi |> 
   mutate(annual_cpi_2010 = subset(cpi, year == 2010)$annual_cpi) |>  # in 2010 inflation-adjusted dollars
   mutate(ratio = annual_cpi_2010 / annual_cpi)
