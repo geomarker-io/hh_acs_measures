@@ -4,7 +4,8 @@ options(tigris_use_cache = TRUE)
 options(tigris_class = "sf")
 library(tidycensus)
 library(purrr)
-## library(rlang)
+
+library(CODECtools)
 
 # TODO run check for census api key
 Sys.getenv("CENSUS_API_KEY")
