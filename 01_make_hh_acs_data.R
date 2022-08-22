@@ -202,25 +202,29 @@ get_acs_hh_type <- function(year = 2019) {
 d_acs$acs_hh_type <- mappp_dfr(2010:2019, get_acs_hh_type)
 
 
-# fraction of population 16 years and Over in labor force (2011 onwards only)
-get_acs_laborforce <- function(year = 2019) {
+get_acs_employment <- function(year = 2019) {
   d <-
     my_get_acs(
-      variables = "B23025_002",
-      summary_var = "B23025_001",
+      variables = "B23025_004",
+      summary_var = "B23025_003",
       year = year
     ) |>
     suppressMessages() |>
     transmute(
       census_tract_id_2010 = GEOID,
-      fraction_laborforce = estimate / summary_est,
-      fraction_laborforce_moe = moe_prop(estimate, summary_est, moe, summary_moe)
+      fraction_employment = estimate / summary_est,
+      fraction_employment_moe = moe_prop(estimate, summary_est, moe, summary_moe)
     )
   left_join(tracts_needed, d, by = "census_tract_id_2010") |> 
     mutate(year = year)
 }
 
-d_acs$acs_laborforce <- mappp_dfr(2011:2019, get_acs_laborforce) 
+d_acs$acs_employment <-
+  mappp_dfr(2011:2019, get_acs_employment) |>
+  add_col_attrs(fraction_employment,
+    title = "Fraction of People Employed",
+    description = "Fraction of people employed in civilian labor force"
+  )
 
 
 # median monthly housing cost
