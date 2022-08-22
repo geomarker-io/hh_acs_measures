@@ -689,3 +689,5 @@ get_descriptors(d)
 get_schema(d)
 
 write_tdr_csv(d)
+
+d_test <- CODECtools::read_tdr_csv("harmonized_historical_acs_data")
