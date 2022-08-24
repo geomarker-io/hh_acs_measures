@@ -43,10 +43,10 @@ mappp_dfr <- function(.x, .f) {
     dplyr::bind_rows()
 }
 
-# cpi for inflation adjustment 
-cpi <- read.csv(file='CPI_2010-2020.csv')   
-cpi <- cpi |> 
-  mutate(annual_cpi_2010 = subset(cpi, year == 2010)$annual_cpi) |>  # in 2010 inflation-adjusted dollars
+# cpi for inflation adjustment
+cpi <- read.csv(file = "CPI_2010-2020.csv")
+cpi <- cpi |>
+  mutate(annual_cpi_2010 = subset(cpi, year == 2010)$annual_cpi) |> # in 2010 inflation-adjusted dollars
   mutate(ratio = annual_cpi_2010 / annual_cpi)
 
 d_acs <- list()
@@ -64,25 +64,26 @@ get_acs_poverty <- function(year = 2019) {
       fraction_poverty = estimate / summary_est,
       fraction_poverty_moe = moe_prop(estimate, summary_est, moe, summary_moe)
     )
-  left_join(tracts_needed, d, by = "census_tract_id_2010") |> 
+  left_join(tracts_needed, d, by = "census_tract_id_2010") |>
     mutate(year = year)
 }
 
 d_acs$acs_poverty <-
   mappp_dfr(2010:2019, get_acs_poverty) |>
   add_col_attrs(fraction_poverty,
-                title = "Fraction of Households in Poverty",
-                description = "Fraction of households with income below poverty level within the past 12 months")
+    title = "Fraction of Households in Poverty",
+    description = "Fraction of households with income below poverty level within the past 12 months"
+  )
 
 get_acs_children <- function(year = 2019) {
   d <-
     my_get_acs(
-    variables = c(
-      paste0("B01001_00", 3:6),
-      paste0("B01001_0", 27:30)
-    ),
-    summary_var = "B01001_001",
-    year = year
+      variables = c(
+        paste0("B01001_00", 3:6),
+        paste0("B01001_0", 27:30)
+      ),
+      summary_var = "B01001_001",
+      year = year
     ) |>
     suppressMessages() |>
     group_by(GEOID) |>
@@ -92,8 +93,8 @@ get_acs_children <- function(year = 2019) {
       n_pop = unique(summary_est),
       n_pop_moe = unique(summary_moe)
     ) |>
-    rename(census_tract_id_2010 = GEOID) 
-  left_join(tracts_needed, d, by = "census_tract_id_2010") |> 
+    rename(census_tract_id_2010 = GEOID)
+  left_join(tracts_needed, d, by = "census_tract_id_2010") |>
     mutate(year = year)
 }
 
@@ -105,7 +106,7 @@ d_acs$acs_children <-
   ) |>
   add_col_attrs(n_pop,
     title = "Number of Total People"
-    )
+  )
 
 get_acs_households <- function(year = 2019) {
   d <-
@@ -121,8 +122,8 @@ get_acs_households <- function(year = 2019) {
       n_household = summary_est,
       n_household_moe = summary_moe
     ) |>
-    rename(census_tract_id_2010 = GEOID) 
-  left_join(tracts_needed, d, by = "census_tract_id_2010") |> 
+    rename(census_tract_id_2010 = GEOID)
+  left_join(tracts_needed, d, by = "census_tract_id_2010") |>
     mutate(year = year)
 }
 
@@ -131,7 +132,7 @@ d_acs$acs_households <-
   add_col_attrs(n_household_lt18,
     title = "Number of Households With Children",
     description = "Number of households with children or adolescents < 18 years of age"
-    ) |>
+  ) |>
   add_col_attrs(n_household,
     title = "Number of Households"
   )
@@ -146,7 +147,7 @@ get_acs_insurance <- function(year = 2019) {
       ),
       summary_var = "B27001_001",
       year = year
-  ) |>
+    ) |>
     suppressMessages() |>
     group_by(GEOID) |>
     summarize(
@@ -160,7 +161,7 @@ get_acs_insurance <- function(year = 2019) {
       fraction_insured = n_insured / n_total,
       fraction_insured_moe = moe_prop(n_insured, n_total, n_insured_moe, n_total_moe)
     )
-  left_join(tracts_needed, d, by = "census_tract_id_2010") |> 
+  left_join(tracts_needed, d, by = "census_tract_id_2010") |>
     mutate(year = year)
 }
 
@@ -170,7 +171,7 @@ d_acs$acs_insurance <-
     title = "Fraction of People Insured",
     description = "Fraction of population with health insurance (available from 2012 onwards only)"
   )
-  
+
 get_acs_snap <- function(year = 2019) {
   d <-
     my_get_acs(
@@ -208,17 +209,17 @@ get_acs_hh_type <- function(year = 2019) {
       fraction_fam_nospouse = estimate / summary_est,
       fraction_fam_nospouse_moe = moe_prop(estimate, summary_est, moe, summary_moe)
     )
-  left_join(tracts_needed, d, by = "census_tract_id_2010") |> 
+  left_join(tracts_needed, d, by = "census_tract_id_2010") |>
     mutate(year = year)
 }
-    
+
 d_acs$acs_hh_type <-
   mappp_dfr(2010:2019, get_acs_hh_type) |>
   add_col_attrs(fraction_fam_nospouse,
     title = "Fraction of family households with a single householder",
     description = "Single householder is male or female household, with no spouse present"
   )
-                
+
 get_acs_employment <- function(year = 2019) {
   d <-
     my_get_acs(
@@ -232,7 +233,7 @@ get_acs_employment <- function(year = 2019) {
       fraction_employment = estimate / summary_est,
       fraction_employment_moe = moe_prop(estimate, summary_est, moe, summary_moe)
     )
-  left_join(tracts_needed, d, by = "census_tract_id_2010") |> 
+  left_join(tracts_needed, d, by = "census_tract_id_2010") |>
     mutate(year = year)
 }
 
@@ -255,7 +256,7 @@ get_acs_housing_cost <- function(year = 2019) {
       median_housing_cost = estimate,
       median_housing_cost_moe = moe
     )
-  left_join(tracts_needed, d, by = "census_tract_id_2010") |> 
+  left_join(tracts_needed, d, by = "census_tract_id_2010") |>
     mutate(year = year)
 }
 
@@ -284,7 +285,7 @@ get_acs_rent <- function(year = 2019) {
       median_rent = estimate,
       median_rent_moe = moe
     )
-  left_join(tracts_needed, d, by = "census_tract_id_2010") |> 
+  left_join(tracts_needed, d, by = "census_tract_id_2010") |>
     mutate(year = year)
 }
 
@@ -323,7 +324,7 @@ get_acs_conditions <- function(year = 2019) {
       fraction_conditions = n_conditions / n_total,
       fraction_conditions_moe = moe_prop(n_conditions, n_total, n_conditions_moe, n_total_moe)
     )
-  left_join(tracts_needed, d, by = "census_tract_id_2010") |> 
+  left_join(tracts_needed, d, by = "census_tract_id_2010") |>
     mutate(year = year)
 }
 
@@ -358,7 +359,7 @@ get_acs_yrbuilt <- function(year = 2019) {
       fraction_builtbf1970 = n_bf1970 / n_total,
       fraction_builtbf1970_moe = moe_prop(n_bf1970, n_total, n_bf1970_moe, n_total_moe)
     )
-  left_join(tracts_needed, d, by = "census_tract_id_2010") |> 
+  left_join(tracts_needed, d, by = "census_tract_id_2010") |>
     mutate(year = year)
 }
 
@@ -382,7 +383,7 @@ get_acs_vacant <- function(year = 2019) {
       fraction_vacant = estimate / summary_est,
       fraction_vacant_moe = moe_prop(estimate, summary_est, moe, summary_moe)
     )
-  left_join(tracts_needed, d, by = "census_tract_id_2010") |> 
+  left_join(tracts_needed, d, by = "census_tract_id_2010") |>
     mutate(year = year)
 }
 
@@ -406,7 +407,7 @@ get_acs_fraction_nhl <- function(year = 2019) {
       fraction_nhl = estimate / summary_est,
       fraction_nhl_moe = moe_prop(estimate, summary_est, moe, summary_moe)
     )
-  left_join(tracts_needed, d, by = "census_tract_id_2010") |> 
+  left_join(tracts_needed, d, by = "census_tract_id_2010") |>
     mutate(year = year)
 }
 
@@ -430,7 +431,7 @@ get_acs_fraction_nhl_w <- function(year = 2019) {
       fraction_nhl_w = estimate / summary_est,
       fraction_nhl_w_moe = moe_prop(estimate, summary_est, moe, summary_moe)
     )
-  left_join(tracts_needed, d, by = "census_tract_id_2010") |> 
+  left_join(tracts_needed, d, by = "census_tract_id_2010") |>
     mutate(year = year)
 }
 
@@ -439,7 +440,7 @@ d_acs$acs_fraction_nhl_w <-
   add_col_attrs(fraction_nhl_w,
     title = "Fraction of People White and Not Hispanic/Latino"
   )
-                
+
 
 
 get_acs_fraction_nhl_b <- function(year = 2019) {
@@ -455,7 +456,7 @@ get_acs_fraction_nhl_b <- function(year = 2019) {
       fraction_nhl_b = estimate / summary_est,
       fraction_nhl_b_moe = moe_prop(estimate, summary_est, moe, summary_moe)
     )
-  left_join(tracts_needed, d, by = "census_tract_id_2010") |> 
+  left_join(tracts_needed, d, by = "census_tract_id_2010") |>
     mutate(year = year)
 }
 
@@ -485,7 +486,7 @@ get_acs_fraction_nhl_o <- function(year = 2019) {
       fraction_nhl_o = n_nhl_o / n_total,
       fraction_nhl_o_moe = moe_prop(n_nhl_o, n_total, n_nhl_o_moe, n_total_moe)
     )
-  left_join(tracts_needed, d, by = "census_tract_id_2010") |> 
+  left_join(tracts_needed, d, by = "census_tract_id_2010") |>
     mutate(year = year)
 }
 
@@ -509,7 +510,7 @@ get_acs_fraction_hl <- function(year = 2019) {
       fraction_hl = estimate / summary_est,
       fraction_hl_moe = moe_prop(estimate, summary_est, moe, summary_moe)
     )
-  left_join(tracts_needed, d, by = "census_tract_id_2010") |> 
+  left_join(tracts_needed, d, by = "census_tract_id_2010") |>
     mutate(year = year)
 }
 
@@ -533,7 +534,7 @@ get_acs_fraction_hl_w <- function(year = 2019) {
       fraction_hl_w = estimate / summary_est,
       fraction_hl_w_moe = moe_prop(estimate, summary_est, moe, summary_moe)
     )
-  left_join(tracts_needed, d, by = "census_tract_id_2010") |> 
+  left_join(tracts_needed, d, by = "census_tract_id_2010") |>
     mutate(year = year)
 }
 
@@ -599,8 +600,10 @@ d_acs$acs_fraction_hl_o <-
 get_acs_lesh <- function(year = 2019) {
   d <-
     my_get_acs(
-      variables = c(paste0("C16002_00", c(4, 7)),
-                    paste0("C16002_01", c(0, 3))),
+      variables = c(
+        paste0("C16002_00", c(4, 7)),
+        paste0("C16002_01", c(0, 3))
+      ),
       summary_var = "C16002_001",
       year = year
     ) |>
@@ -624,8 +627,8 @@ get_acs_lesh <- function(year = 2019) {
 d_acs$acs_leshh <-
   mappp_dfr(2016:2019, get_acs_lesh) |>
   add_col_attrs(fraction_lesh,
-                title = "Fraction of Households Speaking Limited English",
-                description = "Available from 2016 onwards"
+    title = "Fraction of Households Speaking Limited English",
+    description = "Available from 2016 onwards"
   )
 
 get_acs_income <- function(year = 2019) {
@@ -656,7 +659,7 @@ d_acs$acs_income <-
 get_acs_hs <- function(year = 2019) {
   d <-
     my_get_acs(
-      variables = paste0('B15003_0', 17:25),
+      variables = paste0("B15003_0", 17:25),
       summary_var = "B15003_001",
       year = year
     ) |>
@@ -707,7 +710,7 @@ d <- d |>
     title = "Harmonized Historical American Community Survey Data",
     description = "ACS variables from 2010 - 2019, census tracts for contiguous US",
     url = "https://github.com/geomarker-io/harmonized_historical_ACS_data",
-    ) |>
+  ) |>
   add_type_attrs()
 
 get_descriptors(d)
