@@ -369,7 +369,7 @@ d_acs$acs_yrbuilt <-
   )
 
 
-get_acs_occup <- function(year = 2019) {
+get_acs_vacant <- function(year = 2019) {
   d <-
     my_get_acs(
       variables = "B25002_003",
@@ -386,14 +386,13 @@ get_acs_occup <- function(year = 2019) {
     mutate(year = year)
 }
 
-d_acs$acs_occup <-
-  mappp_dfr(2010:2019, get_acs_occup) |>
+d_acs$acs_vacant <-
+  mappp_dfr(2010:2019, get_acs_vacant) |>
   add_col_attrs(fraction_vacant,
     title = "Fraction of housing units that are vacant"
   )
 
 
-# racial/ethnic composition - non-Hispanic or Latino, total
 get_acs_fraction_nhl <- function(year = 2019) {
   d <-
     my_get_acs(
@@ -414,11 +413,10 @@ get_acs_fraction_nhl <- function(year = 2019) {
 d_acs$acs_fraction_nhl <-
   mappp_dfr(2010:2019, get_acs_fraction_nhl) |>
   add_col_attrs(fraction_nhl,
-    title = "Fraction of People that are non-Hispanic or Latino"
+    title = "Fraction of People Not Hispanic/Latino"
   )
 
 
-# racial/ethnic composition - non-Hispanic or Latino, White
 get_acs_fraction_nhl_w <- function(year = 2019) {
   d <-
     my_get_acs(
@@ -436,10 +434,14 @@ get_acs_fraction_nhl_w <- function(year = 2019) {
     mutate(year = year)
 }
 
-d_acs$acs_fraction_nhl_w <- mappp_dfr(2010:2019, get_acs_fraction_nhl_w)
+d_acs$acs_fraction_nhl_w <-
+  mappp_dfr(2010:2019, get_acs_fraction_nhl_w) |>
+  add_col_attrs(fraction_nhl_w,
+    title = "Fraction of People White and Not Hispanic/Latino"
+  )
+                
 
 
-# racial/ethnic composition - non-Hispanic or Latino, Black
 get_acs_fraction_nhl_b <- function(year = 2019) {
   d <-
     my_get_acs(
@@ -457,10 +459,12 @@ get_acs_fraction_nhl_b <- function(year = 2019) {
     mutate(year = year)
 }
 
-d_acs$acs_fraction_nhl_b <- mappp_dfr(2010:2019, get_acs_fraction_nhl_b)
+d_acs$acs_fraction_nhl_b <-
+  mappp_dfr(2010:2019, get_acs_fraction_nhl_b) |>
+  add_col_attrs(fraction_nhl_b,
+    title = "Fraction of People Black and Not Hispanic/Latino"
+  )
 
-
-# racial/ethnic composition - non-Hispanic or Latino, Other
 get_acs_fraction_nhl_o <- function(year = 2019) {
   d <-
     my_get_acs(
@@ -485,10 +489,13 @@ get_acs_fraction_nhl_o <- function(year = 2019) {
     mutate(year = year)
 }
 
-d_acs$acs_fraction_nhl_o <- mappp_dfr(2010:2019, get_acs_fraction_nhl_o)
+d_acs$acs_fraction_nhl_o <-
+  mappp_dfr(2010:2019, get_acs_fraction_nhl_o) |>
+  add_col_attrs(fraction_nhl_o,
+    title = "Fraction of People Not Black, Not White, and Not Hispanic/Latino"
+  )
 
 
-# racial/ethnic composition - Hispanic or Latino, total
 get_acs_fraction_hl <- function(year = 2019) {
   d <-
     my_get_acs(
@@ -506,10 +513,13 @@ get_acs_fraction_hl <- function(year = 2019) {
     mutate(year = year)
 }
 
-d_acs$acs_fraction_hl <- mappp_dfr(2010:2019, get_acs_fraction_hl)
+d_acs$acs_fraction_hl <-
+  mappp_dfr(2010:2019, get_acs_fraction_hl) |>
+  add_col_attrs(fraction_hl,
+    title = "Fraction of People Hispanic/Latino"
+  )
 
 
-# racial/ethnic composition - Hispanic or Latino, White
 get_acs_fraction_hl_w <- function(year = 2019) {
   d <-
     my_get_acs(
@@ -527,10 +537,12 @@ get_acs_fraction_hl_w <- function(year = 2019) {
     mutate(year = year)
 }
 
-d_acs$acs_fraction_hl_w <- mappp_dfr(2010:2019, get_acs_fraction_hl_w)
+d_acs$acs_fraction_hl_w <-
+  mappp_dfr(2010:2019, get_acs_fraction_hl_w) |>
+  add_col_attrs(fraction_hl_w,
+    title = "Fraction of People White and Hispanic/Latino"
+  )
 
-
-# racial/ethnic composition - Hispanic or Latino, Black
 get_acs_fraction_hl_b <- function(year = 2019) {
   d <-
     my_get_acs(
@@ -544,14 +556,16 @@ get_acs_fraction_hl_b <- function(year = 2019) {
       fraction_hl_b = estimate / summary_est,
       fraction_hl_b_moe = moe_prop(estimate, summary_est, moe, summary_moe)
     )
-  left_join(tracts_needed, d, by = "census_tract_id_2010") |> 
+  left_join(tracts_needed, d, by = "census_tract_id_2010") |>
     mutate(year = year)
 }
 
-d_acs$acs_fraction_hl_b <- mappp_dfr(2010:2019, get_acs_fraction_hl_b)
+d_acs$acs_fraction_hl_b <-
+  mappp_dfr(2010:2019, get_acs_fraction_hl_b) |>
+  add_col_attrs(fraction_hl_b,
+    title = "Fraction of People Black and Hispanic/Latino"
+  )
 
-
-# racial/ethnic composition - Hispanic or Latino, Other
 get_acs_fraction_hl_o <- function(year = 2019) {
   d <-
     my_get_acs(
@@ -572,43 +586,48 @@ get_acs_fraction_hl_o <- function(year = 2019) {
       fraction_hl_o = n_hl_o / n_total,
       fraction_hl_o_moe = moe_prop(n_hl_o, n_total, n_hl_o_moe, n_total_moe)
     )
-  left_join(tracts_needed, d, by = "census_tract_id_2010") |> 
+  left_join(tracts_needed, d, by = "census_tract_id_2010") |>
     mutate(year = year)
 }
 
-d_acs$acs_fraction_hl_o <- mappp_dfr(2010:2019, get_acs_fraction_hl_o)
+d_acs$acs_fraction_hl_o <-
+  mappp_dfr(2010:2019, get_acs_fraction_hl_o) |>
+  add_col_attrs(fraction_hl_o,
+    title = "Fraction of People Not Black, Not White, and Hispanic/Latino"
+  )
 
-
-# fraction of limited english speaking household (2016 onwards only)
-get_acs_leshh <- function(year = 2019) {
+get_acs_lesh <- function(year = 2019) {
   d <-
     my_get_acs(
-      variables = c(paste0("C16002_00", c(4,7)),
-                    paste0("C16002_01", c(0,3))),
+      variables = c(paste0("C16002_00", c(4, 7)),
+                    paste0("C16002_01", c(0, 3))),
       summary_var = "C16002_001",
       year = year
     ) |>
     suppressMessages() |>
     group_by(GEOID) |>
     summarize(
-      n_leshh = sum(estimate),
-      n_leshh_moe = moe_sum(moe, estimate),
+      n_lesh = sum(estimate),
+      n_lesh_moe = moe_sum(moe, estimate),
       n_total = unique(summary_est),
       n_total_moe = unique(summary_moe)
     ) |>
     transmute(
       census_tract_id_2010 = GEOID,
-      fraction_leshh = n_leshh / n_total,
-      fraction_leshh_moe = moe_prop(n_leshh, n_total, n_leshh_moe, n_total_moe)
+      fraction_lesh = n_lesh / n_total,
+      fraction_lesh_moe = moe_prop(n_lesh, n_total, n_lesh_moe, n_total_moe)
     )
-  left_join(tracts_needed, d, by = "census_tract_id_2010") |> 
+  left_join(tracts_needed, d, by = "census_tract_id_2010") |>
     mutate(year = year)
 }
 
-d_acs$acs_leshh <- mappp_dfr(2016:2019, get_acs_leshh) 
+d_acs$acs_leshh <-
+  mappp_dfr(2016:2019, get_acs_lesh) |>
+  add_col_attrs(fraction_lesh,
+                title = "Fraction of Households Speaking Limited English",
+                description = "Available from 2016 onwards"
+  )
 
-
-# median household income
 get_acs_income <- function(year = 2019) {
   d <-
     my_get_acs(
@@ -621,21 +640,23 @@ get_acs_income <- function(year = 2019) {
       median_income = estimate,
       median_income_moe = moe
     )
-  left_join(tracts_needed, d, by = "census_tract_id_2010") |> 
+  left_join(tracts_needed, d, by = "census_tract_id_2010") |>
     mutate(year = year)
 }
 
-d_acs$acs_income <- mappp_dfr(2010:2019, get_acs_income) |> 
-  left_join(cpi, by = "year") |> 
-  mutate(median_income_2010adj = median_income * ratio) |> 
-  select(-annual_cpi, -annual_cpi_2010, -ratio)
+d_acs$acs_income <-
+  mappp_dfr(2010:2019, get_acs_income) |>
+  left_join(cpi, by = "year") |>
+  mutate(median_income_2010adj = median_income * ratio) |>
+  select(-annual_cpi, -annual_cpi_2010, -ratio) |>
+  add_col_attrs(median_income,
+    title = "Median Household Income"
+  )
 
-
-# fraction of high school education (2012 onwards only)
 get_acs_hs <- function(year = 2019) {
   d <-
     my_get_acs(
-      variables = paste0('B15003_0',17:25),
+      variables = paste0('B15003_0', 17:25),
       summary_var = "B15003_001",
       year = year
     ) |>
@@ -652,16 +673,20 @@ get_acs_hs <- function(year = 2019) {
       fraction_hs = n_hs / n_total,
       fraction_hs_moe = moe_prop(n_hs, n_total, n_hs_moe, n_total_moe)
     )
-  left_join(tracts_needed, d, by = "census_tract_id_2010") |> 
+  left_join(tracts_needed, d, by = "census_tract_id_2010") |>
     mutate(year = year)
 }
 
-d_acs$acs_hs <- mappp_dfr(2012:2019, get_acs_hs) 
-  
+d_acs$acs_hs <-
+  mappp_dfr(2012:2019, get_acs_hs) |>
+  add_col_attrs(fraction_hs,
+    title = "Fraction of Adults with At Least High School Education",
+    description = "Available from 2012 onwards"
+  )
 
 # join all
 d <- purrr::reduce(d_acs, left_join, by = c("census_tract_id_2010", "year"))
-d <- select(d, -contains("_moe")) 
+## d <- select(d, -contains("_moe"))
 
 # saveRDS(d, "data/harmonized_historical_acs_data.rds")
 
@@ -689,5 +714,10 @@ get_descriptors(d)
 get_schema(d)
 
 write_tdr_csv(d)
+
+arrow::write_parquet(d, "harmonized_historical_acs_data.parquet")
+
+arrow::read_parquet("harmonized_historical_acs_data.parquet") |>
+  purrr::map(attributes)
 
 d_test <- CODECtools::read_tdr_csv("harmonized_historical_acs_data")
