@@ -14,8 +14,14 @@ Data are available at `s3://codec-data/harmonized_historical_acs_data/`. See the
 
 After downloading this folder to your working directory, read this data into R with:
 
-```
+```r
 CODECtools::read_tdr_csv("harmonized_historical_acs_data")
+```
+
+or with:
+
+```r
+arrow::read_parquet("harmonized_historical_acs_data/harmonized_historical_acs_data.parquet")
 ```
 
 ## Notes
