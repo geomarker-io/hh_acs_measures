@@ -441,8 +441,6 @@ d_acs$acs_fraction_nhl_w <-
     title = "Fraction of People White and Not Hispanic/Latino"
   )
 
-
-
 get_acs_fraction_nhl_b <- function(year = 2019) {
   d <-
     my_get_acs(
@@ -496,7 +494,6 @@ d_acs$acs_fraction_nhl_o <-
     title = "Fraction of People Not Black, Not White, and Not Hispanic/Latino"
   )
 
-
 get_acs_fraction_hl <- function(year = 2019) {
   d <-
     my_get_acs(
@@ -519,7 +516,6 @@ d_acs$acs_fraction_hl <-
   add_col_attrs(fraction_hl,
     title = "Fraction of People Hispanic/Latino"
   )
-
 
 get_acs_fraction_hl_w <- function(year = 2019) {
   d <-
@@ -687,11 +683,7 @@ d_acs$acs_hs <-
     description = "Available from 2012 onwards"
   )
 
-# join all
 d <- purrr::reduce(d_acs, left_join, by = c("census_tract_id_2010", "year"))
-## d <- select(d, -contains("_moe"))
-
-# saveRDS(d, "data/harmonized_historical_acs_data.rds")
 
 d <- d |>
   add_col_attrs(census_tract_id_2010,
@@ -713,14 +705,13 @@ d <- d |>
   ) |>
   add_type_attrs()
 
-get_descriptors(d)
-get_schema(d)
+# d <- select(d, -contains("_moe"))
+
+## get_descriptors(d)
+## get_schema(d)
 
 write_tdr_csv(d)
+system("aws s3 cp --recursive ./harmonized_historical_acs_data s3://codec-data/harmonized_historical_acs_data")
 
 arrow::write_parquet(d, "harmonized_historical_acs_data.parquet")
-
-arrow::read_parquet("harmonized_historical_acs_data.parquet") |>
-  purrr::map(attributes)
-
-d_test <- CODECtools::read_tdr_csv("harmonized_historical_acs_data")
+system("aws cp harmonized_historical_acs_data.parquet s3://codec-data/harmonized_historical_acs_data/")
