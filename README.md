@@ -20,4 +20,5 @@ CODECtools::read_tdr_csv("harmonized_historical_acs_data")
 
 ## Notes
 
+- Characteristics that are reported in US Dollars (e.g., Median Household Income) are adjusted for changes in cost of living over time by using the annual [Consumer Price Index](https://www.bls.gov/cpi/research-series/r-cpi-u-rs-home.htm). 
 - Some data are unavailable in certain earlier years because the question was not included in the ACS that year.  Additionally, data summaries may be [suppressed ](https://www.census.gov/programs-surveys/acs/technical-documentation/data-suppression.html) by the census bureau.
