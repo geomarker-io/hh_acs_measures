@@ -707,21 +707,12 @@ d <- d |>
 
 d <- d |>
   add_attrs(
-    name = "harmonized_historical_acs_data",
-    path = "harmonized_historical_ACS_data.csv",
+    name = "hh_acs_measures",
     title = "Harmonized Historical American Community Survey Data",
     description = "ACS variables from 2010 - 2019, census tracts for contiguous US",
-    url = "https://github.com/geomarker-io/harmonized_historical_ACS_data",
+    url = "https://github.com/geomarker-io/hh_acs_measures",
   ) |>
   add_type_attrs()
 
-# d <- select(d, -contains("_moe"))
-
-## get_descriptors(d)
-## get_schema(d)
-
 write_tdr_csv(d)
-system("aws s3 cp --recursive ./harmonized_historical_acs_data s3://codec-data/harmonized_historical_acs_data")
-
-arrow::write_parquet(d, "harmonized_historical_acs_data.parquet")
-system("aws cp harmonized_historical_acs_data.parquet s3://codec-data/harmonized_historical_acs_data/")
+system("aws s3 cp --recursive ./hh_acs_measures s3://codec-data/hh_acs_measures")

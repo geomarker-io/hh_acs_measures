@@ -2,3 +2,4 @@
 /data-raw/*.rds
 /harmonized_historical_acs_data.csv
 /harmonized_historical_acs_data/
+/hh_acs_measures/
