@@ -7,7 +7,7 @@ library(purrr)
 library(CODECtools)
 
 # TODO run check for census api key
-Sys.getenv("CENSUS_API_KEY")
+if (Sys.getenv("CENSUS_API_KEY") == "") stop("set CENSUS_API_KEY enviroment variable")
 
 #### get 2010-2020 5-year ACS tract-level variables -----------------------------------
 
