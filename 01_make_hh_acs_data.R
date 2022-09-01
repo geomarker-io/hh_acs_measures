@@ -687,6 +687,14 @@ d_acs$acs_hs <-
 
 d <- purrr::reduce(d_acs, left_join, by = c("census_tract_id_2010", "year"))
 
+#### exporting data 
+
+d <- d |>
+  dplyr::relocate(c(census_tract_id_2010, year)) |>
+  mutate(across(starts_with("fraction_"), round, 3)) |>
+  mutate(across(starts_with("n_"), as.integer)) |>
+  mutate(across(starts_with("median_"), signif, 3))
+
 d <- d |>
   add_col_attrs(census_tract_id_2010,
     title = "Census Tract Identifier (2010)",
