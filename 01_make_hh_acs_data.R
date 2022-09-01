@@ -4,6 +4,8 @@ options(tigris_use_cache = TRUE)
 options(tigris_class = "sf")
 library(tidycensus)
 library(purrr)
+library(mappp)
+library(digest)
 library(CODECtools)
 
 # TODO run check for census api key
@@ -39,7 +41,7 @@ my_get_acs <-
   )
 
 mappp_dfr <- function(.x, .f) {
-  mappp::mappp(.x, .f, parallel = TRUE, cache = TRUE, cache_name = "acs_data_cache") |>
+  mappp(.x, .f, parallel = TRUE, cache = TRUE, cache_name = "acs_data_cache") |>
     dplyr::bind_rows()
 }
 
