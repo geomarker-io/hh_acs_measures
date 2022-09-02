@@ -18,13 +18,14 @@
       "RemoteUsername": "geomarker-io",
       "RemoteRepo": "CODECtools",
       "RemoteRef": "main",
-      "RemoteSha": "8ad887b3e35713034685ef4b52c93f23c9a0ffa8",
+      "RemoteSha": "5b4fa2d02b9c2ea8934f985ee99ea23df2f162e1",
       "Remotes": "geomarker-io/cincy",
-      "Hash": "279e0fbdba4658dd3ae65b0f9d27d8d1",
+      "Hash": "3fa8e0b841928fb501a128ea561e0603",
       "Requirements": [
         "cli",
         "dplyr",
         "forcats",
+        "fs",
         "purrr",
         "readr",
         "rlang",
@@ -258,6 +259,14 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "32b25c97ce306a760c4d9f787991b5d9",
+      "Requirements": []
+    },
+    "fs": {
+      "Package": "fs",
+      "Version": "1.5.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "7c89603d81793f0d5486d91ab1fc6f1d",
       "Requirements": []
     },
     "generics": {
