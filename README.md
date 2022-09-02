@@ -2,7 +2,7 @@
 
 ## About
 
-This R code generates the **Harmonized Historical ACS^[American Community Survey] Measures** (`hh_acs_measures`) data resource. Derived measures are generally available annually from 2013 onward and were selected to cover three domains:
+This R code generates the **Harmonized Historical ACS Measures** (`hh_acs_measures`) data resource. Census tract-level measures derived from the American Community Survey (ACS) are generally available annually from 2013 onward and were selected to cover three domains:
 
 - **Population**: number of kids, number of households with kids, single-parent households, racial and ethnic composition, limited English speaking households
 - **Socioeconomic**: education, income, poverty, employment, health insurance, SNAP receipt
