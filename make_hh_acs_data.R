@@ -716,3 +716,14 @@ d <- d |>
 
 write_tdr_csv(d)
 system("aws s3 cp --recursive ./hh_acs_measures s3://codec-data/hh_acs_measures")
+
+# to print metadata
+d <- CODECtools::read_tdr_csv("hh_acs_measures")
+
+CODECtools::glimpse_attr(d) |>
+  knitr::kable()
+
+d |>
+  select(-ends_with("moe")) |>
+  CODECtools::glimpse_schema() |>
+  knitr::kable()
