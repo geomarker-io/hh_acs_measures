@@ -687,7 +687,7 @@ d_acs$acs_hs <-
 
 d <- purrr::reduce(d_acs, left_join, by = c("census_tract_id_2010", "year"))
 
-#### exporting data 
+#### exporting data
 
 d <- d |>
   dplyr::relocate(c(census_tract_id_2010, year)) |>
