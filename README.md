@@ -17,7 +17,7 @@ Data as a CSV file is stored on AWS S3 at: [`s3://codec-data/harmonized_historic
 To read this CSV file into R directly from its online location, use:
 
 ```r
-readr::read_csv("https://codec-data.s3.amazonaws.com/hh_acs_measures/hh_acs_measures.csv"
+readr::read_csv("https://codec-data.s3.amazonaws.com/hh_acs_measures/hh_acs_measures.csv")
 ```
 
 #### CODEC tabular-data-resource
