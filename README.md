@@ -64,11 +64,11 @@ Each measure includes a accompanying [margin of error](https://walker-data.com/t
 
 |name        |value                                                           |
 |:-----------|:---------------------------------------------------------------|
-|name        |harmonized_historical_acs_data                                  |
-|path        |harmonized_historical_acs_data.csv                              |
+|name        |hh_acs_measures                                                 |
+|path        |hh_acs_measures.csv                                             |
 |title       |Harmonized Historical American Community Survey Data            |
 |description |ACS variables from 2010 - 2019, census tracts for contiguous US |
-|url         |https://github.com/geomarker-io/harmonized_historical_ACS_data  |
+|url         |https://github.com/geomarker-io/hh_acs_measures                 |
 
 ### Schema
 
@@ -79,10 +79,10 @@ Columns ending with `_moe` represent the margin of error accompanying another co
 |census_tract_id_2010        |Census Tract Identifier (2010)                                   |FIPS identifier for census tracts 2010 - 2019                                                                                    |string  |
 |year                        |Year                                                             |Vintage of 5-year ACS estimates                                                                                                  |integer |
 |fraction_poverty            |Fraction of Households in Poverty                                |Fraction of households with income below poverty level within the past 12 months                                                 |number  |
-|n_children_lt18             |Number of Children                                               |Number of children and adolescents < 18 years of age                                                                             |number  |
-|n_pop                       |Number of Total People                                           |NA                                                                                                                               |number  |
-|n_household_lt18            |Number of Households With Children                               |Number of households with children or adolescents < 18 years of age                                                              |number  |
-|n_household                 |Number of Households                                             |NA                                                                                                                               |number  |
+|n_children_lt18             |NA                                                               |NA                                                                                                                               |integer |
+|n_pop                       |NA                                                               |NA                                                                                                                               |integer |
+|n_household_lt18            |NA                                                               |NA                                                                                                                               |integer |
+|n_household                 |NA                                                               |NA                                                                                                                               |integer |
 |fraction_insured            |Fraction of People Insured                                       |Fraction of population with health insurance (available from 2012 onwards only)                                                  |number  |
 |fraction_snap               |Fraction of Households Receiving SNAP                            |Fraction of households receiving food stamps/SNAP in the past 12 months                                                          |number  |
 |fraction_fam_nospouse       |Fraction of family households with a single householder          |Single householder is male or female household, with no spouse present                                                           |number  |
