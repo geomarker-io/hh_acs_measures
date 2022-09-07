@@ -12,7 +12,7 @@ This R code generates the **Harmonized Historical ACS Measures** (`hh_acs_measur
 
 #### CSV
 
-Data as a CSV file is stored on AWS S3 at: [`s3://codec-data/harmonized_historical_acs_data/hh_ACS_measures.csv`](https://codec-data.s3.amazonaws.com/hh_acs_measures/hh_acs_measures.csv)
+Data as a CSV file is stored on AWS S3 at: [`s3://codec-data/hh_acs_measures/hh_ACS_measures.csv`](https://codec-data.s3.amazonaws.com/hh_acs_measures/hh_acs_measures.csv)
 
 To read this CSV file into R directly from its online location, use:
 
@@ -22,12 +22,12 @@ readr::read_csv("https://codec-data.s3.amazonaws.com/hh_acs_measures/hh_acs_meas
 
 #### CODEC tabular-data-resource
 
-Data as a CODEC tabular-data-resource are stored on AWS S3 at: `s3://codec-data/harmonized_historical_acs_data/`. 
+Data as a CODEC tabular-data-resource are stored on AWS S3 at: `s3://codec-data/hh_acs_measures/`. 
 
 After downloading this folder to your working directory, read this data and its [metadata](https://geomarker.io/CODECtools/articles/codec-metadata.html) into R with:
 
 ```r
-CODECtools::read_tdr_csv("harmonized_historical_acs_data")
+CODECtools::read_tdr_csv("hh_acs_measures")
 ```
 
 ## Data Details
