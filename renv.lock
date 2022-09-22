@@ -18,14 +18,15 @@
       "RemoteUsername": "geomarker-io",
       "RemoteRepo": "CODECtools",
       "RemoteRef": "main",
-      "RemoteSha": "5b4fa2d02b9c2ea8934f985ee99ea23df2f162e1",
+      "RemoteSha": "102ea354b073c6b1336b7bf1b29d9911bdcd1862",
       "Remotes": "geomarker-io/cincy",
-      "Hash": "3fa8e0b841928fb501a128ea561e0603",
+      "Hash": "76df8316c3e5aa619f6ba62215715dd1",
       "Requirements": [
         "cli",
         "dplyr",
         "forcats",
         "fs",
+        "glue",
         "purrr",
         "readr",
         "rlang",
@@ -224,6 +225,14 @@
         "rlang"
       ]
     },
+    "evaluate": {
+      "Package": "evaluate",
+      "Version": "0.16",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "9a3d3c345f8a5648abe61608aaa29518",
+      "Requirements": []
+    },
     "fansi": {
       "Package": "fansi",
       "Version": "1.0.3",
@@ -285,6 +294,16 @@
       "Hash": "4f2596dfb05dac67b9dc558e5c6fba2e",
       "Requirements": []
     },
+    "highr": {
+      "Package": "highr",
+      "Version": "0.9",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "8eb36c8125038e648e5d111c0d7b2ed4",
+      "Requirements": [
+        "xfun"
+      ]
+    },
     "hms": {
       "Package": "hms",
       "Version": "1.1.1",
@@ -320,6 +339,20 @@
       "Repository": "CRAN",
       "Hash": "d07e729b27b372429d42d24d503613a0",
       "Requirements": []
+    },
+    "knitr": {
+      "Package": "knitr",
+      "Version": "1.40",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "caea8b0f899a0b1738444b9bc47067e7",
+      "Requirements": [
+        "evaluate",
+        "highr",
+        "stringr",
+        "xfun",
+        "yaml"
+      ]
     },
     "lattice": {
       "Package": "lattice",
@@ -808,6 +841,14 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "d6bc0432436a0aefbf29d5de8588b876",
+      "Requirements": []
+    },
+    "xfun": {
+      "Package": "xfun",
+      "Version": "0.32",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "0498af3034691dde715dcd86198efe75",
       "Requirements": []
     },
     "xml2": {
