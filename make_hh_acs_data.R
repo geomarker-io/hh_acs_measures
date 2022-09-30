@@ -8,7 +8,6 @@ library(mappp)
 library(digest)
 library(CODECtools)
 
-# TODO run check for census api key
 if (Sys.getenv("CENSUS_API_KEY") == "") stop("set CENSUS_API_KEY enviroment variable")
 
 #### get 2010-2020 5-year ACS tract-level variables -----------------------------------
@@ -376,7 +375,7 @@ get_acs_conditions <- function(year) {
 d_acs$acs_conditions <-
   mappp_dfr(2010:2020, get_acs_conditions) |>
   add_col_attrs(fraction_conditions,
-    title = "Fraction of households with substandard housing conditions",
+    title = "Fraction of Housing Units with Substandard Housing Conditions",
     description = "substandard housing: incomplete plumbing or kitchens, overcrowding, 30% or more of household income spent on rent or owner costs"
   )
 
@@ -413,7 +412,7 @@ get_acs_yrbuilt <- function(year) {
 d_acs$acs_yrbuilt <-
   mappp_dfr(2010:2020, get_acs_yrbuilt) |>
   add_col_attrs(fraction_builtbf1970,
-    title = "Fraction of Homes Built Before 1970"
+    title = "Fraction of Housing Units Built Before 1970"
   )
 
 get_acs_vacant <- function(year) {
@@ -439,7 +438,7 @@ get_acs_vacant <- function(year) {
 d_acs$acs_vacant <-
   mappp_dfr(2010:2020, get_acs_vacant) |>
   add_col_attrs(fraction_vacant,
-    title = "Fraction of housing units that are vacant"
+    title = "Fraction of Housing Units that are Vacant"
   )
 
 
