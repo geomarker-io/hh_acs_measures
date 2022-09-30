@@ -277,53 +277,104 @@ d_acs$acs_employment <-
     description = "Fraction of people employed in civilian labor force"
   )
 
-get_acs_housing_cost <- function(year) {
+get_acs_housing_units <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
   d <-
     my_get_acs(
-      variables = "B25105_001",
+      variables = "B25001_001",
       year = year
     ) |>
     suppressMessages() |>
     transmute(
       census_tract_id = GEOID,
       census_tract_vintage = tract_vintage,
-      median_housing_cost = estimate,
-      median_housing_cost_moe = moe
+      n_housing_units = estimate,
+      n_housing_units_moe = moe
     )
   left_join(tracts_needed, d, by = c("census_tract_id", "census_tract_vintage")) |>
     filter(.data$census_tract_vintage == .env$tract_vintage) |>
     mutate(year = year)
 }
 
-d_acs$acs_housing_cost <-
-  mappp_dfr(2010:2020, get_acs_housing_cost) |>
-  left_join(cpi, by = "year") |>
-  mutate(median_housing_cost_2010adj = median_housing_cost * ratio) |>
-  select(-annual_cpi, -annual_cpi_2010, -ratio) |>
-  add_col_attrs(median_housing_cost,
-                title = "Median Monthly Housing Costs",
-                ) |>
-  add_col_attrs(median_housing_cost_2010adj,
-                title = "Median Monthly Housing Cost (in 2010 USD)")
-                
+d_acs$acs_housing_units <-
+  mappp_dfr(2010:2020, get_acs_housing_units) |>
+  add_col_attrs(n_housing_units,
+    title = "Number of Housing Units",
+    description = "Housing units are any separate living quarters (e.g., house, apartment, mobile home) either occupied or vacant"
+  )
 
-# TODO B25106: Tenure by Housing Costs as a Percentage of Household Income
-# fraction of renter households making less than $35k/year and spending at least 30% of income on housing costs??
-
-get_acs_rent <- function(year) {
+get_acs_home_value <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
   d <-
     my_get_acs(
-      variables = "B25113_001",
+      variables = "B25077_001",
       year = year
     ) |>
     suppressMessages() |>
     transmute(
       census_tract_id = GEOID,
       census_tract_vintage = tract_vintage,
-      median_rent = estimate,
-      median_rent_moe = moe
+      median_home_value = estimate,
+      median_home_value_moe = moe
+    )
+  left_join(tracts_needed, d, by = c("census_tract_id", "census_tract_vintage")) |>
+    filter(.data$census_tract_vintage == .env$tract_vintage) |>
+    mutate(year = year)
+}
+
+d_acs$acs_home_value <-
+  mappp_dfr(2010:2020, get_acs_home_value) |>
+  left_join(cpi, by = "year") |>
+  mutate(median_home_value_2010adj = median_home_value * ratio) |>
+  select(-annual_cpi, -annual_cpi_2010, -ratio) |>
+  add_col_attrs(median_home_value,
+    title = "Median Value of Owner-Occupied Housing Units"
+    ) |>
+  add_col_attrs(median_home_value_2010adj,
+                title = "Median Value of Owner-Occupied Housing Units (in 2010 USD)")
+
+get_acs_renters <- function(year) {
+  tract_vintage <- as.character(10 * floor(year / 10))
+  d <-
+    my_get_acs(
+      variables = "B25003_003",
+      summary_var = "B25003_001",
+      year = year
+    ) |>
+    suppressMessages() |>
+    transmute(
+      census_tract_id = GEOID,
+      census_tract_vintage = tract_vintage,
+      fraction_housing_renters = estimate / summary_est,
+      fraction_housing_renters_moe = moe_prop(estimate, summary_est, moe, summary_moe)
+    )
+  left_join(tracts_needed, d, by = c("census_tract_id", "census_tract_vintage")) |>
+    filter(.data$census_tract_vintage == .env$tract_vintage) |>
+    mutate(year = year)
+}
+
+d_acs$acs_renters <-
+  mappp_dfr(2011:2020, get_acs_renters) |>
+  add_col_attrs(fraction_housing_renters,
+    title = "Fraction of Housing Units Occupied by Renters",
+    description = "fraction denominator is number of *occupied* housing units"
+  )
+
+## - add Table B25075: property value of owner-occupied housing units
+
+get_acs_rent <- function(year) {
+  tract_vintage <- as.character(10 * floor(year / 10))
+  d <-
+    my_get_acs(
+      variables = "B25071_001",
+      year = year
+    ) |>
+    suppressMessages() |>
+    transmute(
+      census_tract_id = GEOID,
+      census_tract_vintage = tract_vintage,
+      median_rent_to_income_percentage = estimate,
+      median_rent_to_income_percentage_moe = moe
     )
   left_join(tracts_needed, d, by = c("census_tract_id", "census_tract_vintage")) |>
     filter(.data$census_tract_vintage == .env$tract_vintage) |>
@@ -332,14 +383,41 @@ get_acs_rent <- function(year) {
 
 d_acs$acs_rent <-
   mappp_dfr(2010:2020, get_acs_rent) |>
-  left_join(cpi, by = "year") |>
-  mutate(median_rent_2010adj = median_rent * ratio) |>
-  select(-annual_cpi, -annual_cpi_2010, -ratio) |>
-  add_col_attrs(median_rent,
-                title = "Median Monthly Rent") |>
-  add_col_attrs(median_rent_2010adj,
-                title = "Median Monthly Rent (in 2010 USD)")
+  add_col_attrs(median_rent_to_income_percentage,
+                title = "Median Rent to Income Percentage",
+                description = "The median of the percentage of rent to income among all renter-occupied housing units")
 
+get_acs_high_rent <- function(year) {
+  tract_vintage <- as.character(10 * floor(year / 10))
+  d <-
+    my_get_acs(
+      variables = paste0("B25070_", c("007", "008", "009", "010")),
+      summary_var = "B25070_001",
+      year = year
+    ) |>
+    suppressMessages() |>
+    group_by(GEOID) |>
+    summarize(
+      n_high_rent = sum(estimate),
+      n_high_rent_moe = moe_sum(moe, estimate),
+      n_total = unique(summary_est),
+      n_total_moe = unique(summary_moe)
+    ) |>
+    transmute(
+      census_tract_id = GEOID,
+      census_tract_vintage = tract_vintage,
+      fraction_high_rent = n_high_rent / n_total,
+      fraction_high_rent_moe = moe_prop(n_high_rent, n_total, n_high_rent_moe, n_total_moe)
+    )
+  left_join(tracts_needed, d, by = c("census_tract_id", "census_tract_vintage")) |>
+    filter(.data$census_tract_vintage == .env$tract_vintage) |>
+    mutate(year = year)
+}
+
+d_acs$acs_high_rent <-
+  mappp_dfr(2010:2020, get_acs_high_rent) |>
+  add_col_attrs(fraction_high_rent,
+                title = "Fraction of Housing Units Paying at least 30% of Income on Rent")
 
 get_acs_conditions <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
