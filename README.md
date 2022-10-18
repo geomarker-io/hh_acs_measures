@@ -12,23 +12,13 @@ See [metadata.md](./metadata.md) for detailed metadata and schema information.
 
 ## Accessing Data
 
-#### CSV
+Read this CSV file into R directly from the [release](https://github.com/geomarker-io/hh_acs_measures/releases) with:
 
-Data as a CSV file is stored on AWS S3 at: [`s3://codec-data/hh_acs_measures/hh_ACS_measures.csv`](https://codec-data.s3.amazonaws.com/hh_acs_measures/hh_acs_measures.csv)
-
-To read this CSV file into R directly from its online location, use:
-
-```r
-readr::read_csv("https://codec-data.s3.amazonaws.com/hh_acs_measures/hh_acs_measures.csv")
+```
+readr::read_csv("https://github.com/geomarker-io/hh_acs_measures/releases/download/v0.2.0/hh_acs_measures.csv")
 ```
 
-#### CODEC tabular-data-resource
-
-Data as a CODEC tabular-data-resource are stored on AWS S3 (`s3://codec-data/hh_acs_measures/`). Use the following to read this data and its [metadata](https://geomarker.io/CODECtools/articles/codec-metadata.html) into R, downloading the tabular-data-resource to the working directory first, if necessary:
-
-```r
-CODECtools::read_codec("hh_acs_measures")
-```
+Metadata can be imported from the accompanying `tabular-data-resource.yaml` file by using [{CODECtools}](https://geomarker.io/CODECtools/).
 
 ## Data Details
 
