@@ -4,8 +4,8 @@
 |:-----------|:--------------------------------------------------------------------------------------|
 |name        |hh_acs_measures                                                                        |
 |title       |Harmonized Historical American Community Survey Measures                               |
+|homepage    |https://github.com/geomarker-io/hh_acs_measures                                        |
 |description |2010 - 2020 measures derived from ACS variables for census tracts in the contiguous US |
-|url         |https://github.com/geomarker-io/hh_acs_measures                                        |
 
 #### Schema
 
