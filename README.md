@@ -15,7 +15,7 @@ See [metadata.md](./metadata.md) for detailed metadata and schema information.
 Read this CSV file into R directly from the [release](https://github.com/geomarker-io/hh_acs_measures/releases) with:
 
 ```
-readr::read_csv("https://github.com/geomarker-io/hh_acs_measures/releases/download/v0.2.0/hh_acs_measures.csv")
+readr::read_csv("https://github.com/geomarker-io/hh_acs_measures/releases/download/v1.0.0/hh_acs_measures.csv")
 ```
 
 Metadata can be imported from the accompanying `tabular-data-resource.yaml` file by using [{CODECtools}](https://geomarker.io/CODECtools/).
