@@ -891,12 +891,3 @@ d |>
   CODECtools::glimpse_schema() |>
   knitr::kable() |>
   cat(file = "metadata.md", sep = "\n", append = TRUE)
-
-if (FALSE) {
-  # read from disk
-  d <- CODECtools::read_tdr_csv("hh_acs_measures")
-  # save to cloud
-  system("aws s3 cp --recursive ./hh_acs_measures s3://codec-data/hh_acs_measures")
-  # try to read from cloud
-  d <- CODECtools::read_codec("hh_acs_measures")
-}
