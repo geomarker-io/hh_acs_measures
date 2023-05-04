@@ -6,7 +6,7 @@ library(tidycensus)
 library(purrr)
 library(mappp)
 library(digest)
-library(CODECtools)
+library(codec)
 
 if (Sys.getenv("CENSUS_API_KEY") == "") stop("set CENSUS_API_KEY enviroment variable")
 
@@ -881,13 +881,13 @@ write_tdr_csv(d)
 # save metadata to md file
 options(knitr.kable.NA = "")
 cat("#### Metadata\n\n", file = "metadata.md", append = FALSE)
-CODECtools::glimpse_attr(d) |>
+codec::glimpse_attr(d) |>
   knitr::kable() |>
   cat(file = "metadata.md", sep = "\n", append = TRUE)
 cat("\n#### Schema\n\n", file = "metadata.md", append = TRUE)
 cat("Columns ending with `_moe` represent the margin of error accompanying another column and are not included in the schema table here.\n\n", file = "metadata.md", append = TRUE)
 d |>
   dplyr::select(-ends_with("moe")) |>
-  CODECtools::glimpse_schema() |>
+  codec::glimpse_schema() |>
   knitr::kable() |>
   cat(file = "metadata.md", sep = "\n", append = TRUE)
