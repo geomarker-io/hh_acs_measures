@@ -200,8 +200,8 @@ get_acs_snap <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
   d <-
     my_get_acs(
-      variables = "B22003_002",
-      summary_var = "B22003_001",
+      variables = "B19058_002",
+      summary_var = "B19058_001",
       year = year
     ) |>
     suppressMessages() |>
@@ -219,8 +219,8 @@ get_acs_snap <- function(year) {
 d_acs$acs_snap <-
   mappp_dfr(2010:2021, get_acs_snap) |>
   add_col_attrs(fraction_snap,
-    title = "Fraction of Households Receiving SNAP",
-    description = "Fraction of households receiving food stamps/SNAP in the past 12 months"
+    title = "Fraction of Households Receiving Assisted Income",
+    description = "Fraction of households receiving public assistance income or food stamps/SNAP in the past 12 months"
   )
 
 get_acs_hh_type <- function(year) {
