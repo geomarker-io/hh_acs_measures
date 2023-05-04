@@ -847,9 +847,9 @@ d <- purrr::reduce(d_acs, left_join, by = c("census_tract_id", "census_tract_vin
 
 d <- d |>
   dplyr::relocate(c(census_tract_id, census_tract_vintage, year)) |>
-  mutate(across(starts_with("fraction_"), round, 3)) |>
+  mutate(across(starts_with("fraction_"), \(.) round(., 3))) |>
   mutate(across(starts_with("n_"), as.integer)) |>
-  mutate(across(starts_with("median_"), signif, 3))
+  mutate(across(starts_with("median_"), \(.) signif(., 3)))
 
 d <- d |>
   add_col_attrs(census_tract_id,
