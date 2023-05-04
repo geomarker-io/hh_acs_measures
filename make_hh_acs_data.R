@@ -51,7 +51,7 @@ my_get_acs <-
   )
 
 mappp_dfr <- function(.x, .f) {
-  mappp(.x, .f, parallel = TRUE, cache = TRUE, cache_name = "acs_data_cache") |>
+  mappp(.x, .f, parallel = FALSE, cache = TRUE, cache_name = "acs_data_cache") |>
     dplyr::bind_rows()
 }
 
