@@ -6,7 +6,7 @@ library(tidycensus)
 library(purrr)
 library(mappp)
 library(digest)
-library(CODECtools)
+library(codec)
 
 if (Sys.getenv("CENSUS_API_KEY") == "") stop("set CENSUS_API_KEY enviroment variable")
 
@@ -51,7 +51,7 @@ my_get_acs <-
   )
 
 mappp_dfr <- function(.x, .f) {
-  mappp(.x, .f, parallel = TRUE, cache = TRUE, cache_name = "acs_data_cache") |>
+  mappp(.x, .f, parallel = FALSE, cache = TRUE, cache_name = "acs_data_cache") |>
     dplyr::bind_rows()
 }
 
@@ -200,8 +200,8 @@ get_acs_snap <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
   d <-
     my_get_acs(
-      variables = "B22003_002",
-      summary_var = "B22003_001",
+      variables = "B19058_002",
+      summary_var = "B19058_001",
       year = year
     ) |>
     suppressMessages() |>
@@ -219,8 +219,8 @@ get_acs_snap <- function(year) {
 d_acs$acs_snap <-
   mappp_dfr(2010:2021, get_acs_snap) |>
   add_col_attrs(fraction_snap,
-    title = "Fraction of Households Receiving SNAP",
-    description = "Fraction of households receiving food stamps/SNAP in the past 12 months"
+    title = "Fraction of Households Receiving Assisted Income",
+    description = "Fraction of households receiving public assistance income or food stamps/SNAP in the past 12 months"
   )
 
 get_acs_hh_type <- function(year) {
@@ -847,9 +847,9 @@ d <- purrr::reduce(d_acs, left_join, by = c("census_tract_id", "census_tract_vin
 
 d <- d |>
   dplyr::relocate(c(census_tract_id, census_tract_vintage, year)) |>
-  mutate(across(starts_with("fraction_"), round, 3)) |>
+  mutate(across(starts_with("fraction_"), \(.) round(., 3))) |>
   mutate(across(starts_with("n_"), as.integer)) |>
-  mutate(across(starts_with("median_"), signif, 3))
+  mutate(across(starts_with("median_"), \(.) signif(., 3)))
 
 d <- d |>
   add_col_attrs(census_tract_id,
@@ -868,10 +868,10 @@ d <- d |>
 d <- d |>
   add_attrs(
     name = "hh_acs_measures",
-    version = "1.0.0",
+    version = "1.1.0",
     title = "Harmonized Historical American Community Survey Measures",
-    description = "2010 - 2020 measures derived from ACS variables for census tracts in the contiguous US",
-    homepage = "https://github.com/geomarker-io/hh_acs_measures",
+    description = "2010 - 2021 measures derived from ACS variables for census tracts in the contiguous US",
+    homepage = "https://geomarker.io/hh_acs_measures",
   ) |>
   add_type_attrs()
 
@@ -881,13 +881,13 @@ write_tdr_csv(d)
 # save metadata to md file
 options(knitr.kable.NA = "")
 cat("#### Metadata\n\n", file = "metadata.md", append = FALSE)
-CODECtools::glimpse_attr(d) |>
+codec::glimpse_attr(d) |>
   knitr::kable() |>
   cat(file = "metadata.md", sep = "\n", append = TRUE)
 cat("\n#### Schema\n\n", file = "metadata.md", append = TRUE)
 cat("Columns ending with `_moe` represent the margin of error accompanying another column and are not included in the schema table here.\n\n", file = "metadata.md", append = TRUE)
 d |>
   dplyr::select(-ends_with("moe")) |>
-  CODECtools::glimpse_schema() |>
+  codec::glimpse_schema() |>
   knitr::kable() |>
   cat(file = "metadata.md", sep = "\n", append = TRUE)

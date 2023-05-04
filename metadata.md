@@ -3,10 +3,10 @@
 |name        |value                                                                                  |
 |:-----------|:--------------------------------------------------------------------------------------|
 |name        |hh_acs_measures                                                                        |
-|version     |1.0.0                                                                                  |
+|version     |1.1.0                                                                                  |
 |title       |Harmonized Historical American Community Survey Measures                               |
-|homepage    |https://github.com/geomarker-io/hh_acs_measures                                        |
-|description |2010 - 2020 measures derived from ACS variables for census tracts in the contiguous US |
+|homepage    |https://geomarker.io/hh_acs_measures                                                   |
+|description |2010 - 2021 measures derived from ACS variables for census tracts in the contiguous US |
 
 #### Schema
 
@@ -23,7 +23,7 @@ Columns ending with `_moe` represent the margin of error accompanying another co
 |n_household_lt18                 |                                                                 |                                                                                                                                 |integer |
 |n_household                      |                                                                 |                                                                                                                                 |integer |
 |fraction_insured                 |Fraction of People Insured                                       |Fraction of population with health insurance (available from 2012 onwards only)                                                  |number  |
-|fraction_snap                    |Fraction of Households Receiving SNAP                            |Fraction of households receiving food stamps/SNAP in the past 12 months                                                          |number  |
+|fraction_snap                    |Fraction of Households Receiving Assisted Income                 |Fraction of households receiving public assistance income or food stamps/SNAP in the past 12 months                              |number  |
 |fraction_fam_nospouse            |Fraction of family households with a single householder          |Single householder is male or female household, with no spouse present                                                           |number  |
 |fraction_employment              |Fraction of People Employed                                      |Fraction of people employed in civilian labor force                                                                              |number  |
 |n_housing_units                  |                                                                 |                                                                                                                                 |integer |
