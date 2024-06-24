@@ -2,20 +2,18 @@
 
 ## About
 
-This R code generates the **Harmonized Historical ACS Measures** (`hh_acs_measures`) data resource. Census tract-level measures derived from the American Community Survey (ACS) are generally available annually from 2013 through 2021 and were selected to cover three domains:
+This R code generates the **Harmonized Historical ACS Measures** (`hh_acs_measures`) data resource. Census tract-level measures derived from the American Community Survey (ACS) are generally available annually from 2013 through 2022 and were selected to cover three domains:
 
 - **Population**: number of kids, number of households with kids, single-parent households, racial and ethnic composition, limited English speaking households
 - **Socioeconomic**: education, income, poverty, employment, health insurance, SNAP receipt
 - **Housing**: vacancy, age, substandard conditions, monthly rent and housing costs
-
-See [metadata.md](./metadata.md) for detailed metadata and schema information.
 
 ## Accessing Data
 
 Read this CSV file into R directly from the [release](https://github.com/geomarker-io/hh_acs_measures/releases) with:
 
 ```r
-readr::read_csv("https://github.com/geomarker-io/hh_acs_measures/releases/download/v1.1.0/hh_acs_measures.csv")
+readr::read_csv("https://github.com/geomarker-io/hh_acs_measures/releases/download/v1.2.0/hh_acs_measures.csv")
 ```
 
 Metadata can be imported from the accompanying `tabular-data-resource.yaml` file by using [{codec}](https://geomarker.io/codec/).
