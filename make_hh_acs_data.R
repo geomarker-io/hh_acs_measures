@@ -84,13 +84,7 @@ get_acs_poverty <- function(year) {
     mutate(year = year)
 }
 
-d_acs$acs_poverty <-
-  mappp_dfr(2010:2022, get_acs_poverty) |>
-  as_fr_tdr() |>
-  update_field("fraction_poverty",
-    title = "Fraction of Households in Poverty",
-    description = "Fraction of households with income below poverty level within the past 12 months"
-  )
+d_acs$acs_poverty <- mappp_dfr(2010:2022, get_acs_poverty) 
 
 get_acs_children <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
@@ -118,16 +112,7 @@ get_acs_children <- function(year) {
     mutate(year = year)
 }
 
-d_acs$acs_children <-
-  mappp_dfr(2010:2022, get_acs_children) |>
-  as_fr_tdr() |>
-  update_field("n_children_lt18",
-    title = "Number of Children",
-    description = "Number of children and adolescents < 18 years of age"
-  ) |>
-  update_field("n_pop",
-    title = "Number of Total People"
-  )
+d_acs$acs_children <- mappp_dfr(2010:2022, get_acs_children)
 
 get_acs_households <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
@@ -151,16 +136,7 @@ get_acs_households <- function(year) {
     mutate(year = year)
 }
 
-d_acs$acs_households <-
-  mappp_dfr(2010:2022, get_acs_households) |>
-  as_fr_tdr() |>
-  update_field("n_household_lt18",
-    title = "Number of Households With Children",
-    description = "Number of households with children or adolescents < 18 years of age"
-  ) |>
-  update_field("n_household",
-    title = "Number of Households"
-    )
+d_acs$acs_households <- mappp_dfr(2010:2022, get_acs_households) 
 
 get_acs_insurance <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
@@ -193,13 +169,7 @@ get_acs_insurance <- function(year) {
     mutate(year = year)
 }
 
-d_acs$acs_insurance <-
-  mappp_dfr(2012:2022, get_acs_insurance) |>
-  as_fr_tdr() |>
-  update_field("fraction_insured",
-    title = "Fraction of People Insured",
-    description = "Fraction of population with health insurance (available from 2012 onwards only)"
-  )
+d_acs$acs_insurance <- mappp_dfr(2012:2022, get_acs_insurance) 
 
 get_acs_snap <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
@@ -221,13 +191,8 @@ get_acs_snap <- function(year) {
     mutate(year = year)
 }
 
-d_acs$acs_snap <-
-  mappp_dfr(2010:2022, get_acs_snap) |>
-  as_fr_tdr() |>
-  update_field("fraction_snap",
-    title = "Fraction of Households Receiving Assisted Income",
-    description = "Fraction of households receiving public assistance income or food stamps/SNAP in the past 12 months"
-  )
+d_acs$acs_snap <-mappp_dfr(2010:2022, get_acs_snap) 
+
 
 get_acs_hh_type <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
@@ -249,13 +214,7 @@ get_acs_hh_type <- function(year) {
     mutate(year = year)
 }
 
-d_acs$acs_hh_type <-
-  mappp_dfr(2010:2022, get_acs_hh_type) |>
-  as_fr_tdr() |>
-  update_field("fraction_fam_nospouse",
-    title = "Fraction of family households with a single householder",
-    description = "Single householder is male or female household, with no spouse present"
-  )
+d_acs$acs_hh_type <- mappp_dfr(2010:2022, get_acs_hh_type) 
 
 get_acs_employment <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
@@ -277,13 +236,7 @@ get_acs_employment <- function(year) {
     mutate(year = year)
 }
 
-d_acs$acs_employment <-
-  mappp_dfr(2011:2022, get_acs_employment) |>
-  as_fr_tdr() |>
-  update_field("fraction_employment",
-    title = "Fraction of People Employed",
-    description = "Fraction of people employed in civilian labor force"
-  )
+d_acs$acs_employment <- mappp_dfr(2011:2022, get_acs_employment)
 
 get_acs_housing_units <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
@@ -304,13 +257,7 @@ get_acs_housing_units <- function(year) {
     mutate(year = year)
 }
 
-d_acs$acs_housing_units <-
-  mappp_dfr(2010:2022, get_acs_housing_units) |>
-  as_fr_tdr() |>
-  update_field("n_housing_units",
-    title = "Number of Housing Units",
-    description = "Housing units are any separate living quarters (e.g., house, apartment, mobile home) either occupied or vacant"
-  )
+d_acs$acs_housing_units <- mappp_dfr(2010:2022, get_acs_housing_units) 
 
 get_acs_home_value <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
@@ -335,13 +282,7 @@ d_acs$acs_home_value <-
   mappp_dfr(2010:2022, get_acs_home_value) |>
   left_join(cpi, by = "year") |>
   mutate(median_home_value_2010adj = median_home_value * ratio) |>
-  select(-annual_cpi, -annual_cpi_2010, -ratio) |>
-  as_fr_tdr(name = "acs_home_value") |>
-  update_field("median_home_value",
-    title = "Median Value of Owner-Occupied Housing Units"
-    ) |>
-  update_field("median_home_value_2010adj",
-                title = "Median Value of Owner-Occupied Housing Units (in 2010 USD)")
+  select(-annual_cpi, -annual_cpi_2010, -ratio)
 
 get_acs_renters <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
@@ -363,13 +304,7 @@ get_acs_renters <- function(year) {
     mutate(year = year)
 }
 
-d_acs$acs_renters <-
-  mappp_dfr(2011:2022, get_acs_renters) |>
-  as_fr_tdr() |>
-  update_field("fraction_housing_renters",
-    title = "Fraction of Housing Units Occupied by Renters",
-    description = "fraction denominator is number of *occupied* housing units"
-  )
+d_acs$acs_renters <- mappp_dfr(2011:2022, get_acs_renters)
 
 get_acs_rent <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
@@ -390,13 +325,8 @@ get_acs_rent <- function(year) {
     mutate(year = year)
 }
 
-d_acs$acs_rent <-
-  mappp_dfr(2010:2022, get_acs_rent) |>
-  as_fr_tdr() |>
-  update_field("median_rent_to_income_percentage",
-                title = "Median Rent to Income Percentage",
-                description = "The median of the percentage of rent to income among all renter-occupied housing units")
-
+d_acs$acs_rent <- mappp_dfr(2010:2022, get_acs_rent)
+  
 get_acs_high_rent <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
   d <-
@@ -424,11 +354,7 @@ get_acs_high_rent <- function(year) {
     mutate(year = year)
 }
 
-d_acs$acs_high_rent <-
-  mappp_dfr(2010:2022, get_acs_high_rent) |>
-  as_fr_tdr() |>
-  update_field("fraction_high_rent",
-                title = "Fraction of Housing Units Paying at least 30% of Income on Rent")
+d_acs$acs_high_rent <- mappp_dfr(2010:2022, get_acs_high_rent) 
 
 get_acs_conditions <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
@@ -461,13 +387,7 @@ get_acs_conditions <- function(year) {
     mutate(year = year)
 }
 
-d_acs$acs_conditions <-
-  mappp_dfr(2010:2022, get_acs_conditions) |>
-  as_fr_tdr() |>
-  update_field("fraction_conditions",
-    title = "Fraction of Housing Units with Substandard Housing Conditions",
-    description = "substandard housing: incomplete plumbing or kitchens, overcrowding, 30% or more of household income spent on rent or owner costs"
-  )
+d_acs$acs_conditions <- mappp_dfr(2010:2022, get_acs_conditions) 
 
 get_acs_yrbuilt <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
@@ -499,12 +419,7 @@ get_acs_yrbuilt <- function(year) {
     mutate(year = year)
 }
 
-d_acs$acs_yrbuilt <-
-  mappp_dfr(2010:2022, get_acs_yrbuilt) |>
-  as_fr_tdr() |>
-  update_field("fraction_builtbf1970",
-    title = "Fraction of Housing Units Built Before 1970"
-  )
+d_acs$acs_yrbuilt <- mappp_dfr(2010:2022, get_acs_yrbuilt) 
 
 get_acs_vacant <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
@@ -526,12 +441,7 @@ get_acs_vacant <- function(year) {
     mutate(year = year)
 }
 
-d_acs$acs_vacant <-
-  mappp_dfr(2010:2022, get_acs_vacant) |>
-  as_fr_tdr() |>
-  update_field("fraction_vacant",
-    title = "Fraction of Housing Units that are Vacant"
-  )
+d_acs$acs_vacant <- mappp_dfr(2010:2022, get_acs_vacant) 
 
 
 get_acs_fraction_nhl <- function(year) {
@@ -554,12 +464,7 @@ get_acs_fraction_nhl <- function(year) {
     mutate(year = year)
 }
 
-d_acs$acs_fraction_nhl <-
-  mappp_dfr(2010:2022, get_acs_fraction_nhl) |>
-  as_fr_tdr() |>
-  update_field("fraction_nhl",
-    title = "Fraction of People Not Hispanic/Latino"
-  )
+d_acs$acs_fraction_nhl <- mappp_dfr(2010:2022, get_acs_fraction_nhl) 
 
 get_acs_fraction_nhl_w <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
@@ -581,12 +486,7 @@ get_acs_fraction_nhl_w <- function(year) {
     mutate(year = year)
 }
 
-d_acs$acs_fraction_nhl_w <-
-  mappp_dfr(2010:2022, get_acs_fraction_nhl_w) |>
-  as_fr_tdr() |>
-  update_field("fraction_nhl_w",
-    title = "Fraction of People White and Not Hispanic/Latino"
-  )
+d_acs$acs_fraction_nhl_w <- mappp_dfr(2010:2022, get_acs_fraction_nhl_w) 
 
 get_acs_fraction_nhl_b <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
@@ -608,12 +508,7 @@ get_acs_fraction_nhl_b <- function(year) {
     mutate(year = year)
 }
 
-d_acs$acs_fraction_nhl_b <-
-  mappp_dfr(2010:2022, get_acs_fraction_nhl_b) |>
-  as_fr_tdr() |>
-  update_field("fraction_nhl_b",
-    title = "Fraction of People Black and Not Hispanic/Latino"
-  )
+d_acs$acs_fraction_nhl_b <- mappp_dfr(2010:2022, get_acs_fraction_nhl_b) 
 
 get_acs_fraction_nhl_o <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
@@ -642,12 +537,7 @@ get_acs_fraction_nhl_o <- function(year) {
     mutate(year = year)
 }
 
-d_acs$acs_fraction_nhl_o <-
-  mappp_dfr(2010:2022, get_acs_fraction_nhl_o) |>
-  as_fr_tdr() |>
-  update_field("fraction_nhl_o",
-    title = "Fraction of People Not Black, Not White, and Not Hispanic/Latino"
-  )
+d_acs$acs_fraction_nhl_o <- mappp_dfr(2010:2022, get_acs_fraction_nhl_o) 
 
 get_acs_fraction_hl <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
@@ -669,12 +559,7 @@ get_acs_fraction_hl <- function(year) {
     mutate(year = year)
 }
 
-d_acs$acs_fraction_hl <-
-  mappp_dfr(2010:2022, get_acs_fraction_hl) |>
-  as_fr_tdr() |>
-  update_field("fraction_hl",
-    title = "Fraction of People Hispanic/Latino"
-  )
+d_acs$acs_fraction_hl <- mappp_dfr(2010:2022, get_acs_fraction_hl) 
 
 get_acs_fraction_hl_w <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
@@ -696,12 +581,7 @@ get_acs_fraction_hl_w <- function(year) {
     mutate(year = year)
 }
 
-d_acs$acs_fraction_hl_w <-
-  mappp_dfr(2010:2022, get_acs_fraction_hl_w) |>
-  as_fr_tdr() |>
-  update_field("fraction_hl_w",
-    title = "Fraction of People White and Hispanic/Latino"
-  )
+d_acs$acs_fraction_hl_w <- mappp_dfr(2010:2022, get_acs_fraction_hl_w) 
 
 get_acs_fraction_hl_b <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
@@ -723,12 +603,7 @@ get_acs_fraction_hl_b <- function(year) {
     mutate(year = year)
 }
 
-d_acs$acs_fraction_hl_b <-
-  mappp_dfr(2010:2022, get_acs_fraction_hl_b) |>
-  as_fr_tdr() |>
-  update_field("fraction_hl_b",
-    title = "Fraction of People Black and Hispanic/Latino"
-  )
+d_acs$acs_fraction_hl_b <- mappp_dfr(2010:2022, get_acs_fraction_hl_b) 
 
 get_acs_fraction_hl_o <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
@@ -757,12 +632,7 @@ get_acs_fraction_hl_o <- function(year) {
     mutate(year = year)
 }
 
-d_acs$acs_fraction_hl_o <-
-  mappp_dfr(2010:2022, get_acs_fraction_hl_o) |>
-  as_fr_tdr() |>
-  update_field("fraction_hl_o",
-    title = "Fraction of People Not Black, Not White, and Hispanic/Latino"
-  )
+d_acs$acs_fraction_hl_o <- mappp_dfr(2010:2022, get_acs_fraction_hl_o) 
 
 get_acs_lesh <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
@@ -794,14 +664,8 @@ get_acs_lesh <- function(year) {
     mutate(year = year)
 }
 
-d_acs$acs_leshh <-
-  mappp_dfr(2016:2022, get_acs_lesh) |>
-  as_fr_tdr() |>
-  update_field("fraction_lesh",
-    title = "Fraction of Households Speaking Limited English",
-    description = "Available from 2016 onwards"
-  )
-
+d_acs$acs_leshh <- mappp_dfr(2016:2022, get_acs_lesh)
+  
 get_acs_income <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
   d <-
@@ -825,13 +689,7 @@ d_acs$acs_income <-
   mappp_dfr(2010:2022, get_acs_income) |>
   left_join(cpi, by = "year") |>
   mutate(median_income_2010adj = median_income * ratio) |>
-  select(-annual_cpi, -annual_cpi_2010, -ratio) |>
-  as_fr_tdr(name = "acs_income") |>
-  update_field("median_income",
-    title = "Median Household Income"
-    ) |>
-  update_field("median_income_2010adj",
-                title = "Median Household Income (in 2010 USD)")
+  select(-annual_cpi, -annual_cpi_2010, -ratio)
 
 get_acs_hs <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
@@ -860,13 +718,7 @@ get_acs_hs <- function(year) {
     mutate(year = year)
 }
 
-d_acs$acs_hs <-
-  mappp_dfr(2012:2022, get_acs_hs) |>
-  as_fr_tdr() |>
-  update_field("fraction_hs",
-    title = "Fraction of Adults with At Least High School Education",
-    description = "Available from 2012 onwards"
-  )
+d_acs$acs_hs <- mappp_dfr(2012:2022, get_acs_hs) 
 
 d <- purrr::reduce(d_acs, left_join, by = c("census_tract_id", "census_tract_vintage", "year"))
 
@@ -883,40 +735,123 @@ d <- d |>
     version = "1.2.0",
     title = "Harmonized Historical American Community Survey Measures",
     description = "2010 - 2022 measures derived from ACS variables for census tracts in the contiguous US",
-    homepage = "https://geomarker.io/hh_acs_measures",
-  ) |>
+    homepage = "https://geomarker.io/hh_acs_measures"
+    ) |>
   update_field("census_tract_id",
-    title = "Census Tract Identifier",
-    description = "can refer to 2010 or 2020 vintage census tracts; unique only in combination with `census_tract_vintage`"
-  ) |>
+               title = "Census Tract Identifier",
+               description = "can refer to 2010 or 2020 vintage census tracts; unique only in combination with `census_tract_vintage`"
+               ) |>
   update_field("census_tract_vintage",
-    title = "Census Tract Vintage",
-    description = "The year of the decennial census that defines the tract (2010 for years 2010-2019 and 2020 for years 2020-2029)"
-  ) |>
+               title = "Census Tract Vintage",
+               description = "The year of the decennial census that defines the tract (2010 for years 2010-2019 and 2020 for years 2020-2029)"
+               ) |>
   update_field("year",
-    title = "Year",
-    description = "The year of the 5-year ACS estimates (e.g., the 2019 ACS covers 2015 - 2019)"
-  )
+               title = "Year",
+               description = "The year of the 5-year ACS estimates (e.g., the 2019 ACS covers 2015 - 2019)"
+               ) |>
+  update_field("fraction_poverty",
+               title = "Fraction of Households in Poverty",
+               description = "Fraction of households with income below poverty level within the past 12 months"
+               ) |>
+  update_field("n_children_lt18",
+               title = "Number of Children",
+               description = "Number of children and adolescents < 18 years of age"
+               ) |>
+  update_field("n_pop",
+               title = "Number of Total People"
+               ) |>
+  update_field("n_household_lt18",
+               title = "Number of Households With Children",
+               description = "Number of households with children or adolescents < 18 years of age"
+               ) |>
+  update_field("n_household",
+               title = "Number of Households"
+               ) |>
+  update_field("fraction_insured",
+               title = "Fraction of People Insured",
+               description = "Fraction of population with health insurance (available from 2012 onwards only)"
+               ) |>
+  update_field("fraction_snap",
+               title = "Fraction of Households Receiving Assisted Income",
+               description = "Fraction of households receiving public assistance income or food stamps/SNAP in the past 12 months"
+               ) |>
+  update_field("fraction_fam_nospouse",
+               title = "Fraction of family households with a single householder",
+               description = "Single householder is male or female household, with no spouse present"
+               ) |>
+  update_field("fraction_employment",
+               title = "Fraction of People Employed",
+               description = "Fraction of people employed in civilian labor force"
+               ) |>
+  update_field("n_housing_units",
+               title = "Number of Housing Units",
+               description = "Housing units are any separate living quarters (e.g., house, apartment, mobile home) either occupied or vacant"
+               ) |>
+  update_field("median_home_value",
+               title = "Median Value of Owner-Occupied Housing Units"
+               ) |>
+  update_field("median_home_value_2010adj",
+               title = "Median Value of Owner-Occupied Housing Units (in 2010 USD)"
+               ) |>
+  update_field("fraction_housing_renters",
+               title = "Fraction of Housing Units Occupied by Renters",
+               description = "fraction denominator is number of *occupied* housing units"
+               ) |>
+  update_field("median_rent_to_income_percentage",
+               title = "Median Rent to Income Percentage",
+               description = "The median of the percentage of rent to income among all renter-occupied housing units"
+               ) |>
+  update_field("fraction_high_rent",
+               title = "Fraction of Housing Units Paying at least 30% of Income on Rent"
+               ) |>
+  update_field("fraction_conditions",
+               title = "Fraction of Housing Units with Substandard Housing Conditions",
+               description = "substandard housing: incomplete plumbing or kitchens, overcrowding, 30% or more of household income spent on rent or owner costs"
+               ) |>
+  update_field("fraction_builtbf1970",
+               title = "Fraction of Housing Units Built Before 1970"
+               ) |>
+  update_field("fraction_vacant",
+               title = "Fraction of Housing Units that are Vacant"
+               ) |>
+  update_field("fraction_nhl",
+               title = "Fraction of People Not Hispanic/Latino"
+               ) |>
+  update_field("fraction_nhl_w",
+               title = "Fraction of People White and Not Hispanic/Latino"
+               ) |>
+  update_field("fraction_nhl_b",
+               title = "Fraction of People Black and Not Hispanic/Latino"
+               ) |>
+  update_field("fraction_nhl_o",
+               title = "Fraction of People Not Black, Not White, and Not Hispanic/Latino"
+               ) |>
+  update_field("fraction_hl",
+               title = "Fraction of People Hispanic/Latino"
+               ) |>
+  update_field("fraction_hl_w",
+               title = "Fraction of People White and Hispanic/Latino"
+               ) |>
+  update_field("fraction_hl_b",
+               title = "Fraction of People Black and Hispanic/Latino"
+               ) |>
+  update_field("fraction_hl_o",
+               title = "Fraction of People Not Black, Not White, and Hispanic/Latino"
+               ) |>
+  update_field("fraction_lesh",
+               title = "Fraction of Households Speaking Limited English",
+               description = "Available from 2016 onwards"
+               ) |>
+  update_field("median_income",
+               title = "Median Household Income"
+               ) |>
+  update_field("median_income_2010adj",
+               title = "Median Household Income (in 2010 USD)"
+               ) |>
+  update_field("fraction_hs",
+               title = "Fraction of Adults with At Least High School Education",
+               description = "Available from 2012 onwards"
+               )
 
 # save to disk
 fr::write_fr_tdr(d, dir = here::here())
-
-
-# what to do about metadata now? 
-# also move all update_field to end? 
-# bc losing field metadata as converting from tibble to fr tdr and back
-S7::prop(d, "schema")
-
-# save metadata to md file
-# options(knitr.kable.NA = "")
-# cat("#### Metadata\n\n", file = "metadata.md", append = FALSE)
-# codec::glimpse_attr(d) |>
-#   knitr::kable() |>
-#   cat(file = "metadata.md", sep = "\n", append = TRUE)
-# cat("\n#### Schema\n\n", file = "metadata.md", append = TRUE)
-# cat("Columns ending with `_moe` represent the margin of error accompanying another column and are not included in the schema table here.\n\n", file = "metadata.md", append = TRUE)
-# d |>
-#   dplyr::select(-ends_with("moe")) |>
-#   codec::glimpse_schema() |>
-#   knitr::kable() |>
-#   cat(file = "metadata.md", sep = "\n", append = TRUE)
