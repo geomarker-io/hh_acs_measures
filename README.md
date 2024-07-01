@@ -10,17 +10,19 @@ This R code generates the **Harmonized Historical ACS Measures** (`hh_acs_measur
 
 ## Accessing Data
 
-Read this CSV file into R directly from the [release](https://github.com/geomarker-io/hh_acs_measures/releases) with:
+Read the `hh_acs_measures` tabular data resource into R directly from the [release](https://github.com/geomarker-io/hh_acs_measures/releases) using the [fr](https://cole-brokamp.github.io/fr/) package:
+
+```r
+fr::read_fr_tdr("https://github.com/geomarker-io/hh_acs_measures/releases/download/v1.2.0/")
+```
+
+Alternatively, read the CSV file into R with:
 
 ```r
 readr::read_csv("https://github.com/geomarker-io/hh_acs_measures/releases/download/v1.2.0/hh_acs_measures.csv")
 ```
 
-Metadata can be imported from the accompanying `tabular-data-resource.yaml` file by using [{codec}](https://geomarker.io/codec/).
-
-```r
-codec::codec_data("hh_acs_measures")
-```
+[View field metadata](https://github.com/geomarker-io/hh_acs_measures/blob/main/hh_acs_measures/tabular-data-resource.yaml)
 
 ## Data Details
 
@@ -40,7 +42,7 @@ Each of the derived ACS measures are expressed in one of three ways:
 
 #### Currency adjustments for purchasing power over time
 
-Measures that are reported in US Dollars (e.g., Median Household Income) are adjusted for changes in purchasing power over time by using the annual [Consumer Price Index](https://www.bls.gov/cpi/research-series/r-cpi-u-rs-home.htm)
+Measures that are reported in US Dollars (e.g., Median Household Income) are adjusted for changes in purchasing power over time by using the annual [Consumer Price Index](https://www.bls.gov/cpi/research-series/r-cpi-u-rs-home.htm). The 'Consumer Price Index retroactive series using current methods' (R-CPI-U-RS) produced by the Bureau of Labor Statistics harmonizes historical annual indices by incorporating methodological improvements into earlier calculations with new releases. This means that `hh_acs_measures` fields that are adjusted for inflation in prior years will likely be scaled to a different number in later releases.
 
 #### Missing Data
 
