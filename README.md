@@ -17,7 +17,8 @@ This R code generates the **Harmonized Historical ACS Measures** (`hh_acs_measur
 Download the `hh_acs_measures` datapackage from the [release](https://github.com/geomarker-io/hh_acs_measures/releases), or read into R directly using the [dpkg](https://cole-brokamp.github.io/dpkg/) package:
 
 ```r
-dpkg::read_dpkg("https://github.com/geomarker-io/hh_acs_measures/releases/download/hh_acs_measures-v1.3.0/hh_acs_measures-v1.3.0.parquet")
+dpkg::stow("https://github.com/geomarker-io/hh_acs_measures/releases/download/hh_acs_measures-v1.3.0/hh_acs_measures-v1.3.0.parquet") |>
+	dpkg::read_dpkg()
 ```
 
 [View field metadata](https://github.com/geomarker-io/hh_acs_measures/blob/main/hh_acs_measures/metadata.md)
