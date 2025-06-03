@@ -1118,9 +1118,9 @@ d_dpkg <-
     version = "1.3.0",
     homepage = "https://geomarker.io/hh_acs_measures",
     description = paste(
-      readLines(fs::path("metadata", ext = "md")),
-      collapse = "\n"
+      "# Harmonized Historical ACS Measures \n",
+      "Census tract-level measures derived from the American Community Survey (ACS) generally available annually from 2013 through 2023."
     )
   )
 
-dpkg::dpkg_gh_release(d_dpkg, draft = FALSE)
+dpkg::dpkg_gh_release(d_dpkg, draft = TRUE)
