@@ -1,8 +1,12 @@
 # Harmonized Historical ACS Measures
 
+<!-- badges: start -->
+[![latest github release for hh_acs_measures dpkg](https://img.shields.io/github/v/release/geomarker-io/hh_acs_measures?sort=date&filter=hh_acs_measures-*&display_name=tag&label=%5B%E2%98%B0%5D&labelColor=%238CB4C3&color=%23396175)](https://github.com/geomarker-io/hh_acs_measures/releases?q=hh_acs_measures&expanded=false)
+<!-- badges: end -->
+
 ## About
 
-This R code generates the **Harmonized Historical ACS Measures** (`hh_acs_measures`) data resource. Census tract-level measures derived from the American Community Survey (ACS) are generally available annually from 2013 through 2022 and were selected to cover three domains:
+This R code generates the **Harmonized Historical ACS Measures** (`hh_acs_measures`) data resource. Census tract-level measures derived from the American Community Survey (ACS) are generally available annually from 2013 through 2023 and were selected to cover three domains:
 
 - **Population**: number of kids, number of households with kids, single-parent households, racial and ethnic composition, limited English speaking households
 - **Socioeconomic**: education, income, poverty, employment, health insurance, SNAP receipt
@@ -10,19 +14,13 @@ This R code generates the **Harmonized Historical ACS Measures** (`hh_acs_measur
 
 ## Accessing Data
 
-Read the `hh_acs_measures` tabular data resource into R directly from the [release](https://github.com/geomarker-io/hh_acs_measures/releases) using the [fr](https://cole-brokamp.github.io/fr/) package:
+Download the `hh_acs_measures` datapackage from the [release](https://github.com/geomarker-io/hh_acs_measures/releases), or read into R directly using the [dpkg](https://cole-brokamp.github.io/dpkg/) package:
 
 ```r
-fr::read_fr_tdr("https://github.com/geomarker-io/hh_acs_measures/releases/download/v1.2.0/")
+dpkg::read_dpkg("https://github.com/geomarker-io/hh_acs_measures/releases/download/hh_acs_measures-v1.3.0/hh_acs_measures-v1.3.0.parquet")
 ```
 
-Alternatively, read the CSV file into R with:
-
-```r
-readr::read_csv("https://github.com/geomarker-io/hh_acs_measures/releases/download/v1.2.0/hh_acs_measures.csv")
-```
-
-[View field metadata](https://github.com/geomarker-io/hh_acs_measures/blob/main/hh_acs_measures/tabular-data-resource.yaml)
+[View field metadata](https://github.com/geomarker-io/hh_acs_measures/blob/main/hh_acs_measures/metadata.md)
 
 ## Data Details
 
