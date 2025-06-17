@@ -21,7 +21,7 @@ dpkg::stow("https://github.com/geomarker-io/hh_acs_measures/releases/download/hh
 	dpkg::read_dpkg()
 ```
 
-[View field metadata](https://github.com/geomarker-io/hh_acs_measures/blob/main/hh_acs_measures/metadata.md)
+[View field metadata](https://github.com/geomarker-io/hh_acs_measures/blob/main/metadata.md)
 
 ## Data Details
 
