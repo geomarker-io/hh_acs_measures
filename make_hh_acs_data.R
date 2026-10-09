@@ -604,12 +604,12 @@ d_meta <-
 
 get_acs_yrbuilt <- function(year) {
   tract_vintage <- as.character(10 * floor(year / 10))
+  # B25034 added a construction-period category in 2015, shifting older bins.
+  # https://api.census.gov/data/2015/acs/acs5/groups/B25034.html
+  pre1970_variables <- sprintf("B25034_%03d", if (year < 2015) 7:10 else 8:11)
   d <-
     my_get_acs(
-      variables = c(
-        paste0("B25034_00", 7:9),
-        "B25034_010"
-      ),
+      variables = pre1970_variables,
       summary_var = "B25034_001",
       year = year
     ) |>
