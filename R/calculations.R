@@ -1,5 +1,5 @@
-# All calculators consume the same ACS long-table input. get_acs is injected so
-# calculation tests can use fixtures without network access.
+# All calculators consume the same ACS long-table input. The input reader is
+# supplied separately to keep file access independent of the calculations.
 calculate_acs_measure <- function(spec, rule, year, get_acs) {
   variables <- unlist(rule$variables, use.names = FALSE)
   args <- list(variables = variables, year = year)
@@ -69,7 +69,7 @@ build_measure_data <- function(catalog, geography, scaffold, get_acs, cpi) {
     d
   }))
   names_order <- names(catalog$measures)
-  # Derivations use unrounded source estimates and MOEs, as in the old pipeline.
+  # Derivations use unrounded source estimates and MOEs.
   names_order <- c(names_order[vapply(catalog$measures, function(x)
     x$calculation != 'inflation_adjusted', logical(1))],
     names_order[vapply(catalog$measures, function(x)
@@ -95,7 +95,7 @@ build_measure_data <- function(catalog, geography, scaffold, get_acs, cpi) {
     d[[geo$vintage]] <- vapply(d$year, function(year)
       geography_vintage(catalog, geography, year), character(1))
     d[[name]] <- round_measure(d$estimate, spec)
-    d[[paste0(name, '_moe')]] <- round_measure(d$moe, spec)
+    d[[paste0(name, '_moe')]] <- d$moe
     d <- d[c(keys, name, paste0(name, '_moe'))]
     output <- dplyr::left_join(output, d, by = keys)
   }

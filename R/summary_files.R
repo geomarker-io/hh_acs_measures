@@ -18,7 +18,7 @@ acs_numeric <- function(x) {
   value
 }
 
-read_summary_table <- function(path, variables, geography, states = NULL, moe_level = 95) {
+read_summary_table <- function(path, variables, geography, states = NULL) {
   columns <- unique(c('GEO_ID', sub('_', '_E', variables, fixed = TRUE),
                       sub('_', '_M', variables, fixed = TRUE)))
   header <- strsplit(readLines(path, n = 1L, warn = FALSE), '|', fixed = TRUE)[[1]]
@@ -36,12 +36,11 @@ read_summary_table <- function(path, variables, geography, states = NULL, moe_le
   }
   if (!nrow(d)) stop('No ', geography, ' records in Summary File: ', path)
   if (anyDuplicated(d$GEOID)) stop('Duplicate geography records in Summary File')
-  factor <- acs_moe_factor(moe_level)
   for (variable in variables) {
     estimate <- sub('_', '_E', variable, fixed = TRUE)
     moe <- sub('_', '_M', variable, fixed = TRUE)
     d[[estimate]] <- acs_numeric(d[[estimate]])
-    d[[moe]] <- acs_numeric(d[[moe]]) * factor
+    d[[moe]] <- acs_numeric(d[[moe]])
   }
   d[c('GEOID', setdiff(columns, 'GEO_ID'))]
 }
@@ -60,8 +59,7 @@ summary_file_getter <- function(catalog, geography, offline = FALSE,
         path <- download(summary_file_url(year, table),
                          paste0('summary-files/', year), offline = offline)
         d <- read_summary_table(path, needed, geography,
-                                catalog$geographies[[geography]]$state_fips,
-                                catalog$dataset$moe_level)
+                                catalog$geographies[[geography]]$state_fips)
         if (geography == 'tract') d <- harmonize_ct_tracts(d, year)
         assign(key, d, tables)
       }
@@ -82,9 +80,7 @@ summary_file_getter <- function(catalog, geography, offline = FALSE,
       d <- get(paste(year, table, sep = '-'), tables)
       index <- match(output$GEOID, d$GEOID)
       output$summary_est <- d[[sub('_', '_E', summary_var, fixed = TRUE)]][index]
-      # Preserve the whole-unit denominator-MOE rounding in the previous input
-      # adapter. Numerator MOEs remain unrounded until final output formatting.
-      output$summary_moe <- round(d[[sub('_', '_M', summary_var, fixed = TRUE)]][index])
+      output$summary_moe <- d[[sub('_', '_M', summary_var, fixed = TRUE)]][index]
     }
     output
   }

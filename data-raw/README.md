@@ -20,11 +20,8 @@ tracts in the 2020 and 2022 cartographic boundary files used for validation:
 Five additional tracts in the full 2022 TIGER/Line file contain only water and
 are absent from this project's cartographic scaffold: `09120990000`,
 `09190990000`, `09170990000`, `09130990100`, and `09180990100`. They are not
-mapped or aggregated. This preserves the existing exclusion of water-only
-tracts, including the 2020 water tract that split into two in 2022.
+mapped or aggregated. Water-only tracts are excluded, including the 2020 water tract that split into two in 2022.
 
 The helper restores the 2020 GEOID for ACS years 2022 onward, before any measure
 is calculated or joined. Earlier years and other states retain their source
-GEOIDs. Unexpected unmapped Connecticut IDs raise an error. Corrected tract
-results use a separate cache namespace so previous cached missing values
-cannot be reused.
+GEOIDs. Unexpected unmapped Connecticut IDs raise an error.

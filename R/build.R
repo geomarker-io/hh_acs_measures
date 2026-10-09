@@ -2,7 +2,7 @@ source('R/catalog.R')
 source('R/moe.R')
 source('R/calculations.R')
 source('R/summary_files.R')
-source('R/metadata.R')
+source('R/release.R')
 source('R/harmonize_ct_tracts.R')
 
 build_release <- function(geography, version, directory = file.path('data', paste0('v', version))) {
