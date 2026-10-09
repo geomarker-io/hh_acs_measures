@@ -428,7 +428,10 @@ get_acs_home_value <- function(year) {
 d_acs$acs_home_value <-
   mappp_dfr(2010:2023, get_acs_home_value) |>
   left_join(cpi, by = "year") |>
-  mutate(median_home_value_2010adj = median_home_value * ratio) |>
+  mutate(
+    median_home_value_2010adj = median_home_value * ratio,
+    median_home_value_2010adj_moe = median_home_value_moe * ratio
+  ) |>
   select(-annual_cpi, -annual_cpi_2010, -ratio)
 
 d_meta <-
@@ -1038,7 +1041,10 @@ get_acs_income <- function(year) {
 d_acs$acs_income <-
   mappp_dfr(2010:2023, get_acs_income) |>
   left_join(cpi, by = "year") |>
-  mutate(median_income_2010adj = median_income * ratio) |>
+  mutate(
+    median_income_2010adj = median_income * ratio,
+    median_income_2010adj_moe = median_income_moe * ratio
+  ) |>
   select(-annual_cpi, -annual_cpi_2010, -ratio)
 
 d_meta <-
