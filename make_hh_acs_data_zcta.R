@@ -30,6 +30,10 @@ zctas_2020 <-
 
 zctas_needed <- bind_rows(zctas_2010, zctas_2020)
 
+# The 2020 ACS still uses 2010 ZCTAs; 2020 boundaries begin with the 2021 ACS.
+# https://www.census.gov/programs-surveys/acs/geography-acs/geography-boundaries-by-year/2020.html
+# Each measure must select its scaffold using this ACS-specific transition.
+
 my_get_acs <-
   purrr::partial(
     get_acs,
@@ -67,7 +71,7 @@ get_acs(
 )
 
 get_acs_poverty <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   d <-
     my_get_acs(
       variables = "B17001_002",
@@ -93,7 +97,7 @@ get_acs_poverty <- function(year) {
 d_acs$acs_poverty <- mappp_dfr(2013:2023, get_acs_poverty)
 
 get_acs_children <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   d <-
     my_get_acs(
       variables = c(
@@ -125,7 +129,7 @@ get_acs_children <- function(year) {
 d_acs$acs_children <- mappp_dfr(2013:2023, get_acs_children)
 
 get_acs_households <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   d <-
     my_get_acs(
       variables = "B11005_002",
@@ -154,7 +158,7 @@ get_acs_households <- function(year) {
 d_acs$acs_households <- mappp_dfr(2013:2023, get_acs_households)
 
 get_acs_insurance <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   d <-
     my_get_acs(
       variables = c(
@@ -196,7 +200,7 @@ get_acs_insurance <- function(year) {
 d_acs$acs_insurance <- mappp_dfr(2013:2023, get_acs_insurance)
 
 get_acs_snap <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   d <-
     my_get_acs(
       variables = "B19058_002",
@@ -222,7 +226,7 @@ get_acs_snap <- function(year) {
 d_acs$acs_snap <- mappp_dfr(2013:2023, get_acs_snap)
 
 get_acs_hh_type <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   d <-
     my_get_acs(
       variables = "B11001_004",
@@ -253,7 +257,7 @@ get_acs_hh_type <- function(year) {
 d_acs$acs_hh_type <- mappp_dfr(2013:2023, get_acs_hh_type)
 
 get_acs_employment <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   d <-
     my_get_acs(
       variables = "B23025_004",
@@ -284,7 +288,7 @@ get_acs_employment <- function(year) {
 d_acs$acs_employment <- mappp_dfr(2013:2023, get_acs_employment)
 
 get_acs_housing_units <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   d <-
     my_get_acs(
       variables = "B25001_001",
@@ -309,7 +313,7 @@ get_acs_housing_units <- function(year) {
 d_acs$acs_housing_units <- mappp_dfr(2013:2023, get_acs_housing_units)
 
 get_acs_home_value <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   d <-
     my_get_acs(
       variables = "B25077_001",
@@ -338,7 +342,7 @@ d_acs$acs_home_value <-
   select(-annual_cpi, -annual_cpi_2010, -ratio)
 
 get_acs_renters <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   d <-
     my_get_acs(
       variables = "B25003_003",
@@ -369,7 +373,7 @@ get_acs_renters <- function(year) {
 d_acs$acs_renters <- mappp_dfr(2013:2023, get_acs_renters)
 
 get_acs_rent <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   d <-
     my_get_acs(
       variables = "B25071_001",
@@ -394,7 +398,7 @@ get_acs_rent <- function(year) {
 d_acs$acs_rent <- mappp_dfr(2013:2023, get_acs_rent)
 
 get_acs_high_rent <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   d <-
     my_get_acs(
       variables = paste0("B25070_", c("007", "008", "009", "010")),
@@ -432,7 +436,7 @@ get_acs_high_rent <- function(year) {
 d_acs$acs_high_rent <- mappp_dfr(2013:2023, get_acs_high_rent)
 
 get_acs_conditions <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   d <-
     my_get_acs(
       variables = c(
@@ -474,7 +478,7 @@ get_acs_conditions <- function(year) {
 d_acs$acs_conditions <- mappp_dfr(2013:2023, get_acs_conditions)
 
 get_acs_yrbuilt <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   # B25034 added a construction-period category in 2015, shifting older bins.
   # https://api.census.gov/data/2015/acs/acs5/groups/B25034.html
   pre1970_variables <- sprintf("B25034_%03d", if (year < 2015) 7:10 else 8:11)
@@ -515,7 +519,7 @@ get_acs_yrbuilt <- function(year) {
 d_acs$acs_yrbuilt <- mappp_dfr(2013:2023, get_acs_yrbuilt)
 
 get_acs_vacant <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   d <-
     my_get_acs(
       variables = "B25002_003",
@@ -541,7 +545,7 @@ get_acs_vacant <- function(year) {
 d_acs$acs_vacant <- mappp_dfr(2013:2023, get_acs_vacant)
 
 get_acs_fraction_nhl <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   d <-
     my_get_acs(
       variables = "B03002_002",
@@ -567,7 +571,7 @@ get_acs_fraction_nhl <- function(year) {
 d_acs$acs_fraction_nhl <- mappp_dfr(2013:2023, get_acs_fraction_nhl)
 
 get_acs_fraction_nhl_w <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   d <-
     my_get_acs(
       variables = "B03002_003",
@@ -593,7 +597,7 @@ get_acs_fraction_nhl_w <- function(year) {
 d_acs$acs_fraction_nhl_w <- mappp_dfr(2013:2023, get_acs_fraction_nhl_w)
 
 get_acs_fraction_nhl_b <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   d <-
     my_get_acs(
       variables = "B03002_004",
@@ -619,7 +623,7 @@ get_acs_fraction_nhl_b <- function(year) {
 d_acs$acs_fraction_nhl_b <- mappp_dfr(2013:2023, get_acs_fraction_nhl_b)
 
 get_acs_fraction_nhl_o <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   d <-
     my_get_acs(
       variables = paste0("B03002_00", 5:9),
@@ -652,7 +656,7 @@ get_acs_fraction_nhl_o <- function(year) {
 d_acs$acs_fraction_nhl_o <- mappp_dfr(2013:2023, get_acs_fraction_nhl_o)
 
 get_acs_fraction_hl <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   d <-
     my_get_acs(
       variables = "B03002_012",
@@ -678,7 +682,7 @@ get_acs_fraction_hl <- function(year) {
 d_acs$acs_fraction_hl <- mappp_dfr(2013:2023, get_acs_fraction_hl)
 
 get_acs_fraction_hl_w <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   d <-
     my_get_acs(
       variables = "B03002_013",
@@ -704,7 +708,7 @@ get_acs_fraction_hl_w <- function(year) {
 d_acs$acs_fraction_hl_w <- mappp_dfr(2013:2023, get_acs_fraction_hl_w)
 
 get_acs_fraction_hl_b <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   d <-
     my_get_acs(
       variables = "B03002_014",
@@ -730,7 +734,7 @@ get_acs_fraction_hl_b <- function(year) {
 d_acs$acs_fraction_hl_b <- mappp_dfr(2013:2023, get_acs_fraction_hl_b)
 
 get_acs_fraction_hl_o <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   d <-
     my_get_acs(
       variables = paste0("B03002_01", 5:9),
@@ -763,7 +767,7 @@ get_acs_fraction_hl_o <- function(year) {
 d_acs$acs_fraction_hl_o <- mappp_dfr(2013:2023, get_acs_fraction_hl_o)
 
 get_acs_lesh <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   d <-
     my_get_acs(
       variables = c(
@@ -799,7 +803,7 @@ get_acs_lesh <- function(year) {
 d_acs$acs_leshh <- mappp_dfr(2016:2023, get_acs_lesh)
 
 get_acs_income <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   d <-
     my_get_acs(
       variables = "B19013_001",
@@ -828,7 +832,7 @@ d_acs$acs_income <-
   select(-annual_cpi, -annual_cpi_2010, -ratio)
 
 get_acs_hs <- function(year) {
-  zcta_vintage <- as.character(10 * floor(year / 10))
+  zcta_vintage <- if (year <= 2020) "2010" else "2020"
   d <-
     my_get_acs(
       variables = paste0("B15003_0", 17:25),

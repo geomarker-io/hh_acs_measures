@@ -24,9 +24,10 @@ for (file in c("make_hh_acs_data.R", "make_hh_acs_data_zcta.R")) {
       tibble(GEOID = "12345", estimate = unname(estimates[variables]),
              moe = unname(margins[variables]), summary_est = 200, summary_moe = 10)
     }
-    vintage <- as.character(10 * floor(year / 10))
-    env$tracts_needed <- tibble(census_tract_id = "12345", census_tract_vintage = vintage)
-    env$zctas_needed <- tibble(zcta = "12345", zcta_vintage = vintage)
+    env$tracts_needed <- tibble(census_tract_id = "12345",
+                               census_tract_vintage = as.character(10 * floor(year / 10)))
+    env$zctas_needed <- tibble(zcta = "12345",
+                             zcta_vintage = if (year <= 2020) "2010" else "2020")
     result <- env$get_acs_yrbuilt(year)
     stopifnot(nrow(result) == 1L, result$year == year,
               result$fraction_builtbf1970 == 0.7,
