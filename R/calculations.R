@@ -3,11 +3,17 @@
 calculate_acs_measure <- function(spec, rule, year, get_acs) {
   variables <- unlist(rule$variables, use.names = FALSE)
   args <- list(variables = variables, year = year)
-  if (spec$calculation == 'proportion') args$summary_var <- rule$denominator
+  if (spec$calculation == 'proportion') {
+    args$summary_var <- rule$denominator
+  }
   raw <- do.call(get_acs, args)
-  if (anyDuplicated(raw[c('GEOID', 'variable')])) stop('Duplicate ACS variable rows')
-  if (!setequal(raw$variable, variables) ||
-      any(table(raw$GEOID) != length(variables))) {
+  if (anyDuplicated(raw[c('GEOID', 'variable')])) {
+    stop('Duplicate ACS variable rows')
+  }
+  if (
+    !setequal(raw$variable, variables) ||
+      any(table(raw$GEOID) != length(variables))
+  ) {
     stop('Missing or unexpected ACS components')
   }
   if (length(variables) == 1L) {
@@ -16,21 +22,40 @@ calculate_acs_measure <- function(spec, rule, year, get_acs) {
     # Aggregate in vectorized groups rather than constructing one R data frame
     # per tract. Zero-count terms retain only their largest MOE.
     zero <- !is.na(raw$estimate) & raw$estimate == 0
-    terms <- data.table::data.table(GEOID = raw$GEOID, estimate = raw$estimate,
+    terms <- data.table::data.table(
+      GEOID = raw$GEOID,
+      estimate = raw$estimate,
       nonzero_square = ifelse(zero, 0, raw$moe^2),
-      zero_moe = ifelse(zero, raw$moe, 0))
-    sums <- terms[, list(estimate = sum(estimate),
-                        squares = sum(nonzero_square), zero = max(zero_moe)), by = GEOID]
-    result <- data.frame(GEOID = sums$GEOID, estimate = sums$estimate,
-                         moe = sqrt(sums$squares + sums$zero^2))
+      zero_moe = ifelse(zero, raw$moe, 0)
+    )
+    sums <- terms[,
+      list(
+        estimate = sum(estimate),
+        squares = sum(nonzero_square),
+        zero = max(zero_moe)
+      ),
+      by = GEOID
+    ]
+    result <- data.frame(
+      GEOID = sums$GEOID,
+      estimate = sums$estimate,
+      moe = sqrt(sums$squares + sums$zero^2)
+    )
   }
   if (spec$calculation == 'proportion') {
     denominators <- unique(raw[c('GEOID', 'summary_est', 'summary_moe')])
-    if (anyDuplicated(denominators$GEOID)) stop('Inconsistent ACS denominator within GEOID')
+    if (anyDuplicated(denominators$GEOID)) {
+      stop('Inconsistent ACS denominator within GEOID')
+    }
     index <- match(result$GEOID, denominators$GEOID)
     denominator <- denominators$summary_est[index]
     denominator_moe <- denominators$summary_moe[index]
-    result$moe <- acs_moe_proportion(result$estimate, denominator, result$moe, denominator_moe)
+    result$moe <- acs_moe_proportion(
+      result$estimate,
+      denominator,
+      result$moe,
+      denominator_moe
+    )
     result$estimate <- result$estimate / denominator
     result$estimate[is.na(denominator) | denominator <= 0] <- NA_real_
   }
@@ -40,8 +65,14 @@ calculate_acs_measure <- function(spec, rule, year, get_acs) {
 adjust_for_inflation <- function(d, cpi, year, base_year) {
   current <- cpi$annual_cpi[cpi$year == year]
   base <- cpi$annual_cpi[cpi$year == base_year]
-  if (length(current) != 1L || length(base) != 1L ||
-      !is.finite(current) || !is.finite(base) || current <= 0 || base <= 0) {
+  if (
+    length(current) != 1L ||
+      length(base) != 1L ||
+      !is.finite(current) ||
+      !is.finite(base) ||
+      current <= 0 ||
+      base <= 0
+  ) {
     stop('Missing or invalid CPI for ', year, ' or base year ', base_year)
   }
   d$estimate <- d$estimate * base / current
@@ -50,17 +81,23 @@ adjust_for_inflation <- function(d, cpi, year, base_year) {
 }
 
 round_measure <- function(x, spec) {
-  switch(spec$rounding$method,
-         integer = as.integer(round(x)),
-         decimal = round(x, spec$rounding$digits),
-         significant = signif(x, spec$rounding$digits))
+  switch(
+    spec$rounding$method,
+    integer = as.integer(round(x)),
+    decimal = round(x, spec$rounding$digits),
+    significant = signif(x, spec$rounding$digits)
+  )
 }
 
 build_measure_data <- function(catalog, geography, scaffold, get_acs, cpi) {
   geo <- catalog$geographies[[geography]]
-  if (is.null(geo)) stop('Unknown geography: ', geography)
+  if (is.null(geo)) {
+    stop('Unknown geography: ', geography)
+  }
   keys <- c(geo$id, geo$vintage, 'year')
-  if (anyDuplicated(scaffold[c(geo$id, geo$vintage)])) stop('Duplicate scaffold keys')
+  if (anyDuplicated(scaffold[c(geo$id, geo$vintage)])) {
+    stop('Duplicate scaffold keys')
+  }
   # The scaffold determines the rows, including years where a measure is absent.
   output <- dplyr::bind_rows(lapply(rule_years(geo), function(year) {
     vintage <- geography_vintage(catalog, geography, year)
@@ -70,10 +107,22 @@ build_measure_data <- function(catalog, geography, scaffold, get_acs, cpi) {
   }))
   names_order <- names(catalog$measures)
   # Derivations use unrounded source estimates and MOEs.
-  names_order <- c(names_order[vapply(catalog$measures, function(x)
-    x$calculation != 'inflation_adjusted', logical(1))],
-    names_order[vapply(catalog$measures, function(x)
-      x$calculation == 'inflation_adjusted', logical(1))])
+  names_order <- c(
+    names_order[vapply(
+      catalog$measures,
+      function(x) {
+        x$calculation != 'inflation_adjusted'
+      },
+      logical(1)
+    )],
+    names_order[vapply(
+      catalog$measures,
+      function(x) {
+        x$calculation == 'inflation_adjusted'
+      },
+      logical(1)
+    )]
+  )
   computed <- list()
   for (name in names_order) {
     spec <- catalog$measures[[name]]
@@ -82,7 +131,12 @@ build_measure_data <- function(catalog, geography, scaffold, get_acs, cpi) {
       if (spec$calculation == 'inflation_adjusted') {
         d <- computed[[rule$source_measure]]
         d <- d[d$year == year, c('GEOID', 'estimate', 'moe'), drop = FALSE]
-        d <- adjust_for_inflation(d, cpi, year, catalog$dataset$inflation$base_year)
+        d <- adjust_for_inflation(
+          d,
+          cpi,
+          year,
+          catalog$dataset$inflation$base_year
+        )
       } else {
         d <- calculate_acs_measure(spec, rule, year, get_acs)
       }
@@ -92,13 +146,22 @@ build_measure_data <- function(catalog, geography, scaffold, get_acs, cpi) {
     d <- dplyr::bind_rows(parts)
     computed[[name]] <- d
     names(d)[names(d) == 'GEOID'] <- geo$id
-    d[[geo$vintage]] <- vapply(d$year, function(year)
-      geography_vintage(catalog, geography, year), character(1))
+    d[[geo$vintage]] <- vapply(
+      d$year,
+      function(year) {
+        geography_vintage(catalog, geography, year)
+      },
+      character(1)
+    )
     d[[name]] <- round_measure(d$estimate, spec)
     d[[paste0(name, '_moe')]] <- d$moe
     d <- d[c(keys, name, paste0(name, '_moe'))]
     output <- dplyr::left_join(output, d, by = keys)
   }
-  output[c(keys, unlist(lapply(names(catalog$measures), function(name)
-    c(name, paste0(name, '_moe')))))]
+  output[c(
+    keys,
+    unlist(lapply(names(catalog$measures), function(name) {
+      c(name, paste0(name, '_moe'))
+    }))
+  )]
 }
