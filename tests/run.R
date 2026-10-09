@@ -4,3 +4,5 @@ for (file in files) {
   cat('\n', file, '\n', sep = '')
   source(file, local = new.env(parent = globalenv()))
 }
+
+stopifnot(!'tidycensus' %in% loadedNamespaces())

@@ -15,16 +15,24 @@ dataset:
     fraction and MOE.
   - Inflation-adjusted estimates and MOEs use the same CPI ratio. Revised CPI inputs
     can change earlier estimates in later releases.
+  - Source MOEs are converted from 90% to 95% confidence using 1.960 / 1.645. Denominator
+    MOEs are rounded to whole units before derived proportions, preserving the previous
+    input adapter.
+  - This build supports 2021 onward table-based Summary Files; the current release
+    coverage is 2021–2023.
+  source:
+    format: ACS table-based five-year Summary File
+    first_supported_year: 2021
+    published_moe_level: 90
+    documentation: https://www.census.gov/programs-surveys/acs/data/summary-file.html
 geographies:
   tract:
-    years: [2010, 2023]
+    years: [2021, 2023]
     id: census_tract_id
     vintage: census_tract_vintage
     resource: hh_acs_measures
     vintage_rules:
-    - years: [2010, 2019]
-      value: '2010'
-    - years: [2020, 2023]
+    - years: [2021, 2023]
       value: '2020'
     notes:
     - years: [2022, 2023]
@@ -32,22 +40,75 @@ geographies:
         tract IDs using data-raw/ct_tract_crosswalk_2022_2020.csv. Estimates are not
         interpolated; water-only tracts outside the cartographic scaffold are excluded.
       source: data-raw/README.md
+    state_fips:
+    - '01'
+    - '02'
+    - '04'
+    - '05'
+    - '06'
+    - 08
+    - 09
+    - '10'
+    - '11'
+    - '12'
+    - '13'
+    - '15'
+    - '16'
+    - '17'
+    - '18'
+    - '19'
+    - '20'
+    - '21'
+    - '22'
+    - '23'
+    - '24'
+    - '25'
+    - '26'
+    - '27'
+    - '28'
+    - '29'
+    - '30'
+    - '31'
+    - '32'
+    - '33'
+    - '34'
+    - '35'
+    - '36'
+    - '37'
+    - '38'
+    - '39'
+    - '40'
+    - '41'
+    - '42'
+    - '44'
+    - '45'
+    - '46'
+    - '47'
+    - '48'
+    - '49'
+    - '50'
+    - '51'
+    - '53'
+    - '54'
+    - '55'
+    - '56'
+    scaffold:
+      url: https://www2.census.gov/geo/tiger/GENZ2020/shp/cb_2020_us_tract_500k.zip
+      id_column: GEOID
   zcta:
-    years: [2013, 2023]
+    years: [2021, 2023]
     id: zcta
     vintage: zcta_vintage
     resource: hh_acs_measures_zcta
     vintage_rules:
-    - years: [2013, 2020]
-      value: '2010'
     - years: [2021, 2023]
       value: '2020'
     notes:
-    - years: [2013, 2023]
-      text: The existing ZCTA pipeline starts in 2013; earlier years are not included.
-    - years: [2020, 2020]
-      text: The 2020 ACS still uses 2010 ZCTAs; 2020 ZCTAs begin with the 2021 ACS.
-      source: https://www.census.gov/programs-surveys/acs/geography-acs/geography-boundaries-by-year/2020.html
+    - years: [2021, 2023]
+      text: All supported ACS years use 2020 ZCTA boundaries.
+    scaffold:
+      url: https://www2.census.gov/geo/tiger/GENZ2020/shp/cb_2020_us_zcta520_500k.zip
+      id_column: GEOID20
 measures:
   fraction_poverty:
     title: Fraction of People in Poverty
@@ -56,14 +117,15 @@ measures:
       12 months, among people for whom poverty status is determined
     units: fraction
     calculation: proportion
-    moe_method: moe_prop with moe_sum for multiple numerator components
+    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+      component MOEs combined by root-sum-of-squares with the largest MOE retained
+      among zero-estimate components
     rounding:
       method: decimal
       digits: 3
     rules:
-    - years: [2010, 2023]
-      variables:
-      - B17001_002
+    - years: [2021, 2023]
+      variables: B17001_002
       denominator: B17001_001
     notes: []
   n_children_lt18:
@@ -72,12 +134,13 @@ measures:
     definition: Number of children and adolescents < 18 years of age
     units: count
     calculation: count
-    moe_method: moe_sum for multiple components; source MOE for one component
+    moe_method: Root-sum-of-squares for multiple components, retaining the largest
+      MOE among zero-estimate components; source MOE for one component
     rounding:
       method: integer
       digits: 0
     rules:
-    - years: [2010, 2023]
+    - years: [2021, 2023]
       variables:
       - B01001_003
       - B01001_004
@@ -94,14 +157,14 @@ measures:
     definition: Total population.
     units: count
     calculation: count
-    moe_method: moe_sum for multiple components; source MOE for one component
+    moe_method: Root-sum-of-squares for multiple components, retaining the largest
+      MOE among zero-estimate components; source MOE for one component
     rounding:
       method: integer
       digits: 0
     rules:
-    - years: [2010, 2023]
-      variables:
-      - B01001_001
+    - years: [2021, 2023]
+      variables: B01001_001
     notes: []
   n_household_lt18:
     title: Number of Households With Children
@@ -109,14 +172,14 @@ measures:
     definition: Number of households with children or adolescents < 18 years of age
     units: count
     calculation: count
-    moe_method: moe_sum for multiple components; source MOE for one component
+    moe_method: Root-sum-of-squares for multiple components, retaining the largest
+      MOE among zero-estimate components; source MOE for one component
     rounding:
       method: integer
       digits: 0
     rules:
-    - years: [2010, 2023]
-      variables:
-      - B11005_002
+    - years: [2021, 2023]
+      variables: B11005_002
     notes: []
   n_household:
     title: Number of Households
@@ -124,14 +187,14 @@ measures:
     definition: Total households.
     units: count
     calculation: count
-    moe_method: moe_sum for multiple components; source MOE for one component
+    moe_method: Root-sum-of-squares for multiple components, retaining the largest
+      MOE among zero-estimate components; source MOE for one component
     rounding:
       method: integer
       digits: 0
     rules:
-    - years: [2010, 2023]
-      variables:
-      - B11005_001
+    - years: [2021, 2023]
+      variables: B11005_001
     notes: []
   fraction_insured:
     title: Fraction of People Insured
@@ -140,12 +203,14 @@ measures:
       population.
     units: fraction
     calculation: proportion
-    moe_method: moe_prop with moe_sum for multiple numerator components
+    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+      component MOEs combined by root-sum-of-squares with the largest MOE retained
+      among zero-estimate components
     rounding:
       method: decimal
       digits: 3
     rules:
-    - years: [2012, 2023]
+    - years: [2021, 2023]
       variables:
       - B27001_004
       - B27001_007
@@ -166,9 +231,7 @@ measures:
       - B27001_053
       - B27001_056
       denominator: B27001_001
-    notes:
-    - The existing tract pipeline begins this measure in 2012; earlier years remain
-      missing. This is an implementation coverage boundary.
+    notes: []
   fraction_snap:
     title: Fraction of Households Receiving Assisted Income
     domain: Socioeconomic
@@ -176,14 +239,15 @@ measures:
       stamps/SNAP in the past 12 months
     units: fraction
     calculation: proportion
-    moe_method: moe_prop with moe_sum for multiple numerator components
+    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+      component MOEs combined by root-sum-of-squares with the largest MOE retained
+      among zero-estimate components
     rounding:
       method: decimal
       digits: 3
     rules:
-    - years: [2010, 2023]
-      variables:
-      - B19058_002
+    - years: [2021, 2023]
+      variables: B19058_002
       denominator: B19058_001
     notes: []
   fraction_fam_nospouse:
@@ -193,14 +257,15 @@ measures:
       present divided by all family households.
     units: fraction
     calculation: proportion
-    moe_method: moe_prop with moe_sum for multiple numerator components
+    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+      component MOEs combined by root-sum-of-squares with the largest MOE retained
+      among zero-estimate components
     rounding:
       method: decimal
       digits: 3
     rules:
-    - years: [2010, 2023]
-      variables:
-      - B11001_004
+    - years: [2021, 2023]
+      variables: B11001_004
       denominator: B11001_002
     notes: []
   fraction_employment:
@@ -209,18 +274,17 @@ measures:
     definition: Fraction of people employed in civilian labor force
     units: fraction
     calculation: proportion
-    moe_method: moe_prop with moe_sum for multiple numerator components
+    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+      component MOEs combined by root-sum-of-squares with the largest MOE retained
+      among zero-estimate components
     rounding:
       method: decimal
       digits: 3
     rules:
-    - years: [2011, 2023]
-      variables:
-      - B23025_004
+    - years: [2021, 2023]
+      variables: B23025_004
       denominator: B23025_003
-    notes:
-    - The existing tract pipeline begins this measure in 2011; earlier years remain
-      missing. This is an implementation coverage boundary.
+    notes: []
   n_housing_units:
     title: Number of Housing Units
     domain: Housing
@@ -228,14 +292,14 @@ measures:
       mobile home) either occupied or vacant
     units: count
     calculation: count
-    moe_method: moe_sum for multiple components; source MOE for one component
+    moe_method: Root-sum-of-squares for multiple components, retaining the largest
+      MOE among zero-estimate components; source MOE for one component
     rounding:
       method: integer
       digits: 0
     rules:
-    - years: [2010, 2023]
-      variables:
-      - B25001_001
+    - years: [2021, 2023]
+      variables: B25001_001
     notes: []
   median_home_value:
     title: Median Value of Owner-Occupied Housing Units
@@ -243,14 +307,13 @@ measures:
     definition: Median value of owner-occupied housing units, in nominal US dollars.
     units: USD
     calculation: estimate
-    moe_method: moe_sum for multiple components; source MOE for one component
+    moe_method: Source MOE
     rounding:
       method: significant
       digits: 3
     rules:
-    - years: [2010, 2023]
-      variables:
-      - B25077_001
+    - years: [2021, 2023]
+      variables: B25077_001
     notes: []
   median_home_value_2010adj:
     title: Median Value of Owner-Occupied Housing Units (in 2010 USD)
@@ -259,12 +322,12 @@ measures:
       using R-CPI-U-RS.
     units: USD_2010
     calculation: inflation_adjusted
-    moe_method: source MOE scaled by CPI ratio
+    moe_method: Source MOE scaled by CPI ratio
     rounding:
       method: significant
       digits: 3
     rules:
-    - years: [2010, 2023]
+    - years: [2021, 2023]
       source_measure: median_home_value
     notes: []
   fraction_housing_renters:
@@ -273,18 +336,17 @@ measures:
     definition: fraction denominator is number of *occupied* housing units
     units: fraction
     calculation: proportion
-    moe_method: moe_prop with moe_sum for multiple numerator components
+    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+      component MOEs combined by root-sum-of-squares with the largest MOE retained
+      among zero-estimate components
     rounding:
       method: decimal
       digits: 3
     rules:
-    - years: [2011, 2023]
-      variables:
-      - B25003_003
+    - years: [2021, 2023]
+      variables: B25003_003
       denominator: B25003_001
-    notes:
-    - The existing tract pipeline begins this measure in 2011; earlier years remain
-      missing. This is an implementation coverage boundary.
+    notes: []
   median_rent_to_income_percentage:
     title: Median Rent to Income Percentage
     domain: Housing
@@ -292,14 +354,13 @@ measures:
       housing units
     units: percent
     calculation: estimate
-    moe_method: moe_sum for multiple components; source MOE for one component
+    moe_method: Source MOE
     rounding:
       method: significant
       digits: 3
     rules:
-    - years: [2010, 2023]
-      variables:
-      - B25071_001
+    - years: [2021, 2023]
+      variables: B25071_001
     notes: []
   fraction_high_rent:
     title: Fraction of Housing Units Paying at least 30% of Income on Rent
@@ -308,21 +369,22 @@ measures:
       in gross rent divided by all renter-occupied housing units in B25070.
     units: fraction
     calculation: proportion
-    moe_method: moe_prop with moe_sum for multiple numerator components
+    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+      component MOEs combined by root-sum-of-squares with the largest MOE retained
+      among zero-estimate components
     rounding:
       method: decimal
       digits: 3
     rules:
-    - years: [2010, 2023]
+    - years: [2021, 2023]
       variables:
       - B25070_007
       - B25070_008
       - B25070_009
       - B25070_010
       denominator: B25070_001
-    notes:
-    - The denominator retains the not-computed rent-to-income category, matching the
-      existing calculation.
+    notes: The denominator retains the not-computed rent-to-income category, matching
+      the existing calculation.
   fraction_conditions:
     title: Fraction of Housing Units with Substandard Housing Conditions
     domain: Housing
@@ -330,12 +392,14 @@ measures:
       30% or more of household income spent on rent or owner costs'
     units: fraction
     calculation: proportion
-    moe_method: moe_prop with moe_sum for multiple numerator components
+    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+      component MOEs combined by root-sum-of-squares with the largest MOE retained
+      among zero-estimate components
     rounding:
       method: decimal
       digits: 3
     rules:
-    - years: [2010, 2023]
+    - years: [2021, 2023]
       variables:
       - B25123_003
       - B25123_004
@@ -353,20 +417,14 @@ measures:
     definition: Housing units built before 1970 divided by all housing units.
     units: fraction
     calculation: proportion
-    moe_method: moe_prop with moe_sum for multiple numerator components
+    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+      component MOEs combined by root-sum-of-squares with the largest MOE retained
+      among zero-estimate components
     rounding:
       method: decimal
       digits: 3
     rules:
-    - years: [2010, 2014]
-      variables:
-      - B25034_007
-      - B25034_008
-      - B25034_009
-      - B25034_010
-      denominator: B25034_001
-      note: Before the 2015 construction-period category change.
-    - years: [2015, 2023]
+    - years: [2021, 2023]
       variables:
       - B25034_008
       - B25034_009
@@ -382,14 +440,15 @@ measures:
     definition: Vacant housing units divided by all housing units.
     units: fraction
     calculation: proportion
-    moe_method: moe_prop with moe_sum for multiple numerator components
+    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+      component MOEs combined by root-sum-of-squares with the largest MOE retained
+      among zero-estimate components
     rounding:
       method: decimal
       digits: 3
     rules:
-    - years: [2010, 2023]
-      variables:
-      - B25002_003
+    - years: [2021, 2023]
+      variables: B25002_003
       denominator: B25002_001
     notes: []
   fraction_nhl:
@@ -398,14 +457,15 @@ measures:
     definition: Fraction of People Not Hispanic/Latino divided by the total population.
     units: fraction
     calculation: proportion
-    moe_method: moe_prop with moe_sum for multiple numerator components
+    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+      component MOEs combined by root-sum-of-squares with the largest MOE retained
+      among zero-estimate components
     rounding:
       method: decimal
       digits: 3
     rules:
-    - years: [2010, 2023]
-      variables:
-      - B03002_002
+    - years: [2021, 2023]
+      variables: B03002_002
       denominator: B03002_001
     notes: []
   fraction_nhl_w:
@@ -415,14 +475,15 @@ measures:
       population.
     units: fraction
     calculation: proportion
-    moe_method: moe_prop with moe_sum for multiple numerator components
+    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+      component MOEs combined by root-sum-of-squares with the largest MOE retained
+      among zero-estimate components
     rounding:
       method: decimal
       digits: 3
     rules:
-    - years: [2010, 2023]
-      variables:
-      - B03002_003
+    - years: [2021, 2023]
+      variables: B03002_003
       denominator: B03002_001
     notes: []
   fraction_nhl_b:
@@ -432,14 +493,15 @@ measures:
       population.
     units: fraction
     calculation: proportion
-    moe_method: moe_prop with moe_sum for multiple numerator components
+    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+      component MOEs combined by root-sum-of-squares with the largest MOE retained
+      among zero-estimate components
     rounding:
       method: decimal
       digits: 3
     rules:
-    - years: [2010, 2023]
-      variables:
-      - B03002_004
+    - years: [2021, 2023]
+      variables: B03002_004
       denominator: B03002_001
     notes: []
   fraction_nhl_o:
@@ -449,12 +511,14 @@ measures:
       by the total population.
     units: fraction
     calculation: proportion
-    moe_method: moe_prop with moe_sum for multiple numerator components
+    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+      component MOEs combined by root-sum-of-squares with the largest MOE retained
+      among zero-estimate components
     rounding:
       method: decimal
       digits: 3
     rules:
-    - years: [2010, 2023]
+    - years: [2021, 2023]
       variables:
       - B03002_005
       - B03002_006
@@ -462,23 +526,23 @@ measures:
       - B03002_008
       - B03002_009
       denominator: B03002_001
-    notes:
-    - The numerator includes the other race categories and people reporting two or
-      more races, matching the existing calculation.
+    notes: The numerator includes the other race categories and people reporting two
+      or more races, matching the existing calculation.
   fraction_hl:
     title: Fraction of People Hispanic/Latino
     domain: Population
     definition: Fraction of People Hispanic/Latino divided by the total population.
     units: fraction
     calculation: proportion
-    moe_method: moe_prop with moe_sum for multiple numerator components
+    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+      component MOEs combined by root-sum-of-squares with the largest MOE retained
+      among zero-estimate components
     rounding:
       method: decimal
       digits: 3
     rules:
-    - years: [2010, 2023]
-      variables:
-      - B03002_012
+    - years: [2021, 2023]
+      variables: B03002_012
       denominator: B03002_001
     notes: []
   fraction_hl_w:
@@ -488,14 +552,15 @@ measures:
       population.
     units: fraction
     calculation: proportion
-    moe_method: moe_prop with moe_sum for multiple numerator components
+    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+      component MOEs combined by root-sum-of-squares with the largest MOE retained
+      among zero-estimate components
     rounding:
       method: decimal
       digits: 3
     rules:
-    - years: [2010, 2023]
-      variables:
-      - B03002_013
+    - years: [2021, 2023]
+      variables: B03002_013
       denominator: B03002_001
     notes: []
   fraction_hl_b:
@@ -505,14 +570,15 @@ measures:
       population.
     units: fraction
     calculation: proportion
-    moe_method: moe_prop with moe_sum for multiple numerator components
+    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+      component MOEs combined by root-sum-of-squares with the largest MOE retained
+      among zero-estimate components
     rounding:
       method: decimal
       digits: 3
     rules:
-    - years: [2010, 2023]
-      variables:
-      - B03002_014
+    - years: [2021, 2023]
+      variables: B03002_014
       denominator: B03002_001
     notes: []
   fraction_hl_o:
@@ -522,12 +588,14 @@ measures:
       by the total population.
     units: fraction
     calculation: proportion
-    moe_method: moe_prop with moe_sum for multiple numerator components
+    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+      component MOEs combined by root-sum-of-squares with the largest MOE retained
+      among zero-estimate components
     rounding:
       method: decimal
       digits: 3
     rules:
-    - years: [2010, 2023]
+    - years: [2021, 2023]
       variables:
       - B03002_015
       - B03002_016
@@ -535,44 +603,42 @@ measures:
       - B03002_018
       - B03002_019
       denominator: B03002_001
-    notes:
-    - The numerator includes the other race categories and people reporting two or
-      more races, matching the existing calculation.
+    notes: The numerator includes the other race categories and people reporting two
+      or more races, matching the existing calculation.
   fraction_lesh:
     title: Fraction of Households Speaking Limited English
     domain: Population
     definition: Limited English speaking households divided by all households in C16002.
     units: fraction
     calculation: proportion
-    moe_method: moe_prop with moe_sum for multiple numerator components
+    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+      component MOEs combined by root-sum-of-squares with the largest MOE retained
+      among zero-estimate components
     rounding:
       method: decimal
       digits: 3
     rules:
-    - years: [2016, 2023]
+    - years: [2021, 2023]
       variables:
       - C16002_004
       - C16002_007
       - C16002_010
       - C16002_013
       denominator: C16002_001
-    notes:
-    - The existing tract pipeline begins this measure in 2016; earlier years remain
-      missing. This is an implementation coverage boundary.
+    notes: []
   median_income:
     title: Median Household Income
     domain: Socioeconomic
     definition: Median household income in nominal US dollars.
     units: USD
     calculation: estimate
-    moe_method: moe_sum for multiple components; source MOE for one component
+    moe_method: Source MOE
     rounding:
       method: significant
       digits: 3
     rules:
-    - years: [2010, 2023]
-      variables:
-      - B19013_001
+    - years: [2021, 2023]
+      variables: B19013_001
     notes: []
   median_income_2010adj:
     title: Median Household Income (in 2010 USD)
@@ -580,12 +646,12 @@ measures:
     definition: Median household income adjusted to 2010 US dollars using R-CPI-U-RS.
     units: USD_2010
     calculation: inflation_adjusted
-    moe_method: source MOE scaled by CPI ratio
+    moe_method: Source MOE scaled by CPI ratio
     rounding:
       method: significant
       digits: 3
     rules:
-    - years: [2010, 2023]
+    - years: [2021, 2023]
       source_measure: median_income
     notes: []
   fraction_hs:
@@ -595,12 +661,14 @@ measures:
       or equivalent divided by all people age 25 years and older.
     units: fraction
     calculation: proportion
-    moe_method: moe_prop with moe_sum for multiple numerator components
+    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+      component MOEs combined by root-sum-of-squares with the largest MOE retained
+      among zero-estimate components
     rounding:
       method: decimal
       digits: 3
     rules:
-    - years: [2012, 2023]
+    - years: [2021, 2023]
       variables:
       - B15003_017
       - B15003_018
@@ -612,6 +680,4 @@ measures:
       - B15003_024
       - B15003_025
       denominator: B15003_001
-    notes:
-    - The existing tract pipeline begins this measure in 2012; earlier years remain
-      missing. This is an implementation coverage boundary.
+    notes: []

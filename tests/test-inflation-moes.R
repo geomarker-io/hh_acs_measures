@@ -1,4 +1,5 @@
 source('R/catalog.R')
+source('R/moe.R')
 source('R/calculations.R')
 catalog <- read_catalog()
 cpi <- read.csv(catalog$dataset$inflation$file)

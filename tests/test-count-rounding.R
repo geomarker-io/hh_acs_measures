@@ -1,4 +1,5 @@
 source('R/catalog.R')
+source('R/moe.R')
 source('R/calculations.R')
 catalog <- read_catalog()
 stopifnot(identical(round_measure(c(100, 0, 12.4, 12.6, 12.5, NA_real_),

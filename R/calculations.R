@@ -1,34 +1,40 @@
 # All calculators consume the same ACS long-table input. get_acs is injected so
-# calculation tests can use fixtures without a Census key or network access.
+# calculation tests can use fixtures without network access.
 calculate_acs_measure <- function(spec, rule, year, get_acs) {
   variables <- unlist(rule$variables, use.names = FALSE)
   args <- list(variables = variables, year = year)
   if (spec$calculation == 'proportion') args$summary_var <- rule$denominator
   raw <- do.call(get_acs, args)
   if (anyDuplicated(raw[c('GEOID', 'variable')])) stop('Duplicate ACS variable rows')
-  groups <- split(raw, raw$GEOID)
-  rows <- lapply(groups, function(d) {
-    if (!setequal(d$variable, variables)) stop('Missing or unexpected ACS components')
-    estimate <- sum(d$estimate)
-    moe <- if (length(variables) == 1L) d$moe[[1]] else
-      tidycensus::moe_sum(d$moe, d$estimate)
-    if (spec$calculation == 'proportion') {
-      denominator <- unique(d$summary_est)
-      denominator_moe <- unique(d$summary_moe)
-      if (length(denominator) != 1L || length(denominator_moe) != 1L) {
-        stop('Inconsistent ACS denominator within GEOID')
-      }
-      if (is.na(denominator) || denominator <= 0) {
-        estimate <- moe <- NA_real_
-      } else {
-        moe <- tidycensus::moe_prop(estimate, denominator, moe, denominator_moe)
-        estimate <- estimate / denominator
-      }
-    }
-    data.frame(GEOID = d$GEOID[[1]], estimate = estimate, moe = moe)
-  })
-  if (!length(rows)) return(data.frame(GEOID = character(), estimate = numeric(), moe = numeric()))
-  do.call(rbind, unname(rows))
+  if (!setequal(raw$variable, variables) ||
+      any(table(raw$GEOID) != length(variables))) {
+    stop('Missing or unexpected ACS components')
+  }
+  if (length(variables) == 1L) {
+    result <- raw[c('GEOID', 'estimate', 'moe')]
+  } else {
+    # Aggregate in vectorized groups rather than constructing one R data frame
+    # per tract. Zero-count terms retain only their largest MOE.
+    zero <- !is.na(raw$estimate) & raw$estimate == 0
+    terms <- data.table::data.table(GEOID = raw$GEOID, estimate = raw$estimate,
+      nonzero_square = ifelse(zero, 0, raw$moe^2),
+      zero_moe = ifelse(zero, raw$moe, 0))
+    sums <- terms[, list(estimate = sum(estimate),
+                        squares = sum(nonzero_square), zero = max(zero_moe)), by = GEOID]
+    result <- data.frame(GEOID = sums$GEOID, estimate = sums$estimate,
+                         moe = sqrt(sums$squares + sums$zero^2))
+  }
+  if (spec$calculation == 'proportion') {
+    denominators <- unique(raw[c('GEOID', 'summary_est', 'summary_moe')])
+    if (anyDuplicated(denominators$GEOID)) stop('Inconsistent ACS denominator within GEOID')
+    index <- match(result$GEOID, denominators$GEOID)
+    denominator <- denominators$summary_est[index]
+    denominator_moe <- denominators$summary_moe[index]
+    result$moe <- acs_moe_proportion(result$estimate, denominator, result$moe, denominator_moe)
+    result$estimate <- result$estimate / denominator
+    result$estimate[is.na(denominator) | denominator <= 0] <- NA_real_
+  }
+  result
 }
 
 adjust_for_inflation <- function(d, cpi, year, base_year) {
