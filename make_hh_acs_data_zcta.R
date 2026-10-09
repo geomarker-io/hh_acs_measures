@@ -877,7 +877,7 @@ d <- purrr::reduce(
 ) |>
   relocate(year, .after = zcta_vintage) |>
   mutate(across(starts_with("fraction_"), \(.) round(., 3))) |>
-  mutate(across(starts_with("n_"), as.integer)) |>
+  mutate(across(starts_with("n_"), \(.) as.integer(round(.)))) |>
   mutate(across(starts_with("median_"), \(.) signif(., 3)))
 
 d_dpkg <-
