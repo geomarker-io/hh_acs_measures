@@ -1,7 +1,7 @@
 # Harmonized Historical ACS Measures
 
 This repository builds population, socioeconomic, and housing measures from
-five-year American Community Survey (ACS) estimates. It covers **2021–2023** for
+five-year American Community Survey (ACS) estimates. It covers **2021–2024** for
 census tracts in the 50 states and DC, and for ZIP Code Tabulation Areas (ZCTAs).
 
 [Measure catalog: definitions and year-specific notes](measures.yml) ·
@@ -78,7 +78,7 @@ Upload the completed assets to GitHub Releases separately.
 ## Source downloads
 
 The pipeline downloads Census Summary File tables through `stow::stow()`. The
-catalog currently requires 19 tables per year, or 57 files. Each file supplies
+catalog currently requires 19 tables per year, or 76 files. Each file supplies
 both tract and ZCTA data, so builds share the downloaded files. The importer
 reads the required estimate and MOE columns and selects the geographic records.
 
@@ -119,5 +119,17 @@ MOEs retain their precision. Missing source components remain missing, and a
 zero or missing denominator produces a missing fraction and MOE.
 
 `_2010adj` fields express dollar values in 2010 dollars using R-CPI-U-RS from
-`CPI_2010-2023.csv`. Their MOEs are scaled by the same CPI ratio to keep the units
+`CPI_2010-2024.csv`. Their MOEs are scaled by the same CPI ratio to keep the units
 consistent. Revised CPI inputs can change adjusted values in later releases.
+
+The 2024 annual R-CPI-U-RS value is **462.5**, from the Census Bureau's
+[2024 ACS comparison guidance](https://www.census.gov/programs-surveys/acs/guidance/comparing-acs-data/2024.html).
+Earlier CPI values are retained from the previous input. The required 2024
+source-variable labels match 2023, apart from dollar-year references, and none
+of the 19 source tables appear in the Census Bureau's
+[2024 table changes](https://www.census.gov/programs-surveys/acs/technical-documentation/table-and-geography-changes/2024/5-year.html).
+
+The 2024 Summary Files include tract `36111954401` (Ulster County, NY),
+which was absent in 2023. It already exists in the 2020 scaffold, so its 2024
+measures are populated without changing identifiers. Scaffold rows absent from
+the source files retain missing estimates and MOEs.

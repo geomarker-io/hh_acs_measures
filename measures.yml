@@ -5,8 +5,13 @@ dataset:
   survey: acs5
   moe_level: 90
   inflation:
-    file: CPI_2010-2023.csv
+    file: CPI_2010-2024.csv
     base_year: 2010
+    source: https://www.bls.gov/cpi/research-series/r-cpi-u-rs-home.htm
+    notes:
+    - The 2024 annual R-CPI-U-RS value is 462.5, as reported in Census ACS
+      comparison guidance; earlier annual values are retained from the prior input.
+    documentation: https://www.census.gov/programs-surveys/acs/guidance/comparing-acs-data/2024.html
   notes:
   - Year is the ending year of the five-year ACS estimate, not a single-year estimate.
   - Coverage is defined by each geography and its measure year rules.
@@ -19,7 +24,7 @@ dataset:
   - Each measure has an accompanying _moe field in the same units. Rounding rules
     apply to estimates only; MOEs retain their precision.
   - This build supports 2021 onward table-based Summary Files; the current release
-    coverage is 2021–2023.
+    coverage is 2021–2024.
   source:
     format: ACS table-based five-year Summary File
     first_supported_year: 2021
@@ -27,15 +32,15 @@ dataset:
     documentation: https://www.census.gov/programs-surveys/acs/data/summary-file.html
 geographies:
   tract:
-    years: [2021, 2023]
+    years: [2021, 2024]
     id: census_tract_id
     vintage: census_tract_vintage
     resource: hh_acs_measures
     vintage_rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       value: '2020'
     notes:
-    - years: [2022, 2023]
+    - years: [2022, 2024]
       text: Connecticut planning-region tract IDs are mapped one-to-one back to 2020
         tract IDs using data-raw/ct_tract_crosswalk_2022_2020.csv. Estimates are not
         interpolated; water-only tracts outside the cartographic scaffold are excluded.
@@ -96,15 +101,15 @@ geographies:
       url: https://www2.census.gov/geo/tiger/GENZ2020/shp/cb_2020_us_tract_500k.zip
       id_column: GEOID
   zcta:
-    years: [2021, 2023]
+    years: [2021, 2024]
     id: zcta
     vintage: zcta_vintage
     resource: hh_acs_measures_zcta
     vintage_rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       value: '2020'
     notes:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       text: All supported ACS years use 2020 ZCTA boundaries.
     scaffold:
       url: https://www2.census.gov/geo/tiger/GENZ2020/shp/cb_2020_us_zcta520_500k.zip
@@ -124,7 +129,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables: B17001_002
       denominator: B17001_001
     notes: []
@@ -140,7 +145,7 @@ measures:
       method: integer
       digits: 0
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables:
       - B01001_003
       - B01001_004
@@ -163,7 +168,7 @@ measures:
       method: integer
       digits: 0
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables: B01001_001
     notes: []
   n_household_lt18:
@@ -178,7 +183,7 @@ measures:
       method: integer
       digits: 0
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables: B11005_002
     notes: []
   n_household:
@@ -193,7 +198,7 @@ measures:
       method: integer
       digits: 0
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables: B11005_001
     notes: []
   fraction_insured:
@@ -210,7 +215,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables:
       - B27001_004
       - B27001_007
@@ -246,7 +251,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables: B19058_002
       denominator: B19058_001
     notes: []
@@ -264,7 +269,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables: B11001_004
       denominator: B11001_002
     notes: []
@@ -281,7 +286,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables: B23025_004
       denominator: B23025_003
     notes: []
@@ -298,7 +303,7 @@ measures:
       method: integer
       digits: 0
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables: B25001_001
     notes: []
   median_home_value:
@@ -312,7 +317,7 @@ measures:
       method: significant
       digits: 3
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables: B25077_001
     notes: []
   median_home_value_2010adj:
@@ -327,7 +332,7 @@ measures:
       method: significant
       digits: 3
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       source_measure: median_home_value
     notes: []
   fraction_housing_renters:
@@ -343,7 +348,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables: B25003_003
       denominator: B25003_001
     notes: []
@@ -359,7 +364,7 @@ measures:
       method: significant
       digits: 3
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables: B25071_001
     notes: []
   fraction_high_rent:
@@ -376,7 +381,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables:
       - B25070_007
       - B25070_008
@@ -399,7 +404,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables:
       - B25123_003
       - B25123_004
@@ -424,7 +429,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables:
       - B25034_008
       - B25034_009
@@ -447,7 +452,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables: B25002_003
       denominator: B25002_001
     notes: []
@@ -464,7 +469,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables: B03002_002
       denominator: B03002_001
     notes: []
@@ -482,7 +487,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables: B03002_003
       denominator: B03002_001
     notes: []
@@ -500,7 +505,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables: B03002_004
       denominator: B03002_001
     notes: []
@@ -518,7 +523,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables:
       - B03002_005
       - B03002_006
@@ -541,7 +546,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables: B03002_012
       denominator: B03002_001
     notes: []
@@ -559,7 +564,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables: B03002_013
       denominator: B03002_001
     notes: []
@@ -577,7 +582,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables: B03002_014
       denominator: B03002_001
     notes: []
@@ -595,7 +600,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables:
       - B03002_015
       - B03002_016
@@ -618,7 +623,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables:
       - C16002_004
       - C16002_007
@@ -637,7 +642,7 @@ measures:
       method: significant
       digits: 3
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables: B19013_001
     notes: []
   median_income_2010adj:
@@ -651,7 +656,7 @@ measures:
       method: significant
       digits: 3
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       source_measure: median_income
     notes: []
   fraction_hs:
@@ -668,7 +673,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2023]
+    - years: [2021, 2024]
       variables:
       - B15003_017
       - B15003_018
