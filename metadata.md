@@ -3,7 +3,7 @@
 |census_tract_id  |Census Tract Identifier  |can refer to 2010 or 2020 vintage census tracts; unique only in combination with `census_tract_vintage`|
 |census_tract_vintage   |Census Tract Vintage    |The year of the decennial census that defines the tract (2010 for years 2010-2019 and 2020 for years 2020-2029)  | 
 |year                             |Year                                                             |The year of the 5-year ACS estimates (e.g., the 2019 ACS covers 2015 - 2019)                                                     | 
-|fraction_poverty                 |Fraction of Households in Poverty                                |Fraction of households with income below poverty level within the past 12 months                                                 | 
+|fraction_poverty                 |Fraction of People in Poverty                                    |Fraction of people with income below the poverty level in the past 12 months, among people for whom poverty status is determined |
 |n_children_lt18                  |Number of Children                                               |Number of children and adolescents < 18 years of age                                                                             |
 |n_pop                            |Number of Total People                                           |NA                                                                                | 
 |n_household_lt18                 |Number of Households With Children                               |Number of households with children or adolescents < 18 years of age                                                              | 

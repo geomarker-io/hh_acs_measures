@@ -124,8 +124,8 @@ d_meta <- tibble::tibble(
   ) |>
   add_row(
     variable_name = "fraction_poverty",
-    title = "Fraction of Households in Poverty",
-    description = "Fraction of households with income below poverty level within the past 12 months"
+    title = "Fraction of People in Poverty",
+    description = "Fraction of people with income below the poverty level in the past 12 months, among people for whom poverty status is determined"
   )
 
 get_acs_children <- function(year) {
