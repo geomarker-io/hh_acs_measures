@@ -1,0 +1,19 @@
+project:
+  type: website
+  output-dir: _site
+  render:
+    - index.qmd
+  pre-render:
+    - Rscript build_metadata.R
+  resources:
+    - measures.yml
+    - hh_acs_measures.metadata.json
+    - hh_acs_measures_zcta.metadata.json
+website:
+  title: Harmonized Historical ACS Measures
+  search: true
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    toc-expand: 1
