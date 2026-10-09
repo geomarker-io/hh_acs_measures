@@ -1,53 +1,138 @@
 # Harmonized Historical ACS Measures
 
-<!-- badges: start -->
-[![latest github release for hh_acs_measures dpkg](https://img.shields.io/github/v/release/geomarker-io/hh_acs_measures?sort=date&filter=hh_acs_measures-*&display_name=tag&label=%5B%E2%98%B0%5D&labelColor=%238CB4C3&color=%23396175)](https://github.com/geomarker-io/hh_acs_measures/releases?q=hh_acs_measures&expanded=false)
-<!-- badges: end -->
+This repository builds harmonized measures from the five-year American Community
+Survey (ACS), covering population, socioeconomic conditions, and housing.
+The implemented coverage is 2010–2023 for census tracts in the 50 states and DC
+and 2013–2023 for ZCTAs. Coverage differs by measure.
 
-## About
+[Measure definitions and year-specific notes](metadata.md) ·
+[Authoritative measure catalog](measures.yml) ·
+[GitHub releases](https://github.com/geomarker-io/hh_acs_measures/releases)
 
-This R code generates the **Harmonized Historical ACS Measures** (`hh_acs_measures`) data resource. Census tract-level measures derived from the American Community Survey (ACS) are generally available annually from 2013 through 2023 and were selected to cover three domains:
+## Data and metadata
 
-- **Population**: number of kids, number of households with kids, single-parent households, racial and ethnic composition, limited English speaking households
-- **Socioeconomic**: education, income, poverty, employment, health insurance, SNAP receipt
-- **Housing**: vacancy, age, substandard conditions, monthly rent and housing costs
+The next release built with this workflow will contain ordinary Parquet data
+and accompanying JSON metadata. Data access does not require `dpkg` or a package
+from this repository. Download the assets from GitHub Releases, optionally cache
+them using `stow`, and read the local Parquet file with `arrow::read_parquet()`.
+Historical releases retain their existing asset formats and names.
 
-## Accessing Data
+Each geography's local release build stages five versioned assets:
 
-Download the `hh_acs_measures` datapackage from the [release](https://github.com/geomarker-io/hh_acs_measures/releases), or read into R directly using the [dpkg](https://cole-brokamp.github.io/dpkg/) package:
+- A `.parquet` data file.
+- A `.metadata.json` file describing every column, including MOEs, keys, units,
+  calculation rules, coverage, and geography notes.
+- A `.measures.yml` snapshot of the catalog used for the build.
+- A `.metadata.md` snapshot of the human-readable documentation.
+- A `.CPI.csv` snapshot of the inflation-adjustment input.
+
+Release metadata is a small project-specific JSON format, identified by
+`metadata_schema_version`; it does not claim Frictionless schema compliance.
+Use the metadata attached to the same release as the data. The documentation on
+`main` describes the current catalog and may differ from an older release.
+Build scripts stage files locally and refuse to overwrite existing assets.
+Upload and publication are separate, manual GitHub Release steps.
+
+## Maintaining definitions
+
+All 30 measures live in **one `measures.yml` file**. Each entry contains its title,
+definition, domain, units, calculation method, MOE method, rounding, year-specific
+source rules, and explanatory notes. Year ranges are inclusive `[first, last]`
+ranges of ACS ending years.
+
+For example, `fraction_builtbf1970` has one rule for 2010–2014 and another for
+2015–2023 because the ACS construction-period categories changed. The same
+rules select the R calculation inputs and appear in the generated documentation.
+The geography section records a separate vintage transition for ZCTAs, and
+Connecticut tract identifiers are harmonized before measures are calculated.
+
+To update a measure:
+
+1. Edit its definition, notes, or source rules in `measures.yml`.
+2. Run `Rscript build_metadata.R` to regenerate Markdown and both JSON dictionaries.
+3. Review the generated changes and run `Rscript tests/run.R`.
+4. Rebuild data when inputs, calculation rules, or rounding change. A prose-only
+   edit can be rendered without downloading or calculating ACS data.
+
+Do not edit the generated Markdown or JSON files directly. Missing years outside
+a measure's rules remain missing in the output. Overlapping rules and gaps
+between rules are rejected. Availability starts preserve the previous pipeline;
+they are not claims that an ACS question was absent in earlier years.
+
+`calculation` selects a shared R implementation in `R/calculations.R`:
+
+- `proportion`: sum numerator components, divide by the specified denominator,
+  and calculate the MOE using `tidycensus::moe_prop()` and, when needed, `moe_sum()`.
+- `count`: sum source counts with the corresponding MOE.
+- `estimate`: use a single published ACS estimate and MOE, including medians.
+- `inflation_adjusted`: scale an unrounded source measure and its MOE by
+  CPI(base year) / CPI(ACS year).
+
+YAML contains configuration, not executable R. A future measure requiring a new
+algorithm would need an R calculator and a matching catalog validator update.
+Source-variable codes can be specified directly as lists; do not encode R
+expressions such as `paste0()` in YAML.
+
+## Local builds
+
+Run commands from the repository root. Install the R dependencies as needed:
 
 ```r
-dpkg::stow("https://github.com/geomarker-io/hh_acs_measures/releases/download/hh_acs_measures-v1.3.0/hh_acs_measures-v1.3.0.parquet") |>
-	dpkg::read_dpkg()
+install.packages(c("yaml", "jsonlite", "dplyr", "tidycensus", "tigris",
+                  "sf", "digest", "arrow"))
 ```
 
-[View field metadata](https://github.com/geomarker-io/hh_acs_measures/blob/main/metadata.md)
+Documentation alone requires only `yaml` and `jsonlite`:
 
-## Data Details
+```sh
+Rscript build_metadata.R
+# Optional: write documentation into a separate directory.
+Rscript build_metadata.R /tmp/hh-acs-docs
+```
 
-#### Types of ACS measures
+An optional Quarto website renders the same generated Markdown. With Quarto
+installed, `quarto preview` or `quarto render` runs the documentation build first
+and produces a searchable catalog. Rendering does not download ACS data.
 
-Each of the derived ACS measures are expressed in one of three ways:
+To build data, set `CENSUS_API_KEY` in your private R environment. Provide an
+explicit version; these examples illustrate a prospective version, not a
+published release:
 
-1. measures starting with **`n_`** represent a **number** of something, such as `n_household`
-    - always rounded to the nearest integer
+```sh
+Rscript make_hh_acs_data.R 2.0.0
+Rscript make_hh_acs_data_zcta.R 2.0.0
+```
 
-2. measures starting with **`fraction_`** represent a **fraction** of some total, such as `fraction_poverty`
-    - bounded between 0 and 1
-	- always rounded to three decimal places (e.g. 0.064)
+Both commands stage their assets under `data/v2.0.0/`. An optional second argument
+selects another output directory. The two entry points use the same catalog,
+calculators, metadata generator, and release writer.
 
-3. measures starting with **`median_`** represent a **median** of a number in a population, such as `median_income`
-    - always expressed using three significant digits (e.g., 5,410 and 145,000)
+Raw ACS responses are cached under `acs_data_cache/raw-v1/`, keyed by query
+arguments including variables, geography, year, survey, and MOE confidence.
+This cache is separate from the old calculated-measure cache. Calculations and
+Connecticut identifier harmonization are rerun from raw responses, so definition
+and crosswalk edits do not reuse stale derived measures. To refresh upstream ACS
+responses, remove the raw cache before rebuilding.
 
-#### Currency adjustments for purchasing power over time
+## Conventions and verification
 
-Measures that are reported in US Dollars (e.g., Median Household Income) are adjusted for changes in purchasing power over time by using the annual [Consumer Price Index](https://www.bls.gov/cpi/research-series/r-cpi-u-rs-home.htm). The 'Consumer Price Index retroactive series using current methods' (R-CPI-U-RS) produced by the Bureau of Labor Statistics harmonizes historical annual indices by incorporating methodological improvements into earlier calculations with new releases. This means that `hh_acs_measures` fields that are adjusted for inflation in prior years will likely be scaled to a different number in later releases.
+Counts and their MOEs are rounded to integers; fractions and their MOEs to three
+decimal places; medians and their MOEs to three significant digits. Fraction
+estimates represent proportions, while fraction MOEs are uncertainty widths and
+are not constrained to `[0, 1]`. Zero or missing denominators produce missing
+fractions and MOEs. Missing source components are not silently dropped.
 
-#### Missing Data
+Nominal dollar measures retain the original values. `_2010adj` fields and their
+MOEs use R-CPI-U-RS from `CPI_2010-2023.csv` to express values in 2010 dollars.
+Revised CPI inputs can change earlier adjusted estimates in later releases.
 
-Some data are unavailable in certain earlier years because the question was not included in the ACS that year.  Additionally, data summaries may be [suppressed ](https://www.census.gov/programs-surveys/acs/technical-documentation/data-suppression.html) by the census bureau.
+```sh
+Rscript tests/run.R
+```
 
-#### Margin of error
-
-Each measure includes a accompanying [margin of error](https://walker-data.com/tidycensus/articles/margins-of-error.html) (or `_moe`) variable, such as `median_income_moe`, that is calculated using the ACS's suggested methodology implemented in [tidycensus](https://walker-data.com/tidycensus/index.html).
-
+Tests use artificial ACS responses without network access or credentials. They
+compare all measures and implemented years against frozen results from the
+pre-migration scripts, exercise the existing historical corrections, confirm
+that catalog edits affect both calculation inputs and documentation, and stage
+and read back a small Parquet/JSON release. They do not substitute for a live
+ACS rebuild and review before publishing a new data release.

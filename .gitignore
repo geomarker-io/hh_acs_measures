@@ -8,3 +8,5 @@ hh_acs_measures.csv
 /metadata.html
 .Rproj.user
 /data/
+/_site/
+/.quarto/

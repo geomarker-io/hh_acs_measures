@@ -1,0 +1,14 @@
+---
+title: Measure catalog
+---
+
+This catalog documents the implemented ACS definitions, source variables,
+year-specific calculation rules, coverage, and geography conventions.
+
+Download the [YAML catalog](measures.yml),
+[tract metadata](hh_acs_measures.metadata.json), or
+[ZCTA metadata](hh_acs_measures_zcta.metadata.json).
+For a particular data release, use the metadata attached to that
+[GitHub release](https://github.com/geomarker-io/hh_acs_measures/releases).
+
+{{< include metadata.md >}}
