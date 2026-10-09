@@ -1,6 +1,5 @@
 # Run from the repository root: Rscript tests/test-connecticut-tracts.R
 suppressPackageStartupMessages(library(dplyr))
-suppressPackageStartupMessages(library(tidycensus))
 source("R/harmonize_ct_tracts.R")
 
 crosswalk <- ct_tract_crosswalk
@@ -29,23 +28,19 @@ stopifnot(inherits(tryCatch(
   harmonize_ct_tracts(tibble(GEOID = "09110999999"), 2022),
   error = identity), "error"))
 
-# Exercise the shared calculator and production raw-data cache wrapper.
+# Exercise the independent shared calculator after identifier harmonization.
 source("R/build.R")
 catalog <- read_catalog()
 spec <- catalog$measures$fraction_poverty
 rule <- select_rule(spec$rules, 2023, "fraction_poverty")
-cache <- tempfile("ct-raw-cache-")
-dir.create(cache)
-args <- list(geography = "tract", variables = "B17001_002", year = 2023,
-             survey = "acs5", moe_level = 95L, state = "09", summary_var = "B17001_001")
-raw <- tibble(GEOID = crosswalk$geoid_2022, variable = "B17001_002",
-              estimate = 25, summary_est = 100, moe = 5, summary_moe = 10)
-saveRDS(raw, file.path(cache, paste0(digest::digest(args), ".rds")))
-getter <- cached_acs_getter(catalog, "tract", "09", cache)
+getter <- function(variables, year, summary_var) {
+  raw <- tibble(GEOID = crosswalk$geoid_2022, variable = variables,
+                estimate = 25, summary_est = 100, moe = 5, summary_moe = 10)
+  harmonize_ct_tracts(raw, year)
+}
 result <- calculate_acs_measure(spec, rule, 2023, getter)
 stopifnot(nrow(result) == 879L, !anyDuplicated(result$GEOID),
           setequal(result$GEOID, crosswalk$geoid_2020),
           all(result$estimate == 0.25),
-          all(result$moe == moe_prop(25, 100, 5, 10)))
-unlink(cache, recursive = TRUE)
-cat("All 879 Connecticut mappings and cached downstream estimates/MOEs pass.\n")
+          all(result$moe == sqrt(25 - 0.25^2 * 100) / 100))
+cat("All 879 Connecticut mappings and downstream estimates/MOEs pass.\n")

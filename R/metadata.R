@@ -29,6 +29,9 @@ resource_metadata <- function(catalog, geography, version = NULL, filename = NUL
        version = version, path = filename, format = 'parquet',
        geography = geography, years = geo$years,
        survey = catalog$dataset$survey, moe_level = catalog$dataset$moe_level,
+       source = catalog$dataset$source,
+       source_files = summary_source_files(catalog, geography),
+       boundary_source = geo$scaffold,
        primary_key = c(geo$id, geo$vintage, 'year'),
        geography_rules = geo$vintage_rules, geography_notes = geo$notes,
        inflation = catalog$dataset$inflation, notes = catalog$dataset$notes,
@@ -79,9 +82,10 @@ catalog_markdown <- function(catalog) {
                  if (!is.null(rule$source)) paste0('  [Source](', rule$source, ').'))
       if (!is.null(rule$variables)) {
         tables <- unique(sub('_.*', '', unlist(rule$variables)))
-        lines <- c(lines, paste0('  ACS source: ', paste(vapply(tables, function(table)
-          paste0('[', table, '](https://api.census.gov/data/', rule$years[[2]],
-                 '/acs/acs5/groups/', table, '.html)'), character(1)), collapse = ', '), '.'))
+        for (year in rule_years(rule)) {
+          lines <- c(lines, paste0('  ', year, ' source files: ', paste(vapply(tables, function(table)
+            paste0('[', table, '](', summary_file_url(year, table), ')'), character(1)), collapse = ', '), '.'))
+        }
       }
     }
     if (length(spec$notes)) lines <- c(lines, '', '### Notes', '', paste0('- ', unlist(spec$notes)))

@@ -1,5 +1,6 @@
 # Run from the repository root: Rscript tests/test-catalog.R
 source('R/catalog.R')
+source('R/moe.R')
 source('R/calculations.R')
 source('R/metadata.R')
 source('R/harmonize_ct_tracts.R')
@@ -16,6 +17,7 @@ for (geography in c('tract', 'zcta')) {
   }
   actual <- build_measure_data(catalog, geography, fixture_scaffold(geography), get_acs, cpi)
   expected <- readRDS(paste0('tests/fixtures/legacy-', geography, '.rds'))
+  expected <- expected[expected$year >= 2021, ]
   keys <- c(catalog$geographies[[geography]]$id, catalog$geographies[[geography]]$vintage, 'year')
   sort_rows <- function(d) as.data.frame(d[do.call(order, d[keys]), names(actual)])
   actual <- sort_rows(actual)

@@ -6,15 +6,365 @@
   "path": null,
   "format": "parquet",
   "geography": "zcta",
-  "years": [2013, 2023],
+  "years": [2021, 2023],
   "survey": "acs5",
   "moe_level": 95,
+  "source": {
+    "format": "ACS table-based five-year Summary File",
+    "first_supported_year": 2021,
+    "published_moe_level": 90,
+    "documentation": "https://www.census.gov/programs-surveys/acs/data/summary-file.html"
+  },
+  "source_files": [
+    {
+      "year": 2021,
+      "table": "B17001",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2021/table-based-SF/data/5YRData/acsdt5y2021-b17001.dat",
+      "_row": "B17001...1"
+    },
+    {
+      "year": 2021,
+      "table": "B01001",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2021/table-based-SF/data/5YRData/acsdt5y2021-b01001.dat",
+      "_row": "B01001...2"
+    },
+    {
+      "year": 2021,
+      "table": "B11005",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2021/table-based-SF/data/5YRData/acsdt5y2021-b11005.dat",
+      "_row": "B11005...3"
+    },
+    {
+      "year": 2021,
+      "table": "B27001",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2021/table-based-SF/data/5YRData/acsdt5y2021-b27001.dat",
+      "_row": "B27001...4"
+    },
+    {
+      "year": 2021,
+      "table": "B19058",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2021/table-based-SF/data/5YRData/acsdt5y2021-b19058.dat",
+      "_row": "B19058...5"
+    },
+    {
+      "year": 2021,
+      "table": "B11001",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2021/table-based-SF/data/5YRData/acsdt5y2021-b11001.dat",
+      "_row": "B11001...6"
+    },
+    {
+      "year": 2021,
+      "table": "B23025",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2021/table-based-SF/data/5YRData/acsdt5y2021-b23025.dat",
+      "_row": "B23025...7"
+    },
+    {
+      "year": 2021,
+      "table": "B25001",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2021/table-based-SF/data/5YRData/acsdt5y2021-b25001.dat",
+      "_row": "B25001...8"
+    },
+    {
+      "year": 2021,
+      "table": "B25077",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2021/table-based-SF/data/5YRData/acsdt5y2021-b25077.dat",
+      "_row": "B25077...9"
+    },
+    {
+      "year": 2021,
+      "table": "B25003",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2021/table-based-SF/data/5YRData/acsdt5y2021-b25003.dat",
+      "_row": "B25003...10"
+    },
+    {
+      "year": 2021,
+      "table": "B25071",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2021/table-based-SF/data/5YRData/acsdt5y2021-b25071.dat",
+      "_row": "B25071...11"
+    },
+    {
+      "year": 2021,
+      "table": "B25070",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2021/table-based-SF/data/5YRData/acsdt5y2021-b25070.dat",
+      "_row": "B25070...12"
+    },
+    {
+      "year": 2021,
+      "table": "B25123",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2021/table-based-SF/data/5YRData/acsdt5y2021-b25123.dat",
+      "_row": "B25123...13"
+    },
+    {
+      "year": 2021,
+      "table": "B25034",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2021/table-based-SF/data/5YRData/acsdt5y2021-b25034.dat",
+      "_row": "B25034...14"
+    },
+    {
+      "year": 2021,
+      "table": "B25002",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2021/table-based-SF/data/5YRData/acsdt5y2021-b25002.dat",
+      "_row": "B25002...15"
+    },
+    {
+      "year": 2021,
+      "table": "B03002",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2021/table-based-SF/data/5YRData/acsdt5y2021-b03002.dat",
+      "_row": "B03002...16"
+    },
+    {
+      "year": 2021,
+      "table": "C16002",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2021/table-based-SF/data/5YRData/acsdt5y2021-c16002.dat",
+      "_row": "C16002...17"
+    },
+    {
+      "year": 2021,
+      "table": "B19013",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2021/table-based-SF/data/5YRData/acsdt5y2021-b19013.dat",
+      "_row": "B19013...18"
+    },
+    {
+      "year": 2021,
+      "table": "B15003",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2021/table-based-SF/data/5YRData/acsdt5y2021-b15003.dat",
+      "_row": "B15003...19"
+    },
+    {
+      "year": 2022,
+      "table": "B17001",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2022/table-based-SF/data/5YRData/acsdt5y2022-b17001.dat",
+      "_row": "B17001...20"
+    },
+    {
+      "year": 2022,
+      "table": "B01001",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2022/table-based-SF/data/5YRData/acsdt5y2022-b01001.dat",
+      "_row": "B01001...21"
+    },
+    {
+      "year": 2022,
+      "table": "B11005",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2022/table-based-SF/data/5YRData/acsdt5y2022-b11005.dat",
+      "_row": "B11005...22"
+    },
+    {
+      "year": 2022,
+      "table": "B27001",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2022/table-based-SF/data/5YRData/acsdt5y2022-b27001.dat",
+      "_row": "B27001...23"
+    },
+    {
+      "year": 2022,
+      "table": "B19058",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2022/table-based-SF/data/5YRData/acsdt5y2022-b19058.dat",
+      "_row": "B19058...24"
+    },
+    {
+      "year": 2022,
+      "table": "B11001",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2022/table-based-SF/data/5YRData/acsdt5y2022-b11001.dat",
+      "_row": "B11001...25"
+    },
+    {
+      "year": 2022,
+      "table": "B23025",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2022/table-based-SF/data/5YRData/acsdt5y2022-b23025.dat",
+      "_row": "B23025...26"
+    },
+    {
+      "year": 2022,
+      "table": "B25001",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2022/table-based-SF/data/5YRData/acsdt5y2022-b25001.dat",
+      "_row": "B25001...27"
+    },
+    {
+      "year": 2022,
+      "table": "B25077",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2022/table-based-SF/data/5YRData/acsdt5y2022-b25077.dat",
+      "_row": "B25077...28"
+    },
+    {
+      "year": 2022,
+      "table": "B25003",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2022/table-based-SF/data/5YRData/acsdt5y2022-b25003.dat",
+      "_row": "B25003...29"
+    },
+    {
+      "year": 2022,
+      "table": "B25071",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2022/table-based-SF/data/5YRData/acsdt5y2022-b25071.dat",
+      "_row": "B25071...30"
+    },
+    {
+      "year": 2022,
+      "table": "B25070",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2022/table-based-SF/data/5YRData/acsdt5y2022-b25070.dat",
+      "_row": "B25070...31"
+    },
+    {
+      "year": 2022,
+      "table": "B25123",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2022/table-based-SF/data/5YRData/acsdt5y2022-b25123.dat",
+      "_row": "B25123...32"
+    },
+    {
+      "year": 2022,
+      "table": "B25034",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2022/table-based-SF/data/5YRData/acsdt5y2022-b25034.dat",
+      "_row": "B25034...33"
+    },
+    {
+      "year": 2022,
+      "table": "B25002",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2022/table-based-SF/data/5YRData/acsdt5y2022-b25002.dat",
+      "_row": "B25002...34"
+    },
+    {
+      "year": 2022,
+      "table": "B03002",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2022/table-based-SF/data/5YRData/acsdt5y2022-b03002.dat",
+      "_row": "B03002...35"
+    },
+    {
+      "year": 2022,
+      "table": "C16002",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2022/table-based-SF/data/5YRData/acsdt5y2022-c16002.dat",
+      "_row": "C16002...36"
+    },
+    {
+      "year": 2022,
+      "table": "B19013",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2022/table-based-SF/data/5YRData/acsdt5y2022-b19013.dat",
+      "_row": "B19013...37"
+    },
+    {
+      "year": 2022,
+      "table": "B15003",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2022/table-based-SF/data/5YRData/acsdt5y2022-b15003.dat",
+      "_row": "B15003...38"
+    },
+    {
+      "year": 2023,
+      "table": "B17001",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2023/table-based-SF/data/5YRData/acsdt5y2023-b17001.dat",
+      "_row": "B17001...39"
+    },
+    {
+      "year": 2023,
+      "table": "B01001",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2023/table-based-SF/data/5YRData/acsdt5y2023-b01001.dat",
+      "_row": "B01001...40"
+    },
+    {
+      "year": 2023,
+      "table": "B11005",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2023/table-based-SF/data/5YRData/acsdt5y2023-b11005.dat",
+      "_row": "B11005...41"
+    },
+    {
+      "year": 2023,
+      "table": "B27001",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2023/table-based-SF/data/5YRData/acsdt5y2023-b27001.dat",
+      "_row": "B27001...42"
+    },
+    {
+      "year": 2023,
+      "table": "B19058",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2023/table-based-SF/data/5YRData/acsdt5y2023-b19058.dat",
+      "_row": "B19058...43"
+    },
+    {
+      "year": 2023,
+      "table": "B11001",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2023/table-based-SF/data/5YRData/acsdt5y2023-b11001.dat",
+      "_row": "B11001...44"
+    },
+    {
+      "year": 2023,
+      "table": "B23025",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2023/table-based-SF/data/5YRData/acsdt5y2023-b23025.dat",
+      "_row": "B23025...45"
+    },
+    {
+      "year": 2023,
+      "table": "B25001",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2023/table-based-SF/data/5YRData/acsdt5y2023-b25001.dat",
+      "_row": "B25001...46"
+    },
+    {
+      "year": 2023,
+      "table": "B25077",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2023/table-based-SF/data/5YRData/acsdt5y2023-b25077.dat",
+      "_row": "B25077...47"
+    },
+    {
+      "year": 2023,
+      "table": "B25003",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2023/table-based-SF/data/5YRData/acsdt5y2023-b25003.dat",
+      "_row": "B25003...48"
+    },
+    {
+      "year": 2023,
+      "table": "B25071",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2023/table-based-SF/data/5YRData/acsdt5y2023-b25071.dat",
+      "_row": "B25071...49"
+    },
+    {
+      "year": 2023,
+      "table": "B25070",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2023/table-based-SF/data/5YRData/acsdt5y2023-b25070.dat",
+      "_row": "B25070...50"
+    },
+    {
+      "year": 2023,
+      "table": "B25123",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2023/table-based-SF/data/5YRData/acsdt5y2023-b25123.dat",
+      "_row": "B25123...51"
+    },
+    {
+      "year": 2023,
+      "table": "B25034",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2023/table-based-SF/data/5YRData/acsdt5y2023-b25034.dat",
+      "_row": "B25034...52"
+    },
+    {
+      "year": 2023,
+      "table": "B25002",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2023/table-based-SF/data/5YRData/acsdt5y2023-b25002.dat",
+      "_row": "B25002...53"
+    },
+    {
+      "year": 2023,
+      "table": "B03002",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2023/table-based-SF/data/5YRData/acsdt5y2023-b03002.dat",
+      "_row": "B03002...54"
+    },
+    {
+      "year": 2023,
+      "table": "C16002",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2023/table-based-SF/data/5YRData/acsdt5y2023-c16002.dat",
+      "_row": "C16002...55"
+    },
+    {
+      "year": 2023,
+      "table": "B19013",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2023/table-based-SF/data/5YRData/acsdt5y2023-b19013.dat",
+      "_row": "B19013...56"
+    },
+    {
+      "year": 2023,
+      "table": "B15003",
+      "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2023/table-based-SF/data/5YRData/acsdt5y2023-b15003.dat",
+      "_row": "B15003...57"
+    }
+  ],
+  "boundary_source": {
+    "url": "https://www2.census.gov/geo/tiger/GENZ2020/shp/cb_2020_us_zcta520_500k.zip",
+    "id_column": "GEOID20"
+  },
   "primary_key": ["zcta", "zcta_vintage", "year"],
   "geography_rules": [
-    {
-      "years": [2013, 2020],
-      "value": "2010"
-    },
     {
       "years": [2021, 2023],
       "value": "2020"
@@ -22,20 +372,15 @@
   ],
   "geography_notes": [
     {
-      "years": [2013, 2023],
-      "text": "The existing ZCTA pipeline starts in 2013; earlier years are not included."
-    },
-    {
-      "years": [2020, 2020],
-      "text": "The 2020 ACS still uses 2010 ZCTAs; 2020 ZCTAs begin with the 2021 ACS.",
-      "source": "https://www.census.gov/programs-surveys/acs/geography-acs/geography-boundaries-by-year/2020.html"
+      "years": [2021, 2023],
+      "text": "All supported ACS years use 2020 ZCTA boundaries."
     }
   ],
   "inflation": {
     "file": "CPI_2010-2023.csv",
     "base_year": 2010
   },
-  "notes": ["Year is the ending year of the five-year ACS estimate, not a single-year estimate.", "Availability ranges describe the implemented pipeline; they do not establish that a question or table was absent in earlier ACS years.", "Suppressed or missing ACS values remain missing. A zero denominator yields a missing fraction and MOE.", "Inflation-adjusted estimates and MOEs use the same CPI ratio. Revised CPI inputs can change earlier estimates in later releases."],
+  "notes": ["Year is the ending year of the five-year ACS estimate, not a single-year estimate.", "Availability ranges describe the implemented pipeline; they do not establish that a question or table was absent in earlier ACS years.", "Suppressed or missing ACS values remain missing. A zero denominator yields a missing fraction and MOE.", "Inflation-adjusted estimates and MOEs use the same CPI ratio. Revised CPI inputs can change earlier estimates in later releases.", "Source MOEs are converted from 90% to 95% confidence using 1.960 / 1.645. Denominator MOEs are rounded to whole units before derived proportions, preserving the previous input adapter.", "This build supports 2021 onward table-based Summary Files; the current release coverage is 2021–2023."],
   "fields": [
     {
       "name": "zcta",
@@ -67,7 +412,7 @@
       "name": "fraction_poverty_moe",
       "title": "Fraction of People in Poverty margin of error",
       "type": "number",
-      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "description": "95% confidence margin of error; ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components.",
       "units": "fraction",
       "measure": "fraction_poverty"
     },
@@ -83,7 +428,7 @@
       "name": "n_children_lt18_moe",
       "title": "Number of Children margin of error",
       "type": "integer",
-      "description": "95% confidence margin of error; moe_sum for multiple components; source MOE for one component.",
+      "description": "95% confidence margin of error; Root-sum-of-squares for multiple components, retaining the largest MOE among zero-estimate components; source MOE for one component.",
       "units": "count",
       "measure": "n_children_lt18"
     },
@@ -99,7 +444,7 @@
       "name": "n_pop_moe",
       "title": "Number of Total People margin of error",
       "type": "integer",
-      "description": "95% confidence margin of error; moe_sum for multiple components; source MOE for one component.",
+      "description": "95% confidence margin of error; Root-sum-of-squares for multiple components, retaining the largest MOE among zero-estimate components; source MOE for one component.",
       "units": "count",
       "measure": "n_pop"
     },
@@ -115,7 +460,7 @@
       "name": "n_household_lt18_moe",
       "title": "Number of Households With Children margin of error",
       "type": "integer",
-      "description": "95% confidence margin of error; moe_sum for multiple components; source MOE for one component.",
+      "description": "95% confidence margin of error; Root-sum-of-squares for multiple components, retaining the largest MOE among zero-estimate components; source MOE for one component.",
       "units": "count",
       "measure": "n_household_lt18"
     },
@@ -131,7 +476,7 @@
       "name": "n_household_moe",
       "title": "Number of Households margin of error",
       "type": "integer",
-      "description": "95% confidence margin of error; moe_sum for multiple components; source MOE for one component.",
+      "description": "95% confidence margin of error; Root-sum-of-squares for multiple components, retaining the largest MOE among zero-estimate components; source MOE for one component.",
       "units": "count",
       "measure": "n_household"
     },
@@ -147,7 +492,7 @@
       "name": "fraction_insured_moe",
       "title": "Fraction of People Insured margin of error",
       "type": "number",
-      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "description": "95% confidence margin of error; ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components.",
       "units": "fraction",
       "measure": "fraction_insured"
     },
@@ -163,7 +508,7 @@
       "name": "fraction_snap_moe",
       "title": "Fraction of Households Receiving Assisted Income margin of error",
       "type": "number",
-      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "description": "95% confidence margin of error; ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components.",
       "units": "fraction",
       "measure": "fraction_snap"
     },
@@ -179,7 +524,7 @@
       "name": "fraction_fam_nospouse_moe",
       "title": "Fraction of family households with a single householder margin of error",
       "type": "number",
-      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "description": "95% confidence margin of error; ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components.",
       "units": "fraction",
       "measure": "fraction_fam_nospouse"
     },
@@ -195,7 +540,7 @@
       "name": "fraction_employment_moe",
       "title": "Fraction of People Employed margin of error",
       "type": "number",
-      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "description": "95% confidence margin of error; ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components.",
       "units": "fraction",
       "measure": "fraction_employment"
     },
@@ -211,7 +556,7 @@
       "name": "n_housing_units_moe",
       "title": "Number of Housing Units margin of error",
       "type": "integer",
-      "description": "95% confidence margin of error; moe_sum for multiple components; source MOE for one component.",
+      "description": "95% confidence margin of error; Root-sum-of-squares for multiple components, retaining the largest MOE among zero-estimate components; source MOE for one component.",
       "units": "count",
       "measure": "n_housing_units"
     },
@@ -227,7 +572,7 @@
       "name": "median_home_value_moe",
       "title": "Median Value of Owner-Occupied Housing Units margin of error",
       "type": "number",
-      "description": "95% confidence margin of error; moe_sum for multiple components; source MOE for one component.",
+      "description": "95% confidence margin of error; Source MOE.",
       "units": "USD",
       "measure": "median_home_value"
     },
@@ -243,7 +588,7 @@
       "name": "median_home_value_2010adj_moe",
       "title": "Median Value of Owner-Occupied Housing Units (in 2010 USD) margin of error",
       "type": "number",
-      "description": "95% confidence margin of error; source MOE scaled by CPI ratio.",
+      "description": "95% confidence margin of error; Source MOE scaled by CPI ratio.",
       "units": "USD_2010",
       "measure": "median_home_value_2010adj"
     },
@@ -259,7 +604,7 @@
       "name": "fraction_housing_renters_moe",
       "title": "Fraction of Housing Units Occupied by Renters margin of error",
       "type": "number",
-      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "description": "95% confidence margin of error; ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components.",
       "units": "fraction",
       "measure": "fraction_housing_renters"
     },
@@ -275,7 +620,7 @@
       "name": "median_rent_to_income_percentage_moe",
       "title": "Median Rent to Income Percentage margin of error",
       "type": "number",
-      "description": "95% confidence margin of error; moe_sum for multiple components; source MOE for one component.",
+      "description": "95% confidence margin of error; Source MOE.",
       "units": "percent",
       "measure": "median_rent_to_income_percentage"
     },
@@ -291,7 +636,7 @@
       "name": "fraction_high_rent_moe",
       "title": "Fraction of Housing Units Paying at least 30% of Income on Rent margin of error",
       "type": "number",
-      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "description": "95% confidence margin of error; ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components.",
       "units": "fraction",
       "measure": "fraction_high_rent"
     },
@@ -307,7 +652,7 @@
       "name": "fraction_conditions_moe",
       "title": "Fraction of Housing Units with Substandard Housing Conditions margin of error",
       "type": "number",
-      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "description": "95% confidence margin of error; ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components.",
       "units": "fraction",
       "measure": "fraction_conditions"
     },
@@ -323,7 +668,7 @@
       "name": "fraction_builtbf1970_moe",
       "title": "Fraction of Housing Units Built Before 1970 margin of error",
       "type": "number",
-      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "description": "95% confidence margin of error; ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components.",
       "units": "fraction",
       "measure": "fraction_builtbf1970"
     },
@@ -339,7 +684,7 @@
       "name": "fraction_vacant_moe",
       "title": "Fraction of Housing Units that are Vacant margin of error",
       "type": "number",
-      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "description": "95% confidence margin of error; ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components.",
       "units": "fraction",
       "measure": "fraction_vacant"
     },
@@ -355,7 +700,7 @@
       "name": "fraction_nhl_moe",
       "title": "Fraction of People Not Hispanic/Latino margin of error",
       "type": "number",
-      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "description": "95% confidence margin of error; ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components.",
       "units": "fraction",
       "measure": "fraction_nhl"
     },
@@ -371,7 +716,7 @@
       "name": "fraction_nhl_w_moe",
       "title": "Fraction of People White and Not Hispanic/Latino margin of error",
       "type": "number",
-      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "description": "95% confidence margin of error; ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components.",
       "units": "fraction",
       "measure": "fraction_nhl_w"
     },
@@ -387,7 +732,7 @@
       "name": "fraction_nhl_b_moe",
       "title": "Fraction of People Black and Not Hispanic/Latino margin of error",
       "type": "number",
-      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "description": "95% confidence margin of error; ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components.",
       "units": "fraction",
       "measure": "fraction_nhl_b"
     },
@@ -403,7 +748,7 @@
       "name": "fraction_nhl_o_moe",
       "title": "Fraction of People Not Black, Not White, and Not Hispanic/Latino margin of error",
       "type": "number",
-      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "description": "95% confidence margin of error; ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components.",
       "units": "fraction",
       "measure": "fraction_nhl_o"
     },
@@ -419,7 +764,7 @@
       "name": "fraction_hl_moe",
       "title": "Fraction of People Hispanic/Latino margin of error",
       "type": "number",
-      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "description": "95% confidence margin of error; ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components.",
       "units": "fraction",
       "measure": "fraction_hl"
     },
@@ -435,7 +780,7 @@
       "name": "fraction_hl_w_moe",
       "title": "Fraction of People White and Hispanic/Latino margin of error",
       "type": "number",
-      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "description": "95% confidence margin of error; ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components.",
       "units": "fraction",
       "measure": "fraction_hl_w"
     },
@@ -451,7 +796,7 @@
       "name": "fraction_hl_b_moe",
       "title": "Fraction of People Black and Hispanic/Latino margin of error",
       "type": "number",
-      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "description": "95% confidence margin of error; ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components.",
       "units": "fraction",
       "measure": "fraction_hl_b"
     },
@@ -467,7 +812,7 @@
       "name": "fraction_hl_o_moe",
       "title": "Fraction of People Not Black, Not White, and Hispanic/Latino margin of error",
       "type": "number",
-      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "description": "95% confidence margin of error; ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components.",
       "units": "fraction",
       "measure": "fraction_hl_o"
     },
@@ -483,7 +828,7 @@
       "name": "fraction_lesh_moe",
       "title": "Fraction of Households Speaking Limited English margin of error",
       "type": "number",
-      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "description": "95% confidence margin of error; ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components.",
       "units": "fraction",
       "measure": "fraction_lesh"
     },
@@ -499,7 +844,7 @@
       "name": "median_income_moe",
       "title": "Median Household Income margin of error",
       "type": "number",
-      "description": "95% confidence margin of error; moe_sum for multiple components; source MOE for one component.",
+      "description": "95% confidence margin of error; Source MOE.",
       "units": "USD",
       "measure": "median_income"
     },
@@ -515,7 +860,7 @@
       "name": "median_income_2010adj_moe",
       "title": "Median Household Income (in 2010 USD) margin of error",
       "type": "number",
-      "description": "95% confidence margin of error; source MOE scaled by CPI ratio.",
+      "description": "95% confidence margin of error; Source MOE scaled by CPI ratio.",
       "units": "USD_2010",
       "measure": "median_income_2010adj"
     },
@@ -531,7 +876,7 @@
       "name": "fraction_hs_moe",
       "title": "Fraction of Adults with At Least High School Education margin of error",
       "type": "number",
-      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "description": "95% confidence margin of error; ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components.",
       "units": "fraction",
       "measure": "fraction_hs"
     }
@@ -543,14 +888,14 @@
       "definition": "Fraction of people with income below the poverty level in the past 12 months, among people for whom poverty status is determined",
       "units": "fraction",
       "calculation": "proportion",
-      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "moe_method": "ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components",
       "rounding": {
         "method": "decimal",
         "digits": 3
       },
       "rules": [
         {
-          "years": [2010, 2023],
+          "years": [2021, 2023],
           "variables": "B17001_002",
           "denominator": "B17001_001"
         }
@@ -563,14 +908,14 @@
       "definition": "Number of children and adolescents < 18 years of age",
       "units": "count",
       "calculation": "count",
-      "moe_method": "moe_sum for multiple components; source MOE for one component",
+      "moe_method": "Root-sum-of-squares for multiple components, retaining the largest MOE among zero-estimate components; source MOE for one component",
       "rounding": {
         "method": "integer",
         "digits": 0
       },
       "rules": [
         {
-          "years": [2010, 2023],
+          "years": [2021, 2023],
           "variables": ["B01001_003", "B01001_004", "B01001_005", "B01001_006", "B01001_027", "B01001_028", "B01001_029", "B01001_030"]
         }
       ],
@@ -582,14 +927,14 @@
       "definition": "Total population.",
       "units": "count",
       "calculation": "count",
-      "moe_method": "moe_sum for multiple components; source MOE for one component",
+      "moe_method": "Root-sum-of-squares for multiple components, retaining the largest MOE among zero-estimate components; source MOE for one component",
       "rounding": {
         "method": "integer",
         "digits": 0
       },
       "rules": [
         {
-          "years": [2010, 2023],
+          "years": [2021, 2023],
           "variables": "B01001_001"
         }
       ],
@@ -601,14 +946,14 @@
       "definition": "Number of households with children or adolescents < 18 years of age",
       "units": "count",
       "calculation": "count",
-      "moe_method": "moe_sum for multiple components; source MOE for one component",
+      "moe_method": "Root-sum-of-squares for multiple components, retaining the largest MOE among zero-estimate components; source MOE for one component",
       "rounding": {
         "method": "integer",
         "digits": 0
       },
       "rules": [
         {
-          "years": [2010, 2023],
+          "years": [2021, 2023],
           "variables": "B11005_002"
         }
       ],
@@ -620,14 +965,14 @@
       "definition": "Total households.",
       "units": "count",
       "calculation": "count",
-      "moe_method": "moe_sum for multiple components; source MOE for one component",
+      "moe_method": "Root-sum-of-squares for multiple components, retaining the largest MOE among zero-estimate components; source MOE for one component",
       "rounding": {
         "method": "integer",
         "digits": 0
       },
       "rules": [
         {
-          "years": [2010, 2023],
+          "years": [2021, 2023],
           "variables": "B11005_001"
         }
       ],
@@ -639,19 +984,19 @@
       "definition": "People with health insurance divided by the civilian noninstitutionalized population.",
       "units": "fraction",
       "calculation": "proportion",
-      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "moe_method": "ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components",
       "rounding": {
         "method": "decimal",
         "digits": 3
       },
       "rules": [
         {
-          "years": [2012, 2023],
+          "years": [2021, 2023],
           "variables": ["B27001_004", "B27001_007", "B27001_010", "B27001_013", "B27001_016", "B27001_019", "B27001_022", "B27001_025", "B27001_028", "B27001_032", "B27001_035", "B27001_038", "B27001_041", "B27001_044", "B27001_047", "B27001_050", "B27001_053", "B27001_056"],
           "denominator": "B27001_001"
         }
       ],
-      "notes": "The existing tract pipeline begins this measure in 2012; earlier years remain missing. This is an implementation coverage boundary."
+      "notes": []
     },
     "fraction_snap": {
       "title": "Fraction of Households Receiving Assisted Income",
@@ -659,14 +1004,14 @@
       "definition": "Fraction of households receiving public assistance income or food stamps/SNAP in the past 12 months",
       "units": "fraction",
       "calculation": "proportion",
-      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "moe_method": "ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components",
       "rounding": {
         "method": "decimal",
         "digits": 3
       },
       "rules": [
         {
-          "years": [2010, 2023],
+          "years": [2021, 2023],
           "variables": "B19058_002",
           "denominator": "B19058_001"
         }
@@ -679,14 +1024,14 @@
       "definition": "Family households with a male or female householder and no spouse present divided by all family households.",
       "units": "fraction",
       "calculation": "proportion",
-      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "moe_method": "ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components",
       "rounding": {
         "method": "decimal",
         "digits": 3
       },
       "rules": [
         {
-          "years": [2010, 2023],
+          "years": [2021, 2023],
           "variables": "B11001_004",
           "denominator": "B11001_002"
         }
@@ -699,19 +1044,19 @@
       "definition": "Fraction of people employed in civilian labor force",
       "units": "fraction",
       "calculation": "proportion",
-      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "moe_method": "ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components",
       "rounding": {
         "method": "decimal",
         "digits": 3
       },
       "rules": [
         {
-          "years": [2011, 2023],
+          "years": [2021, 2023],
           "variables": "B23025_004",
           "denominator": "B23025_003"
         }
       ],
-      "notes": "The existing tract pipeline begins this measure in 2011; earlier years remain missing. This is an implementation coverage boundary."
+      "notes": []
     },
     "n_housing_units": {
       "title": "Number of Housing Units",
@@ -719,14 +1064,14 @@
       "definition": "Housing units are any separate living quarters (e.g., house, apartment, mobile home) either occupied or vacant",
       "units": "count",
       "calculation": "count",
-      "moe_method": "moe_sum for multiple components; source MOE for one component",
+      "moe_method": "Root-sum-of-squares for multiple components, retaining the largest MOE among zero-estimate components; source MOE for one component",
       "rounding": {
         "method": "integer",
         "digits": 0
       },
       "rules": [
         {
-          "years": [2010, 2023],
+          "years": [2021, 2023],
           "variables": "B25001_001"
         }
       ],
@@ -738,14 +1083,14 @@
       "definition": "Median value of owner-occupied housing units, in nominal US dollars.",
       "units": "USD",
       "calculation": "estimate",
-      "moe_method": "moe_sum for multiple components; source MOE for one component",
+      "moe_method": "Source MOE",
       "rounding": {
         "method": "significant",
         "digits": 3
       },
       "rules": [
         {
-          "years": [2010, 2023],
+          "years": [2021, 2023],
           "variables": "B25077_001"
         }
       ],
@@ -757,14 +1102,14 @@
       "definition": "Median value of owner-occupied housing units adjusted to 2010 US dollars using R-CPI-U-RS.",
       "units": "USD_2010",
       "calculation": "inflation_adjusted",
-      "moe_method": "source MOE scaled by CPI ratio",
+      "moe_method": "Source MOE scaled by CPI ratio",
       "rounding": {
         "method": "significant",
         "digits": 3
       },
       "rules": [
         {
-          "years": [2010, 2023],
+          "years": [2021, 2023],
           "source_measure": "median_home_value"
         }
       ],
@@ -776,19 +1121,19 @@
       "definition": "fraction denominator is number of *occupied* housing units",
       "units": "fraction",
       "calculation": "proportion",
-      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "moe_method": "ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components",
       "rounding": {
         "method": "decimal",
         "digits": 3
       },
       "rules": [
         {
-          "years": [2011, 2023],
+          "years": [2021, 2023],
           "variables": "B25003_003",
           "denominator": "B25003_001"
         }
       ],
-      "notes": "The existing tract pipeline begins this measure in 2011; earlier years remain missing. This is an implementation coverage boundary."
+      "notes": []
     },
     "median_rent_to_income_percentage": {
       "title": "Median Rent to Income Percentage",
@@ -796,14 +1141,14 @@
       "definition": "The median of the percentage of rent to income among all renter-occupied housing units",
       "units": "percent",
       "calculation": "estimate",
-      "moe_method": "moe_sum for multiple components; source MOE for one component",
+      "moe_method": "Source MOE",
       "rounding": {
         "method": "significant",
         "digits": 3
       },
       "rules": [
         {
-          "years": [2010, 2023],
+          "years": [2021, 2023],
           "variables": "B25071_001"
         }
       ],
@@ -815,14 +1160,14 @@
       "definition": "Renter-occupied housing units paying at least 30% of household income in gross rent divided by all renter-occupied housing units in B25070.",
       "units": "fraction",
       "calculation": "proportion",
-      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "moe_method": "ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components",
       "rounding": {
         "method": "decimal",
         "digits": 3
       },
       "rules": [
         {
-          "years": [2010, 2023],
+          "years": [2021, 2023],
           "variables": ["B25070_007", "B25070_008", "B25070_009", "B25070_010"],
           "denominator": "B25070_001"
         }
@@ -835,14 +1180,14 @@
       "definition": "substandard housing: incomplete plumbing or kitchens, overcrowding, 30% or more of household income spent on rent or owner costs",
       "units": "fraction",
       "calculation": "proportion",
-      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "moe_method": "ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components",
       "rounding": {
         "method": "decimal",
         "digits": 3
       },
       "rules": [
         {
-          "years": [2010, 2023],
+          "years": [2021, 2023],
           "variables": ["B25123_003", "B25123_004", "B25123_005", "B25123_006", "B25123_009", "B25123_010", "B25123_011", "B25123_012"],
           "denominator": "B25123_001"
         }
@@ -855,20 +1200,14 @@
       "definition": "Housing units built before 1970 divided by all housing units.",
       "units": "fraction",
       "calculation": "proportion",
-      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "moe_method": "ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components",
       "rounding": {
         "method": "decimal",
         "digits": 3
       },
       "rules": [
         {
-          "years": [2010, 2014],
-          "variables": ["B25034_007", "B25034_008", "B25034_009", "B25034_010"],
-          "denominator": "B25034_001",
-          "note": "Before the 2015 construction-period category change."
-        },
-        {
-          "years": [2015, 2023],
+          "years": [2021, 2023],
           "variables": ["B25034_008", "B25034_009", "B25034_010", "B25034_011"],
           "denominator": "B25034_001",
           "note": "A new construction-period category shifts the pre-1970 bins by one position.",
@@ -883,14 +1222,14 @@
       "definition": "Vacant housing units divided by all housing units.",
       "units": "fraction",
       "calculation": "proportion",
-      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "moe_method": "ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components",
       "rounding": {
         "method": "decimal",
         "digits": 3
       },
       "rules": [
         {
-          "years": [2010, 2023],
+          "years": [2021, 2023],
           "variables": "B25002_003",
           "denominator": "B25002_001"
         }
@@ -903,14 +1242,14 @@
       "definition": "Fraction of People Not Hispanic/Latino divided by the total population.",
       "units": "fraction",
       "calculation": "proportion",
-      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "moe_method": "ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components",
       "rounding": {
         "method": "decimal",
         "digits": 3
       },
       "rules": [
         {
-          "years": [2010, 2023],
+          "years": [2021, 2023],
           "variables": "B03002_002",
           "denominator": "B03002_001"
         }
@@ -923,14 +1262,14 @@
       "definition": "Fraction of People White and Not Hispanic/Latino divided by the total population.",
       "units": "fraction",
       "calculation": "proportion",
-      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "moe_method": "ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components",
       "rounding": {
         "method": "decimal",
         "digits": 3
       },
       "rules": [
         {
-          "years": [2010, 2023],
+          "years": [2021, 2023],
           "variables": "B03002_003",
           "denominator": "B03002_001"
         }
@@ -943,14 +1282,14 @@
       "definition": "Fraction of People Black and Not Hispanic/Latino divided by the total population.",
       "units": "fraction",
       "calculation": "proportion",
-      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "moe_method": "ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components",
       "rounding": {
         "method": "decimal",
         "digits": 3
       },
       "rules": [
         {
-          "years": [2010, 2023],
+          "years": [2021, 2023],
           "variables": "B03002_004",
           "denominator": "B03002_001"
         }
@@ -963,14 +1302,14 @@
       "definition": "Fraction of People Not Black, Not White, and Not Hispanic/Latino divided by the total population.",
       "units": "fraction",
       "calculation": "proportion",
-      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "moe_method": "ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components",
       "rounding": {
         "method": "decimal",
         "digits": 3
       },
       "rules": [
         {
-          "years": [2010, 2023],
+          "years": [2021, 2023],
           "variables": ["B03002_005", "B03002_006", "B03002_007", "B03002_008", "B03002_009"],
           "denominator": "B03002_001"
         }
@@ -983,14 +1322,14 @@
       "definition": "Fraction of People Hispanic/Latino divided by the total population.",
       "units": "fraction",
       "calculation": "proportion",
-      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "moe_method": "ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components",
       "rounding": {
         "method": "decimal",
         "digits": 3
       },
       "rules": [
         {
-          "years": [2010, 2023],
+          "years": [2021, 2023],
           "variables": "B03002_012",
           "denominator": "B03002_001"
         }
@@ -1003,14 +1342,14 @@
       "definition": "Fraction of People White and Hispanic/Latino divided by the total population.",
       "units": "fraction",
       "calculation": "proportion",
-      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "moe_method": "ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components",
       "rounding": {
         "method": "decimal",
         "digits": 3
       },
       "rules": [
         {
-          "years": [2010, 2023],
+          "years": [2021, 2023],
           "variables": "B03002_013",
           "denominator": "B03002_001"
         }
@@ -1023,14 +1362,14 @@
       "definition": "Fraction of People Black and Hispanic/Latino divided by the total population.",
       "units": "fraction",
       "calculation": "proportion",
-      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "moe_method": "ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components",
       "rounding": {
         "method": "decimal",
         "digits": 3
       },
       "rules": [
         {
-          "years": [2010, 2023],
+          "years": [2021, 2023],
           "variables": "B03002_014",
           "denominator": "B03002_001"
         }
@@ -1043,14 +1382,14 @@
       "definition": "Fraction of People Not Black, Not White, and Hispanic/Latino divided by the total population.",
       "units": "fraction",
       "calculation": "proportion",
-      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "moe_method": "ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components",
       "rounding": {
         "method": "decimal",
         "digits": 3
       },
       "rules": [
         {
-          "years": [2010, 2023],
+          "years": [2021, 2023],
           "variables": ["B03002_015", "B03002_016", "B03002_017", "B03002_018", "B03002_019"],
           "denominator": "B03002_001"
         }
@@ -1063,19 +1402,19 @@
       "definition": "Limited English speaking households divided by all households in C16002.",
       "units": "fraction",
       "calculation": "proportion",
-      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "moe_method": "ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components",
       "rounding": {
         "method": "decimal",
         "digits": 3
       },
       "rules": [
         {
-          "years": [2016, 2023],
+          "years": [2021, 2023],
           "variables": ["C16002_004", "C16002_007", "C16002_010", "C16002_013"],
           "denominator": "C16002_001"
         }
       ],
-      "notes": "The existing tract pipeline begins this measure in 2016; earlier years remain missing. This is an implementation coverage boundary."
+      "notes": []
     },
     "median_income": {
       "title": "Median Household Income",
@@ -1083,14 +1422,14 @@
       "definition": "Median household income in nominal US dollars.",
       "units": "USD",
       "calculation": "estimate",
-      "moe_method": "moe_sum for multiple components; source MOE for one component",
+      "moe_method": "Source MOE",
       "rounding": {
         "method": "significant",
         "digits": 3
       },
       "rules": [
         {
-          "years": [2010, 2023],
+          "years": [2021, 2023],
           "variables": "B19013_001"
         }
       ],
@@ -1102,14 +1441,14 @@
       "definition": "Median household income adjusted to 2010 US dollars using R-CPI-U-RS.",
       "units": "USD_2010",
       "calculation": "inflation_adjusted",
-      "moe_method": "source MOE scaled by CPI ratio",
+      "moe_method": "Source MOE scaled by CPI ratio",
       "rounding": {
         "method": "significant",
         "digits": 3
       },
       "rules": [
         {
-          "years": [2010, 2023],
+          "years": [2021, 2023],
           "source_measure": "median_income"
         }
       ],
@@ -1121,19 +1460,19 @@
       "definition": "People age 25 years and older with at least a high school diploma or equivalent divided by all people age 25 years and older.",
       "units": "fraction",
       "calculation": "proportion",
-      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "moe_method": "ACS subset-proportion formula; ratio fallback for nonpositive radicands; component MOEs combined by root-sum-of-squares with the largest MOE retained among zero-estimate components",
       "rounding": {
         "method": "decimal",
         "digits": 3
       },
       "rules": [
         {
-          "years": [2012, 2023],
+          "years": [2021, 2023],
           "variables": ["B15003_017", "B15003_018", "B15003_019", "B15003_020", "B15003_021", "B15003_022", "B15003_023", "B15003_024", "B15003_025"],
           "denominator": "B15003_001"
         }
       ],
-      "notes": "The existing tract pipeline begins this measure in 2012; earlier years remain missing. This is an implementation coverage boundary."
+      "notes": []
     }
   }
 }
