@@ -3,21 +3,21 @@ dataset:
   name: hh_acs_measures
   title: Harmonized Historical ACS Measures
   survey: acs5
-  moe_level: 95
+  moe_level: 90
   inflation:
     file: CPI_2010-2023.csv
     base_year: 2010
   notes:
   - Year is the ending year of the five-year ACS estimate, not a single-year estimate.
-  - Availability ranges describe the implemented pipeline; they do not establish that
-    a question or table was absent in earlier ACS years.
+  - Coverage is defined by each geography and its measure year rules.
   - Suppressed or missing ACS values remain missing. A zero denominator yields a missing
     fraction and MOE.
   - Inflation-adjusted estimates and MOEs use the same CPI ratio. Revised CPI inputs
     can change earlier estimates in later releases.
-  - Source MOEs are converted from 90% to 95% confidence using 1.960 / 1.645. Denominator
-    MOEs are rounded to whole units before derived proportions, preserving the previous
-    input adapter.
+  - Source MOEs retain the published 90% confidence level. Derived MOEs use these
+    inputs at the same confidence level.
+  - Each measure has an accompanying _moe field in the same units. Rounding rules
+    apply to estimates only; MOEs retain their precision.
   - This build supports 2021 onward table-based Summary Files; the current release
     coverage is 2021–2023.
   source:

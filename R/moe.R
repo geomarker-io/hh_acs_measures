@@ -1,14 +1,6 @@
 # ACS approximation formulas, independent of a data-access package.
 # Census guidance: https://www2.census.gov/programs-surveys/acs/tech_docs/accuracy/MultiyearACSAccuracyofData2023.pdf
-# MOEs are scaled to the requested confidence level before any derivations.
-acs_moe_factor <- function(level) {
-  critical <- c(`90` = 1.645, `95` = 1.960, `99` = 2.576)
-  if (length(level) != 1L || is.na(level) || !as.character(level) %in% names(critical)) {
-    stop('MOE confidence level must be 90, 95, or 99')
-  }
-  unname(critical[as.character(level)] / critical['90'])
-}
-
+# Inputs retain the published 90% confidence level.
 acs_moe_sum <- function(moe, estimate) {
   if (length(moe) != length(estimate)) stop('Estimate and MOE lengths differ')
   # Multiple zero-count categories contribute only their largest MOE.
@@ -23,7 +15,7 @@ acs_moe_proportion <- function(num, denom, moe_num, moe_denom) {
   }
   proportion <- num / denom
   subtract <- moe_num^2 - proportion^2 * moe_denom^2
-  # Retain the previous calculator's ratio fallback for nonpositive radicands.
+  # Use the ratio approximation when the subset radicand is nonpositive.
   variance <- ifelse(!is.na(subtract) & subtract > 0, subtract,
                      moe_num^2 + proportion^2 * moe_denom^2)
   result <- sqrt(variance) / denom

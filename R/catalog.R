@@ -1,4 +1,4 @@
-# Catalog parsing and rule selection are independent of downloads and documentation generation.
+# Catalog parsing and rule selection are independent of downloads and release preparation.
 rule_years <- function(rule) seq.int(rule$years[[1]], rule$years[[2]])
 
 select_rule <- function(rules, year, label, allow_missing = FALSE) {
@@ -20,6 +20,7 @@ validate_catalog <- function(catalog) {
     }
   }
   if (!identical(catalog$schema_version, 1L)) fail('Unsupported catalog schema_version')
+  if (!identical(catalog$dataset$moe_level, 90L)) fail('Use the published 90% ACS MOEs')
   if (!length(catalog$measures) || anyDuplicated(names(catalog$measures))) {
     fail('Measures must have unique names')
   }

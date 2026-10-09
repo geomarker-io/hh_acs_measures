@@ -1,175 +1,123 @@
 # Harmonized Historical ACS Measures
 
-This repository builds harmonized measures from the five-year American Community
-Survey (ACS), covering population, socioeconomic conditions, and housing.
-The implemented coverage is **2021–2023** for census tracts in the 50 states and
-DC and for ZCTAs. The importer supports the table-based Summary File format
-used from 2021 onward. Earlier years are outside the supported scope.
+This repository builds population, socioeconomic, and housing measures from
+five-year American Community Survey (ACS) estimates. It covers **2021–2023** for
+census tracts in the 50 states and DC, and for ZIP Code Tabulation Areas (ZCTAs).
 
-[Measure definitions and year-specific notes](metadata.md) ·
-[Authoritative measure catalog](measures.yml) ·
+[Measure catalog: definitions and year-specific notes](measures.yml) ·
 [GitHub releases](https://github.com/geomarker-io/hh_acs_measures/releases)
 
-## Data and metadata
+## Using the data
 
-The next release built with this workflow will contain ordinary Parquet data
-and accompanying JSON metadata. Data access does not require `dpkg` or a package
-from this repository. Download the assets from GitHub Releases, optionally cache
-them using `stow`, and read the local Parquet file with `arrow::read_parquet()`.
-Historical releases retain their existing asset formats and names.
+Download a Parquet data file and its accompanying YAML catalog from a GitHub
+release. The catalog describes the measures, source variables, units,
+calculation rules, geographic coverage, and year-specific notes.
 
-Each geography's local release build stages five versioned assets:
-
-- A `.parquet` data file.
-- A `.metadata.json` file describing every column, including MOEs, keys, units,
-  calculation rules, coverage, and geography notes.
-- A `.measures.yml` snapshot of the catalog used for the build.
-- A `.metadata.md` snapshot of the human-readable documentation.
-- A `.CPI.csv` snapshot of the inflation-adjustment input.
-
-Release metadata is a small project-specific JSON format, identified by
-`metadata_schema_version`; it does not claim Frictionless schema compliance.
-Use the metadata attached to the same release as the data. The documentation on
-`main` describes the current catalog and may differ from an older release.
-Build scripts stage files locally and refuse to overwrite existing assets.
-Upload and publication are separate, manual GitHub Release steps.
-
-## Maintaining definitions
-
-All 30 measures live in **one `measures.yml` file**. Each entry contains its title,
-definition, domain, units, calculation method, MOE method, rounding, year-specific
-source rules, and explanatory notes. Year ranges are inclusive `[first, last]`
-ranges of ACS ending years.
-
-Each rule specifies the ACS source variables and denominator for an inclusive
-year range. The same rules select the calculation inputs and appear in the
-generated documentation. All currently supported years use 2020 boundaries.
-Connecticut tract identifiers are harmonized before measures are calculated
-for 2022 onward, as documented in the geography notes.
-
-To update a measure:
-
-1. Edit its definition, notes, or source rules in `measures.yml`.
-2. Run `Rscript build_metadata.R` to regenerate Markdown and both JSON dictionaries.
-3. Review the generated changes and run `Rscript tests/run.R`.
-4. Rebuild data when inputs, calculation rules, or rounding change. A prose-only
-   edit can regenerate documentation without downloading or calculating ACS data.
-
-Do not edit the generated Markdown or JSON files directly. Missing years outside
-a measure's rules remain missing in the output. Overlapping rules and gaps
-between rules are rejected. Availability starts preserve the previous pipeline;
-they are not claims that an ACS question was absent in earlier years. To add a
-later year, extend the geography coverage and measure rules and add its CPI
-value. Years before 2021 are rejected.
-
-`calculation` selects a shared R implementation in `R/calculations.R`:
-
-- `proportion`: sum numerator components, divide by the specified denominator,
-  and calculate the MOE using the independent ACS formulas in `R/moe.R`.
-- `count`: sum source counts with the corresponding MOE.
-- `estimate`: use a single published ACS estimate and MOE, including medians.
-- `inflation_adjusted`: scale an unrounded source measure and its MOE by
-  CPI(base year) / CPI(ACS year).
-
-YAML contains configuration, not executable R. A future measure requiring a new
-algorithm would need an R calculator and a matching catalog validator update.
-Source-variable codes can be specified directly as lists; do not encode R
-expressions such as `paste0()` in YAML.
-
-## Local builds
-
-Run commands from the repository root. Install the R dependencies as needed:
+Read the downloaded data in R:
 
 ```r
-install.packages(c("yaml", "jsonlite", "dplyr", "data.table", "stow",
-                  "foreign", "arrow"))
+data <- arrow::read_parquet("path/to/downloaded-file.parquet")
 ```
 
-Documentation alone requires only `yaml` and `jsonlite`:
+You can use `stow` to download and cache release assets. Use the catalog attached
+to the same release as the data; [measures.yml](measures.yml) describes the
+current definitions in this repository.
 
-```sh
-Rscript build_metadata.R
-# Optional: write documentation into a separate directory.
-Rscript build_metadata.R /tmp/hh-acs-docs
+Each geography's release build creates three versioned files:
+
+- `.parquet`: data, with one row per geography identifier, vintage, and ACS year.
+- `.measures.yml`: the measure catalog, plus release version, data filename,
+  row count, column names, keys, and source-file URLs.
+- `.CPI.csv`: the inflation-adjustment input.
+
+## Maintaining the catalog
+
+All 30 measures are defined in **one `measures.yml` file**. Each entry contains its
+title, definition, domain, units, calculation method, MOE method, estimate
+rounding, source rules, and notes. Year ranges are inclusive `[first, last]`
+ranges of ACS ending years. The R calculations use these rules directly.
+
+To update a measure, edit its catalog entry and review the changes. Rebuild data
+when source variables, calculation rules, or estimate rounding change. Edits to
+definitions and notes are made directly in the catalog.
+
+To add a later year, extend the geography coverage and measure rules and add its
+CPI value. The importer supports table-based Summary Files from 2021 onward.
+Overlapping rules and gaps between rules are rejected.
+
+`calculation` selects an implementation in `R/calculations.R`:
+
+- `proportion`: sum numerator components and divide by the specified denominator.
+- `count`: sum source counts.
+- `estimate`: use a published ACS estimate, including medians.
+- `inflation_adjusted`: scale a source measure and its MOE by
+  CPI(base year) / CPI(ACS year).
+
+YAML holds the definitions and configuration. A measure requiring a new algorithm
+also needs a corresponding R calculator and catalog validator update.
+
+## Building a release
+
+Run commands from the repository root. Install the R dependencies:
+
+```r
+install.packages(c("yaml", "dplyr", "data.table", "stow", "foreign", "arrow"))
 ```
 
-Data builds download public Census files through `stow`; no API key is needed.
-There is no dependency on `tidycensus` or `tigris`. Provide an explicit version;
-these examples illustrate a prospective version, not a published release:
+Choose a release version and build both geographies:
 
 ```sh
 Rscript make_hh_acs_data.R 2.0.0
 Rscript make_hh_acs_data_zcta.R 2.0.0
 ```
 
-Both commands stage their assets under `data/v2.0.0/`. An optional second argument
-selects another output directory. The two entry points use the same catalog,
-calculators, metadata generator, and release writer.
+These commands stage files under `data/v2.0.0/`. An optional second argument
+selects another output directory. Existing assets are protected from overwriting.
+Upload the completed assets to GitHub Releases separately.
 
-## Downloaded source files
+## Source downloads
 
-`R/summary_files.R` derives the required table IDs from `measures.yml` and downloads
-only those year-specific `.dat` files through `stow::stow()`. The current catalog
-uses 19 tables per year (57 files in total). Each file supplies both tract and
-ZCTA data, so the second geography build reuses the same downloads. The importer
-reads only the required estimate and MOE columns and retains the requested
-geographic summary level. Census sentinel values become missing values.
+The pipeline downloads Census Summary File tables through `stow::stow()`. The
+catalog currently requires 19 tables per year, or 57 files. Each file supplies
+both tract and ZCTA data, so builds share the downloaded files. The importer
+reads the required estimate and MOE columns and selects the geographic records.
 
-The fixed 2020 cartographic boundary ZIP files are also downloaded through `stow`.
-Only their DBF attribute tables are read; no geometry library is needed. They
-preserve the previous output scaffold and its exclusion of water-only tracts.
-The Connecticut crosswalk and CPI input are already tracked in this repository.
-JSON metadata records the source table URLs and boundary asset URL.
+The pipeline also downloads 2020 cartographic boundary ZIP files through `stow`
+and reads their DBF attributes to define output identifiers. All supported years
+use 2020 boundaries. For 2022 onward, Connecticut planning-region tract IDs are
+mapped to 2020 tract IDs using the crosswalk in `data-raw/`. Water-only tracts
+outside the cartographic boundaries are excluded. The crosswalk and CPI input
+are tracked in this repository.
 
-`stow` owns durable raw-file storage under the `hh.acs.measures` package namespace,
-with `summary-files/<year>` and `boundaries` subdirectories. The importer reads
-the path returned by `stow` directly. Parsed tables are reused within a build;
-calculated measures are always recomputed. The old API-response and
-calculated-measure caches are not used.
+`stow` stores source files under the `hh.acs.measures` package namespace, in
+`summary-files/<year>` and `boundaries` subdirectories. Downloads use
+`etag = FALSE`, so an existing year-specific copy is reused without contacting
+the server. Parsed tables are reused within a build; measures are recalculated.
 
-Downloads use `etag = FALSE`: an existing year-specific file is reused without
-checking the server. Use `stow::stow_remove()` to deliberately remove a source
-copy before downloading a revised Census file. `stow::stow_info()` and
-`stow::stow_path(package = "hh.acs.measures")` can inspect the managed files.
-The standard `R_USER_DATA_DIR` environment variable can relocate the cache.
-After all needed assets have been downloaded, builds can run entirely offline:
+Use `stow::stow_path(package = "hh.acs.measures")` to locate the cache,
+`stow::stow_info()` to inspect its files, and `stow::stow_remove()` to remove a
+copy before downloading a revised source file. `R_USER_DATA_DIR` can relocate
+the cache.
+
+Once all source files are cached, builds can run offline:
 
 ```sh
 HH_ACS_OFFLINE=1 Rscript make_hh_acs_data.R 2.0.0
 HH_ACS_OFFLINE=1 Rscript make_hh_acs_data_zcta.R 2.0.0
 ```
 
-An offline build fails if any required file is absent; it never falls back to
-an API or makes network requests.
+## Data conventions
 
-## Conventions and verification
+`year` is the ending year of a five-year ACS estimate. Identifiers are strings
+with leading zeros preserved. Each measure has an accompanying `_moe` column
+in the same units, at the **published 90% confidence level**. Source MOEs are
+retained; derived measures use those inputs to calculate their MOEs.
 
-Census files publish 90% MOEs. The importer converts these to 95% using
-`1.960 / 1.645`. Component sums use root-sum-of-squares, retaining only the
-largest MOE among zero-estimate components. Subset proportions use the ACS
-subtraction formula, with the previous ratio fallback for nonpositive
-radicands. Denominator MOEs retain the previous input adapter's whole-unit
-rounding; numerator MOEs remain unrounded until final formatting. The formulas
-are documented in [Census accuracy guidance](https://www2.census.gov/programs-surveys/acs/tech_docs/accuracy/MultiyearACSAccuracyofData2023.pdf).
+Estimate rounding is specified in the catalog: counts are rounded to integers,
+fractions to three decimal places, and medians to three significant digits.
+MOEs retain their precision. Missing source components remain missing, and a
+zero or missing denominator produces a missing fraction and MOE.
 
-Counts and their MOEs are rounded to integers; fractions and their MOEs to three
-decimal places; medians and their MOEs to three significant digits. Fraction
-estimates represent proportions, while fraction MOEs are uncertainty widths and
-are not constrained to `[0, 1]`. Zero or missing denominators produce missing
-fractions and MOEs. Missing source components are not silently dropped.
-
-Nominal dollar measures retain the original values. `_2010adj` fields and their
-MOEs use R-CPI-U-RS from `CPI_2010-2023.csv` to express values in 2010 dollars.
-Revised CPI inputs can change earlier adjusted estimates in later releases.
-
-```sh
-Rscript tests/run.R
-```
-
-Tests use artificial ACS responses without network access or credentials. They
-compare all measures for 2021–2023 against frozen results from the
-pre-migration scripts, exercise the independent MOE formulas and bulk-file
-parser, check geography corrections and missing-value handling, confirm
-that catalog edits affect both calculation inputs and documentation, and stage
-and read back a small Parquet/JSON release. They do not substitute for a live
-full source-file rebuild and review before publishing a new data release.
+`_2010adj` fields express dollar values in 2010 dollars using R-CPI-U-RS from
+`CPI_2010-2023.csv`. Their MOEs are scaled by the same CPI ratio to keep the units
+consistent. Revised CPI inputs can change adjusted values in later releases.
