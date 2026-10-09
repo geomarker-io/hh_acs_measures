@@ -29,27 +29,23 @@ stopifnot(inherits(tryCatch(
   harmonize_ct_tracts(tibble(GEOID = "09110999999"), 2022),
   error = identity), "error"))
 
-# Exercise the actual ACS wrapper and downstream poverty join for every pair.
-env <- new.env()
-definitions <- Filter(function(e) {
-  is.call(e) && identical(e[[1]], as.name("<-")) &&
-    is.symbol(e[[2]]) && as.character(e[[2]]) %in% c("my_get_acs", "get_acs_poverty")
-}, parse("make_hh_acs_data.R"))
-stopifnot(length(definitions) == 2L)
-for (definition in definitions) eval(definition, env)
-env$get_acs_tracts <- function(..., year) {
-  tibble(GEOID = c(crosswalk$geoid_2022, "01001020100"),
-         estimate = 25, summary_est = 100, moe = 5, summary_moe = 10)
-}
-env$tracts_needed <- tibble(
-  census_tract_id = c(crosswalk$geoid_2020, "01001020100"),
-  census_tract_vintage = "2020"
-)
-for (year in c(2022, 2023)) {
-  result <- env$get_acs_poverty(year)
-  stopifnot(nrow(result) == 880L, !anyDuplicated(result$census_tract_id),
-            all(result$fraction_poverty == 0.25),
-            all(result$fraction_poverty_moe == moe_prop(25, 100, 5, 10)),
-            all(result$year == year))
-}
-cat("All 879 Connecticut mappings and downstream estimates/MOEs pass.\n")
+# Exercise the shared calculator and production raw-data cache wrapper.
+source("R/build.R")
+catalog <- read_catalog()
+spec <- catalog$measures$fraction_poverty
+rule <- select_rule(spec$rules, 2023, "fraction_poverty")
+cache <- tempfile("ct-raw-cache-")
+dir.create(cache)
+args <- list(geography = "tract", variables = "B17001_002", year = 2023,
+             survey = "acs5", moe_level = 95L, state = "09", summary_var = "B17001_001")
+raw <- tibble(GEOID = crosswalk$geoid_2022, variable = "B17001_002",
+              estimate = 25, summary_est = 100, moe = 5, summary_moe = 10)
+saveRDS(raw, file.path(cache, paste0(digest::digest(args), ".rds")))
+getter <- cached_acs_getter(catalog, "tract", "09", cache)
+result <- calculate_acs_measure(spec, rule, 2023, getter)
+stopifnot(nrow(result) == 879L, !anyDuplicated(result$GEOID),
+          setequal(result$GEOID, crosswalk$geoid_2020),
+          all(result$estimate == 0.25),
+          all(result$moe == moe_prop(25, 100, 5, 10)))
+unlink(cache, recursive = TRUE)
+cat("All 879 Connecticut mappings and cached downstream estimates/MOEs pass.\n")
