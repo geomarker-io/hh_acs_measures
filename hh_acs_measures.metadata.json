@@ -1,0 +1,1135 @@
+{
+  "metadata_schema_version": 1,
+  "name": "hh_acs_measures",
+  "title": "Harmonized Historical ACS Measures",
+  "version": null,
+  "path": null,
+  "format": "parquet",
+  "geography": "tract",
+  "years": [2010, 2023],
+  "survey": "acs5",
+  "moe_level": 95,
+  "primary_key": ["census_tract_id", "census_tract_vintage", "year"],
+  "geography_rules": [
+    {
+      "years": [2010, 2019],
+      "value": "2010"
+    },
+    {
+      "years": [2020, 2023],
+      "value": "2020"
+    }
+  ],
+  "geography_notes": [
+    {
+      "years": [2022, 2023],
+      "text": "Connecticut planning-region tract IDs are mapped one-to-one back to 2020 tract IDs using data-raw/ct_tract_crosswalk_2022_2020.csv. Estimates are not interpolated; water-only tracts outside the cartographic scaffold are excluded.",
+      "source": "data-raw/README.md"
+    }
+  ],
+  "inflation": {
+    "file": "CPI_2010-2023.csv",
+    "base_year": 2010
+  },
+  "notes": ["Year is the ending year of the five-year ACS estimate, not a single-year estimate.", "Availability ranges describe the implemented pipeline; they do not establish that a question or table was absent in earlier ACS years.", "Suppressed or missing ACS values remain missing. A zero denominator yields a missing fraction and MOE.", "Inflation-adjusted estimates and MOEs use the same CPI ratio. Revised CPI inputs can change earlier estimates in later releases."],
+  "fields": [
+    {
+      "name": "census_tract_id",
+      "title": "Census tract identifier",
+      "type": "string",
+      "description": "Zero-padded identifier; unique in combination with vintage and year."
+    },
+    {
+      "name": "census_tract_vintage",
+      "title": "Geography vintage",
+      "type": "string",
+      "description": "Decennial boundary vintage selected using the documented geography rules."
+    },
+    {
+      "name": "year",
+      "title": "ACS ending year",
+      "type": "integer",
+      "description": "Ending year of the five-year ACS estimates."
+    },
+    {
+      "name": "fraction_poverty",
+      "title": "Fraction of People in Poverty",
+      "type": "number",
+      "description": "Fraction of people with income below the poverty level in the past 12 months, among people for whom poverty status is determined",
+      "units": "fraction",
+      "measure": "fraction_poverty"
+    },
+    {
+      "name": "fraction_poverty_moe",
+      "title": "Fraction of People in Poverty margin of error",
+      "type": "number",
+      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "units": "fraction",
+      "measure": "fraction_poverty"
+    },
+    {
+      "name": "n_children_lt18",
+      "title": "Number of Children",
+      "type": "integer",
+      "description": "Number of children and adolescents < 18 years of age",
+      "units": "count",
+      "measure": "n_children_lt18"
+    },
+    {
+      "name": "n_children_lt18_moe",
+      "title": "Number of Children margin of error",
+      "type": "integer",
+      "description": "95% confidence margin of error; moe_sum for multiple components; source MOE for one component.",
+      "units": "count",
+      "measure": "n_children_lt18"
+    },
+    {
+      "name": "n_pop",
+      "title": "Number of Total People",
+      "type": "integer",
+      "description": "Total population.",
+      "units": "count",
+      "measure": "n_pop"
+    },
+    {
+      "name": "n_pop_moe",
+      "title": "Number of Total People margin of error",
+      "type": "integer",
+      "description": "95% confidence margin of error; moe_sum for multiple components; source MOE for one component.",
+      "units": "count",
+      "measure": "n_pop"
+    },
+    {
+      "name": "n_household_lt18",
+      "title": "Number of Households With Children",
+      "type": "integer",
+      "description": "Number of households with children or adolescents < 18 years of age",
+      "units": "count",
+      "measure": "n_household_lt18"
+    },
+    {
+      "name": "n_household_lt18_moe",
+      "title": "Number of Households With Children margin of error",
+      "type": "integer",
+      "description": "95% confidence margin of error; moe_sum for multiple components; source MOE for one component.",
+      "units": "count",
+      "measure": "n_household_lt18"
+    },
+    {
+      "name": "n_household",
+      "title": "Number of Households",
+      "type": "integer",
+      "description": "Total households.",
+      "units": "count",
+      "measure": "n_household"
+    },
+    {
+      "name": "n_household_moe",
+      "title": "Number of Households margin of error",
+      "type": "integer",
+      "description": "95% confidence margin of error; moe_sum for multiple components; source MOE for one component.",
+      "units": "count",
+      "measure": "n_household"
+    },
+    {
+      "name": "fraction_insured",
+      "title": "Fraction of People Insured",
+      "type": "number",
+      "description": "People with health insurance divided by the civilian noninstitutionalized population.",
+      "units": "fraction",
+      "measure": "fraction_insured"
+    },
+    {
+      "name": "fraction_insured_moe",
+      "title": "Fraction of People Insured margin of error",
+      "type": "number",
+      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "units": "fraction",
+      "measure": "fraction_insured"
+    },
+    {
+      "name": "fraction_snap",
+      "title": "Fraction of Households Receiving Assisted Income",
+      "type": "number",
+      "description": "Fraction of households receiving public assistance income or food stamps/SNAP in the past 12 months",
+      "units": "fraction",
+      "measure": "fraction_snap"
+    },
+    {
+      "name": "fraction_snap_moe",
+      "title": "Fraction of Households Receiving Assisted Income margin of error",
+      "type": "number",
+      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "units": "fraction",
+      "measure": "fraction_snap"
+    },
+    {
+      "name": "fraction_fam_nospouse",
+      "title": "Fraction of family households with a single householder",
+      "type": "number",
+      "description": "Family households with a male or female householder and no spouse present divided by all family households.",
+      "units": "fraction",
+      "measure": "fraction_fam_nospouse"
+    },
+    {
+      "name": "fraction_fam_nospouse_moe",
+      "title": "Fraction of family households with a single householder margin of error",
+      "type": "number",
+      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "units": "fraction",
+      "measure": "fraction_fam_nospouse"
+    },
+    {
+      "name": "fraction_employment",
+      "title": "Fraction of People Employed",
+      "type": "number",
+      "description": "Fraction of people employed in civilian labor force",
+      "units": "fraction",
+      "measure": "fraction_employment"
+    },
+    {
+      "name": "fraction_employment_moe",
+      "title": "Fraction of People Employed margin of error",
+      "type": "number",
+      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "units": "fraction",
+      "measure": "fraction_employment"
+    },
+    {
+      "name": "n_housing_units",
+      "title": "Number of Housing Units",
+      "type": "integer",
+      "description": "Housing units are any separate living quarters (e.g., house, apartment, mobile home) either occupied or vacant",
+      "units": "count",
+      "measure": "n_housing_units"
+    },
+    {
+      "name": "n_housing_units_moe",
+      "title": "Number of Housing Units margin of error",
+      "type": "integer",
+      "description": "95% confidence margin of error; moe_sum for multiple components; source MOE for one component.",
+      "units": "count",
+      "measure": "n_housing_units"
+    },
+    {
+      "name": "median_home_value",
+      "title": "Median Value of Owner-Occupied Housing Units",
+      "type": "number",
+      "description": "Median value of owner-occupied housing units, in nominal US dollars.",
+      "units": "USD",
+      "measure": "median_home_value"
+    },
+    {
+      "name": "median_home_value_moe",
+      "title": "Median Value of Owner-Occupied Housing Units margin of error",
+      "type": "number",
+      "description": "95% confidence margin of error; moe_sum for multiple components; source MOE for one component.",
+      "units": "USD",
+      "measure": "median_home_value"
+    },
+    {
+      "name": "median_home_value_2010adj",
+      "title": "Median Value of Owner-Occupied Housing Units (in 2010 USD)",
+      "type": "number",
+      "description": "Median value of owner-occupied housing units adjusted to 2010 US dollars using R-CPI-U-RS.",
+      "units": "USD_2010",
+      "measure": "median_home_value_2010adj"
+    },
+    {
+      "name": "median_home_value_2010adj_moe",
+      "title": "Median Value of Owner-Occupied Housing Units (in 2010 USD) margin of error",
+      "type": "number",
+      "description": "95% confidence margin of error; source MOE scaled by CPI ratio.",
+      "units": "USD_2010",
+      "measure": "median_home_value_2010adj"
+    },
+    {
+      "name": "fraction_housing_renters",
+      "title": "Fraction of Housing Units Occupied by Renters",
+      "type": "number",
+      "description": "fraction denominator is number of *occupied* housing units",
+      "units": "fraction",
+      "measure": "fraction_housing_renters"
+    },
+    {
+      "name": "fraction_housing_renters_moe",
+      "title": "Fraction of Housing Units Occupied by Renters margin of error",
+      "type": "number",
+      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "units": "fraction",
+      "measure": "fraction_housing_renters"
+    },
+    {
+      "name": "median_rent_to_income_percentage",
+      "title": "Median Rent to Income Percentage",
+      "type": "number",
+      "description": "The median of the percentage of rent to income among all renter-occupied housing units",
+      "units": "percent",
+      "measure": "median_rent_to_income_percentage"
+    },
+    {
+      "name": "median_rent_to_income_percentage_moe",
+      "title": "Median Rent to Income Percentage margin of error",
+      "type": "number",
+      "description": "95% confidence margin of error; moe_sum for multiple components; source MOE for one component.",
+      "units": "percent",
+      "measure": "median_rent_to_income_percentage"
+    },
+    {
+      "name": "fraction_high_rent",
+      "title": "Fraction of Housing Units Paying at least 30% of Income on Rent",
+      "type": "number",
+      "description": "Renter-occupied housing units paying at least 30% of household income in gross rent divided by all renter-occupied housing units in B25070.",
+      "units": "fraction",
+      "measure": "fraction_high_rent"
+    },
+    {
+      "name": "fraction_high_rent_moe",
+      "title": "Fraction of Housing Units Paying at least 30% of Income on Rent margin of error",
+      "type": "number",
+      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "units": "fraction",
+      "measure": "fraction_high_rent"
+    },
+    {
+      "name": "fraction_conditions",
+      "title": "Fraction of Housing Units with Substandard Housing Conditions",
+      "type": "number",
+      "description": "substandard housing: incomplete plumbing or kitchens, overcrowding, 30% or more of household income spent on rent or owner costs",
+      "units": "fraction",
+      "measure": "fraction_conditions"
+    },
+    {
+      "name": "fraction_conditions_moe",
+      "title": "Fraction of Housing Units with Substandard Housing Conditions margin of error",
+      "type": "number",
+      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "units": "fraction",
+      "measure": "fraction_conditions"
+    },
+    {
+      "name": "fraction_builtbf1970",
+      "title": "Fraction of Housing Units Built Before 1970",
+      "type": "number",
+      "description": "Housing units built before 1970 divided by all housing units.",
+      "units": "fraction",
+      "measure": "fraction_builtbf1970"
+    },
+    {
+      "name": "fraction_builtbf1970_moe",
+      "title": "Fraction of Housing Units Built Before 1970 margin of error",
+      "type": "number",
+      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "units": "fraction",
+      "measure": "fraction_builtbf1970"
+    },
+    {
+      "name": "fraction_vacant",
+      "title": "Fraction of Housing Units that are Vacant",
+      "type": "number",
+      "description": "Vacant housing units divided by all housing units.",
+      "units": "fraction",
+      "measure": "fraction_vacant"
+    },
+    {
+      "name": "fraction_vacant_moe",
+      "title": "Fraction of Housing Units that are Vacant margin of error",
+      "type": "number",
+      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "units": "fraction",
+      "measure": "fraction_vacant"
+    },
+    {
+      "name": "fraction_nhl",
+      "title": "Fraction of People Not Hispanic/Latino",
+      "type": "number",
+      "description": "Fraction of People Not Hispanic/Latino divided by the total population.",
+      "units": "fraction",
+      "measure": "fraction_nhl"
+    },
+    {
+      "name": "fraction_nhl_moe",
+      "title": "Fraction of People Not Hispanic/Latino margin of error",
+      "type": "number",
+      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "units": "fraction",
+      "measure": "fraction_nhl"
+    },
+    {
+      "name": "fraction_nhl_w",
+      "title": "Fraction of People White and Not Hispanic/Latino",
+      "type": "number",
+      "description": "Fraction of People White and Not Hispanic/Latino divided by the total population.",
+      "units": "fraction",
+      "measure": "fraction_nhl_w"
+    },
+    {
+      "name": "fraction_nhl_w_moe",
+      "title": "Fraction of People White and Not Hispanic/Latino margin of error",
+      "type": "number",
+      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "units": "fraction",
+      "measure": "fraction_nhl_w"
+    },
+    {
+      "name": "fraction_nhl_b",
+      "title": "Fraction of People Black and Not Hispanic/Latino",
+      "type": "number",
+      "description": "Fraction of People Black and Not Hispanic/Latino divided by the total population.",
+      "units": "fraction",
+      "measure": "fraction_nhl_b"
+    },
+    {
+      "name": "fraction_nhl_b_moe",
+      "title": "Fraction of People Black and Not Hispanic/Latino margin of error",
+      "type": "number",
+      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "units": "fraction",
+      "measure": "fraction_nhl_b"
+    },
+    {
+      "name": "fraction_nhl_o",
+      "title": "Fraction of People Not Black, Not White, and Not Hispanic/Latino",
+      "type": "number",
+      "description": "Fraction of People Not Black, Not White, and Not Hispanic/Latino divided by the total population.",
+      "units": "fraction",
+      "measure": "fraction_nhl_o"
+    },
+    {
+      "name": "fraction_nhl_o_moe",
+      "title": "Fraction of People Not Black, Not White, and Not Hispanic/Latino margin of error",
+      "type": "number",
+      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "units": "fraction",
+      "measure": "fraction_nhl_o"
+    },
+    {
+      "name": "fraction_hl",
+      "title": "Fraction of People Hispanic/Latino",
+      "type": "number",
+      "description": "Fraction of People Hispanic/Latino divided by the total population.",
+      "units": "fraction",
+      "measure": "fraction_hl"
+    },
+    {
+      "name": "fraction_hl_moe",
+      "title": "Fraction of People Hispanic/Latino margin of error",
+      "type": "number",
+      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "units": "fraction",
+      "measure": "fraction_hl"
+    },
+    {
+      "name": "fraction_hl_w",
+      "title": "Fraction of People White and Hispanic/Latino",
+      "type": "number",
+      "description": "Fraction of People White and Hispanic/Latino divided by the total population.",
+      "units": "fraction",
+      "measure": "fraction_hl_w"
+    },
+    {
+      "name": "fraction_hl_w_moe",
+      "title": "Fraction of People White and Hispanic/Latino margin of error",
+      "type": "number",
+      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "units": "fraction",
+      "measure": "fraction_hl_w"
+    },
+    {
+      "name": "fraction_hl_b",
+      "title": "Fraction of People Black and Hispanic/Latino",
+      "type": "number",
+      "description": "Fraction of People Black and Hispanic/Latino divided by the total population.",
+      "units": "fraction",
+      "measure": "fraction_hl_b"
+    },
+    {
+      "name": "fraction_hl_b_moe",
+      "title": "Fraction of People Black and Hispanic/Latino margin of error",
+      "type": "number",
+      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "units": "fraction",
+      "measure": "fraction_hl_b"
+    },
+    {
+      "name": "fraction_hl_o",
+      "title": "Fraction of People Not Black, Not White, and Hispanic/Latino",
+      "type": "number",
+      "description": "Fraction of People Not Black, Not White, and Hispanic/Latino divided by the total population.",
+      "units": "fraction",
+      "measure": "fraction_hl_o"
+    },
+    {
+      "name": "fraction_hl_o_moe",
+      "title": "Fraction of People Not Black, Not White, and Hispanic/Latino margin of error",
+      "type": "number",
+      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "units": "fraction",
+      "measure": "fraction_hl_o"
+    },
+    {
+      "name": "fraction_lesh",
+      "title": "Fraction of Households Speaking Limited English",
+      "type": "number",
+      "description": "Limited English speaking households divided by all households in C16002.",
+      "units": "fraction",
+      "measure": "fraction_lesh"
+    },
+    {
+      "name": "fraction_lesh_moe",
+      "title": "Fraction of Households Speaking Limited English margin of error",
+      "type": "number",
+      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "units": "fraction",
+      "measure": "fraction_lesh"
+    },
+    {
+      "name": "median_income",
+      "title": "Median Household Income",
+      "type": "number",
+      "description": "Median household income in nominal US dollars.",
+      "units": "USD",
+      "measure": "median_income"
+    },
+    {
+      "name": "median_income_moe",
+      "title": "Median Household Income margin of error",
+      "type": "number",
+      "description": "95% confidence margin of error; moe_sum for multiple components; source MOE for one component.",
+      "units": "USD",
+      "measure": "median_income"
+    },
+    {
+      "name": "median_income_2010adj",
+      "title": "Median Household Income (in 2010 USD)",
+      "type": "number",
+      "description": "Median household income adjusted to 2010 US dollars using R-CPI-U-RS.",
+      "units": "USD_2010",
+      "measure": "median_income_2010adj"
+    },
+    {
+      "name": "median_income_2010adj_moe",
+      "title": "Median Household Income (in 2010 USD) margin of error",
+      "type": "number",
+      "description": "95% confidence margin of error; source MOE scaled by CPI ratio.",
+      "units": "USD_2010",
+      "measure": "median_income_2010adj"
+    },
+    {
+      "name": "fraction_hs",
+      "title": "Fraction of Adults with At Least High School Education",
+      "type": "number",
+      "description": "People age 25 years and older with at least a high school diploma or equivalent divided by all people age 25 years and older.",
+      "units": "fraction",
+      "measure": "fraction_hs"
+    },
+    {
+      "name": "fraction_hs_moe",
+      "title": "Fraction of Adults with At Least High School Education margin of error",
+      "type": "number",
+      "description": "95% confidence margin of error; moe_prop with moe_sum for multiple numerator components.",
+      "units": "fraction",
+      "measure": "fraction_hs"
+    }
+  ],
+  "measures": {
+    "fraction_poverty": {
+      "title": "Fraction of People in Poverty",
+      "domain": "Socioeconomic",
+      "definition": "Fraction of people with income below the poverty level in the past 12 months, among people for whom poverty status is determined",
+      "units": "fraction",
+      "calculation": "proportion",
+      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "rounding": {
+        "method": "decimal",
+        "digits": 3
+      },
+      "rules": [
+        {
+          "years": [2010, 2023],
+          "variables": "B17001_002",
+          "denominator": "B17001_001"
+        }
+      ],
+      "notes": []
+    },
+    "n_children_lt18": {
+      "title": "Number of Children",
+      "domain": "Population",
+      "definition": "Number of children and adolescents < 18 years of age",
+      "units": "count",
+      "calculation": "count",
+      "moe_method": "moe_sum for multiple components; source MOE for one component",
+      "rounding": {
+        "method": "integer",
+        "digits": 0
+      },
+      "rules": [
+        {
+          "years": [2010, 2023],
+          "variables": ["B01001_003", "B01001_004", "B01001_005", "B01001_006", "B01001_027", "B01001_028", "B01001_029", "B01001_030"]
+        }
+      ],
+      "notes": []
+    },
+    "n_pop": {
+      "title": "Number of Total People",
+      "domain": "Population",
+      "definition": "Total population.",
+      "units": "count",
+      "calculation": "count",
+      "moe_method": "moe_sum for multiple components; source MOE for one component",
+      "rounding": {
+        "method": "integer",
+        "digits": 0
+      },
+      "rules": [
+        {
+          "years": [2010, 2023],
+          "variables": "B01001_001"
+        }
+      ],
+      "notes": []
+    },
+    "n_household_lt18": {
+      "title": "Number of Households With Children",
+      "domain": "Population",
+      "definition": "Number of households with children or adolescents < 18 years of age",
+      "units": "count",
+      "calculation": "count",
+      "moe_method": "moe_sum for multiple components; source MOE for one component",
+      "rounding": {
+        "method": "integer",
+        "digits": 0
+      },
+      "rules": [
+        {
+          "years": [2010, 2023],
+          "variables": "B11005_002"
+        }
+      ],
+      "notes": []
+    },
+    "n_household": {
+      "title": "Number of Households",
+      "domain": "Population",
+      "definition": "Total households.",
+      "units": "count",
+      "calculation": "count",
+      "moe_method": "moe_sum for multiple components; source MOE for one component",
+      "rounding": {
+        "method": "integer",
+        "digits": 0
+      },
+      "rules": [
+        {
+          "years": [2010, 2023],
+          "variables": "B11005_001"
+        }
+      ],
+      "notes": []
+    },
+    "fraction_insured": {
+      "title": "Fraction of People Insured",
+      "domain": "Socioeconomic",
+      "definition": "People with health insurance divided by the civilian noninstitutionalized population.",
+      "units": "fraction",
+      "calculation": "proportion",
+      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "rounding": {
+        "method": "decimal",
+        "digits": 3
+      },
+      "rules": [
+        {
+          "years": [2012, 2023],
+          "variables": ["B27001_004", "B27001_007", "B27001_010", "B27001_013", "B27001_016", "B27001_019", "B27001_022", "B27001_025", "B27001_028", "B27001_032", "B27001_035", "B27001_038", "B27001_041", "B27001_044", "B27001_047", "B27001_050", "B27001_053", "B27001_056"],
+          "denominator": "B27001_001"
+        }
+      ],
+      "notes": "The existing tract pipeline begins this measure in 2012; earlier years remain missing. This is an implementation coverage boundary."
+    },
+    "fraction_snap": {
+      "title": "Fraction of Households Receiving Assisted Income",
+      "domain": "Socioeconomic",
+      "definition": "Fraction of households receiving public assistance income or food stamps/SNAP in the past 12 months",
+      "units": "fraction",
+      "calculation": "proportion",
+      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "rounding": {
+        "method": "decimal",
+        "digits": 3
+      },
+      "rules": [
+        {
+          "years": [2010, 2023],
+          "variables": "B19058_002",
+          "denominator": "B19058_001"
+        }
+      ],
+      "notes": []
+    },
+    "fraction_fam_nospouse": {
+      "title": "Fraction of family households with a single householder",
+      "domain": "Population",
+      "definition": "Family households with a male or female householder and no spouse present divided by all family households.",
+      "units": "fraction",
+      "calculation": "proportion",
+      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "rounding": {
+        "method": "decimal",
+        "digits": 3
+      },
+      "rules": [
+        {
+          "years": [2010, 2023],
+          "variables": "B11001_004",
+          "denominator": "B11001_002"
+        }
+      ],
+      "notes": []
+    },
+    "fraction_employment": {
+      "title": "Fraction of People Employed",
+      "domain": "Socioeconomic",
+      "definition": "Fraction of people employed in civilian labor force",
+      "units": "fraction",
+      "calculation": "proportion",
+      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "rounding": {
+        "method": "decimal",
+        "digits": 3
+      },
+      "rules": [
+        {
+          "years": [2011, 2023],
+          "variables": "B23025_004",
+          "denominator": "B23025_003"
+        }
+      ],
+      "notes": "The existing tract pipeline begins this measure in 2011; earlier years remain missing. This is an implementation coverage boundary."
+    },
+    "n_housing_units": {
+      "title": "Number of Housing Units",
+      "domain": "Housing",
+      "definition": "Housing units are any separate living quarters (e.g., house, apartment, mobile home) either occupied or vacant",
+      "units": "count",
+      "calculation": "count",
+      "moe_method": "moe_sum for multiple components; source MOE for one component",
+      "rounding": {
+        "method": "integer",
+        "digits": 0
+      },
+      "rules": [
+        {
+          "years": [2010, 2023],
+          "variables": "B25001_001"
+        }
+      ],
+      "notes": []
+    },
+    "median_home_value": {
+      "title": "Median Value of Owner-Occupied Housing Units",
+      "domain": "Housing",
+      "definition": "Median value of owner-occupied housing units, in nominal US dollars.",
+      "units": "USD",
+      "calculation": "estimate",
+      "moe_method": "moe_sum for multiple components; source MOE for one component",
+      "rounding": {
+        "method": "significant",
+        "digits": 3
+      },
+      "rules": [
+        {
+          "years": [2010, 2023],
+          "variables": "B25077_001"
+        }
+      ],
+      "notes": []
+    },
+    "median_home_value_2010adj": {
+      "title": "Median Value of Owner-Occupied Housing Units (in 2010 USD)",
+      "domain": "Housing",
+      "definition": "Median value of owner-occupied housing units adjusted to 2010 US dollars using R-CPI-U-RS.",
+      "units": "USD_2010",
+      "calculation": "inflation_adjusted",
+      "moe_method": "source MOE scaled by CPI ratio",
+      "rounding": {
+        "method": "significant",
+        "digits": 3
+      },
+      "rules": [
+        {
+          "years": [2010, 2023],
+          "source_measure": "median_home_value"
+        }
+      ],
+      "notes": []
+    },
+    "fraction_housing_renters": {
+      "title": "Fraction of Housing Units Occupied by Renters",
+      "domain": "Housing",
+      "definition": "fraction denominator is number of *occupied* housing units",
+      "units": "fraction",
+      "calculation": "proportion",
+      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "rounding": {
+        "method": "decimal",
+        "digits": 3
+      },
+      "rules": [
+        {
+          "years": [2011, 2023],
+          "variables": "B25003_003",
+          "denominator": "B25003_001"
+        }
+      ],
+      "notes": "The existing tract pipeline begins this measure in 2011; earlier years remain missing. This is an implementation coverage boundary."
+    },
+    "median_rent_to_income_percentage": {
+      "title": "Median Rent to Income Percentage",
+      "domain": "Housing",
+      "definition": "The median of the percentage of rent to income among all renter-occupied housing units",
+      "units": "percent",
+      "calculation": "estimate",
+      "moe_method": "moe_sum for multiple components; source MOE for one component",
+      "rounding": {
+        "method": "significant",
+        "digits": 3
+      },
+      "rules": [
+        {
+          "years": [2010, 2023],
+          "variables": "B25071_001"
+        }
+      ],
+      "notes": []
+    },
+    "fraction_high_rent": {
+      "title": "Fraction of Housing Units Paying at least 30% of Income on Rent",
+      "domain": "Housing",
+      "definition": "Renter-occupied housing units paying at least 30% of household income in gross rent divided by all renter-occupied housing units in B25070.",
+      "units": "fraction",
+      "calculation": "proportion",
+      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "rounding": {
+        "method": "decimal",
+        "digits": 3
+      },
+      "rules": [
+        {
+          "years": [2010, 2023],
+          "variables": ["B25070_007", "B25070_008", "B25070_009", "B25070_010"],
+          "denominator": "B25070_001"
+        }
+      ],
+      "notes": "The denominator retains the not-computed rent-to-income category, matching the existing calculation."
+    },
+    "fraction_conditions": {
+      "title": "Fraction of Housing Units with Substandard Housing Conditions",
+      "domain": "Housing",
+      "definition": "substandard housing: incomplete plumbing or kitchens, overcrowding, 30% or more of household income spent on rent or owner costs",
+      "units": "fraction",
+      "calculation": "proportion",
+      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "rounding": {
+        "method": "decimal",
+        "digits": 3
+      },
+      "rules": [
+        {
+          "years": [2010, 2023],
+          "variables": ["B25123_003", "B25123_004", "B25123_005", "B25123_006", "B25123_009", "B25123_010", "B25123_011", "B25123_012"],
+          "denominator": "B25123_001"
+        }
+      ],
+      "notes": []
+    },
+    "fraction_builtbf1970": {
+      "title": "Fraction of Housing Units Built Before 1970",
+      "domain": "Housing",
+      "definition": "Housing units built before 1970 divided by all housing units.",
+      "units": "fraction",
+      "calculation": "proportion",
+      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "rounding": {
+        "method": "decimal",
+        "digits": 3
+      },
+      "rules": [
+        {
+          "years": [2010, 2014],
+          "variables": ["B25034_007", "B25034_008", "B25034_009", "B25034_010"],
+          "denominator": "B25034_001",
+          "note": "Before the 2015 construction-period category change."
+        },
+        {
+          "years": [2015, 2023],
+          "variables": ["B25034_008", "B25034_009", "B25034_010", "B25034_011"],
+          "denominator": "B25034_001",
+          "note": "A new construction-period category shifts the pre-1970 bins by one position.",
+          "source": "https://api.census.gov/data/2015/acs/acs5/groups/B25034.html"
+        }
+      ],
+      "notes": []
+    },
+    "fraction_vacant": {
+      "title": "Fraction of Housing Units that are Vacant",
+      "domain": "Housing",
+      "definition": "Vacant housing units divided by all housing units.",
+      "units": "fraction",
+      "calculation": "proportion",
+      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "rounding": {
+        "method": "decimal",
+        "digits": 3
+      },
+      "rules": [
+        {
+          "years": [2010, 2023],
+          "variables": "B25002_003",
+          "denominator": "B25002_001"
+        }
+      ],
+      "notes": []
+    },
+    "fraction_nhl": {
+      "title": "Fraction of People Not Hispanic/Latino",
+      "domain": "Population",
+      "definition": "Fraction of People Not Hispanic/Latino divided by the total population.",
+      "units": "fraction",
+      "calculation": "proportion",
+      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "rounding": {
+        "method": "decimal",
+        "digits": 3
+      },
+      "rules": [
+        {
+          "years": [2010, 2023],
+          "variables": "B03002_002",
+          "denominator": "B03002_001"
+        }
+      ],
+      "notes": []
+    },
+    "fraction_nhl_w": {
+      "title": "Fraction of People White and Not Hispanic/Latino",
+      "domain": "Population",
+      "definition": "Fraction of People White and Not Hispanic/Latino divided by the total population.",
+      "units": "fraction",
+      "calculation": "proportion",
+      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "rounding": {
+        "method": "decimal",
+        "digits": 3
+      },
+      "rules": [
+        {
+          "years": [2010, 2023],
+          "variables": "B03002_003",
+          "denominator": "B03002_001"
+        }
+      ],
+      "notes": []
+    },
+    "fraction_nhl_b": {
+      "title": "Fraction of People Black and Not Hispanic/Latino",
+      "domain": "Population",
+      "definition": "Fraction of People Black and Not Hispanic/Latino divided by the total population.",
+      "units": "fraction",
+      "calculation": "proportion",
+      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "rounding": {
+        "method": "decimal",
+        "digits": 3
+      },
+      "rules": [
+        {
+          "years": [2010, 2023],
+          "variables": "B03002_004",
+          "denominator": "B03002_001"
+        }
+      ],
+      "notes": []
+    },
+    "fraction_nhl_o": {
+      "title": "Fraction of People Not Black, Not White, and Not Hispanic/Latino",
+      "domain": "Population",
+      "definition": "Fraction of People Not Black, Not White, and Not Hispanic/Latino divided by the total population.",
+      "units": "fraction",
+      "calculation": "proportion",
+      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "rounding": {
+        "method": "decimal",
+        "digits": 3
+      },
+      "rules": [
+        {
+          "years": [2010, 2023],
+          "variables": ["B03002_005", "B03002_006", "B03002_007", "B03002_008", "B03002_009"],
+          "denominator": "B03002_001"
+        }
+      ],
+      "notes": "The numerator includes the other race categories and people reporting two or more races, matching the existing calculation."
+    },
+    "fraction_hl": {
+      "title": "Fraction of People Hispanic/Latino",
+      "domain": "Population",
+      "definition": "Fraction of People Hispanic/Latino divided by the total population.",
+      "units": "fraction",
+      "calculation": "proportion",
+      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "rounding": {
+        "method": "decimal",
+        "digits": 3
+      },
+      "rules": [
+        {
+          "years": [2010, 2023],
+          "variables": "B03002_012",
+          "denominator": "B03002_001"
+        }
+      ],
+      "notes": []
+    },
+    "fraction_hl_w": {
+      "title": "Fraction of People White and Hispanic/Latino",
+      "domain": "Population",
+      "definition": "Fraction of People White and Hispanic/Latino divided by the total population.",
+      "units": "fraction",
+      "calculation": "proportion",
+      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "rounding": {
+        "method": "decimal",
+        "digits": 3
+      },
+      "rules": [
+        {
+          "years": [2010, 2023],
+          "variables": "B03002_013",
+          "denominator": "B03002_001"
+        }
+      ],
+      "notes": []
+    },
+    "fraction_hl_b": {
+      "title": "Fraction of People Black and Hispanic/Latino",
+      "domain": "Population",
+      "definition": "Fraction of People Black and Hispanic/Latino divided by the total population.",
+      "units": "fraction",
+      "calculation": "proportion",
+      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "rounding": {
+        "method": "decimal",
+        "digits": 3
+      },
+      "rules": [
+        {
+          "years": [2010, 2023],
+          "variables": "B03002_014",
+          "denominator": "B03002_001"
+        }
+      ],
+      "notes": []
+    },
+    "fraction_hl_o": {
+      "title": "Fraction of People Not Black, Not White, and Hispanic/Latino",
+      "domain": "Population",
+      "definition": "Fraction of People Not Black, Not White, and Hispanic/Latino divided by the total population.",
+      "units": "fraction",
+      "calculation": "proportion",
+      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "rounding": {
+        "method": "decimal",
+        "digits": 3
+      },
+      "rules": [
+        {
+          "years": [2010, 2023],
+          "variables": ["B03002_015", "B03002_016", "B03002_017", "B03002_018", "B03002_019"],
+          "denominator": "B03002_001"
+        }
+      ],
+      "notes": "The numerator includes the other race categories and people reporting two or more races, matching the existing calculation."
+    },
+    "fraction_lesh": {
+      "title": "Fraction of Households Speaking Limited English",
+      "domain": "Population",
+      "definition": "Limited English speaking households divided by all households in C16002.",
+      "units": "fraction",
+      "calculation": "proportion",
+      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "rounding": {
+        "method": "decimal",
+        "digits": 3
+      },
+      "rules": [
+        {
+          "years": [2016, 2023],
+          "variables": ["C16002_004", "C16002_007", "C16002_010", "C16002_013"],
+          "denominator": "C16002_001"
+        }
+      ],
+      "notes": "The existing tract pipeline begins this measure in 2016; earlier years remain missing. This is an implementation coverage boundary."
+    },
+    "median_income": {
+      "title": "Median Household Income",
+      "domain": "Socioeconomic",
+      "definition": "Median household income in nominal US dollars.",
+      "units": "USD",
+      "calculation": "estimate",
+      "moe_method": "moe_sum for multiple components; source MOE for one component",
+      "rounding": {
+        "method": "significant",
+        "digits": 3
+      },
+      "rules": [
+        {
+          "years": [2010, 2023],
+          "variables": "B19013_001"
+        }
+      ],
+      "notes": []
+    },
+    "median_income_2010adj": {
+      "title": "Median Household Income (in 2010 USD)",
+      "domain": "Socioeconomic",
+      "definition": "Median household income adjusted to 2010 US dollars using R-CPI-U-RS.",
+      "units": "USD_2010",
+      "calculation": "inflation_adjusted",
+      "moe_method": "source MOE scaled by CPI ratio",
+      "rounding": {
+        "method": "significant",
+        "digits": 3
+      },
+      "rules": [
+        {
+          "years": [2010, 2023],
+          "source_measure": "median_income"
+        }
+      ],
+      "notes": []
+    },
+    "fraction_hs": {
+      "title": "Fraction of Adults with At Least High School Education",
+      "domain": "Socioeconomic",
+      "definition": "People age 25 years and older with at least a high school diploma or equivalent divided by all people age 25 years and older.",
+      "units": "fraction",
+      "calculation": "proportion",
+      "moe_method": "moe_prop with moe_sum for multiple numerator components",
+      "rounding": {
+        "method": "decimal",
+        "digits": 3
+      },
+      "rules": [
+        {
+          "years": [2012, 2023],
+          "variables": ["B15003_017", "B15003_018", "B15003_019", "B15003_020", "B15003_021", "B15003_022", "B15003_023", "B15003_024", "B15003_025"],
+          "denominator": "B15003_001"
+        }
+      ],
+      "notes": "The existing tract pipeline begins this measure in 2012; earlier years remain missing. This is an implementation coverage boundary."
+    }
+  }
+}
