@@ -46,7 +46,9 @@ tracts_2020 <-
 
 tracts_needed <- bind_rows(tracts_2010, tracts_2020)
 
-my_get_acs <-
+source("R/harmonize_ct_tracts.R")
+
+get_acs_tracts <-
   purrr::partial(
     get_acs,
     geography = "tract",
@@ -55,13 +57,18 @@ my_get_acs <-
     survey = "acs5"
   )
 
+my_get_acs <- function(..., year) {
+  harmonize_ct_tracts(get_acs_tracts(..., year = year), year)
+}
+
 mappp_dfr <- function(.x, .f) {
   mappp(
     .x,
     .f,
     parallel = FALSE,
     cache = TRUE,
-    cache_name = "acs_data_cache"
+    # The cached calculation bodies do not capture changes to my_get_acs.
+    cache_name = "acs_data_cache/ct_2022_crosswalk"
   ) |>
     dplyr::bind_rows()
 }
