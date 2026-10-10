@@ -4,6 +4,8 @@ message: >-
   and acknowledgments of the original Census Bureau and BLS data.
 type: dataset
 title: Harmonized Historical ACS Measures
+version: 3.0.0
+date-released: "2026-10-10"
 authors:
   - name: Harmonized Historical ACS Measures contributors
 url: https://github.com/geomarker-io/hh_acs_measures

@@ -1,6 +1,6 @@
 # Release changelog
 
-## 3.0.0 — In preparation
+## 3.0.0 — 2026-10-10
 
 ### Data and compatibility
 
