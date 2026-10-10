@@ -6,6 +6,7 @@ source('R/calculations.R')
 source('R/summary_files.R')
 source('R/sequence_files.R')
 source('R/sources.R')
+source('R/release_notes.R')
 source('R/release.R')
 
 args <- commandArgs(trailingOnly = TRUE)

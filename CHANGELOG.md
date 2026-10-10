@@ -47,6 +47,9 @@
   yearly tract unions, and reader caching.
 - Prepare source inventories before annual calculations and pass them explicitly
   to the release writer; metadata serialization no longer fetches lookup files.
+- Generate Markdown catalog tables and expandable source/calculation details for
+  the release description, alongside the data assets, without committing
+  generated documentation to the repository.
 - Add an MIT license for original code and documentation, source-data reuse
   guidance, a suggested citation, and this changelog.
 

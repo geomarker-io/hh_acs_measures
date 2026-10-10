@@ -5,6 +5,7 @@ source('R/calculations.R')
 source('R/summary_files.R')
 source('R/sequence_files.R')
 source('R/sources.R')
+source('R/release_notes.R')
 source('R/release.R')
 
 run_release_tests <- function() {
@@ -84,6 +85,10 @@ run_release_tests <- function() {
     stopifnot(identical(unique(group$year), 2021L + i), nrow(group) == 2L)
   }
   snapshot <- yaml::read_yaml(paths[2])
+  stopifnot(
+    length(paths) == 4L,
+    identical(readLines(paths[4]), release_notes_markdown(snapshot))
+  )
   software <- snapshot$release$software
   build_packages <- c('arrow', 'data.table', 'dplyr', 'stow', 'yaml')
   stopifnot(
