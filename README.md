@@ -42,7 +42,7 @@ assignments to the selected ACS year.
 [Browse measure definitions](measures.yml) ·
 [Development guide](develop.md)
 
-## Short R example
+## Read into R
 
 ```r
 # install.packages(c("stow", "nanoparquet"))
@@ -52,4 +52,22 @@ d <-
   paste0("v3.0.0/hh_acs_measures-v3.0.0.parquet") |>
   stow::stow() |>
   nanoparquet::read_parquet()
+```
+
+## Read subset into R
+
+Use Arrow to filter before loading rows into R. This example reads only Ohio
+tracts (`39` is Ohio's state FIPS code) for 2024. The complete file is downloaded
+and cached by `stow`, but only the matching rows are collected into memory.
+
+```r
+# install.packages(c("stow", "arrow", "dplyr"))
+
+d <-
+  "https://github.com/geomarker-io/hh_acs_measures/releases/download/" |>
+  paste0("v3.0.0/hh_acs_measures-v3.0.0.parquet") |>
+  stow::stow() |>
+  arrow::open_dataset() |>
+  dplyr::filter(year == 2024, substr(census_tract_id, 1, 2) == "39") |>
+  dplyr::collect()
 ```
