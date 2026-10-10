@@ -42,6 +42,11 @@
   platform, and build-package versions in each newly built release catalog.
 - Add fixture-based regression checks for parsing, calculations, catalog
   validation, and release writing.
+- Expand fixtures for malformed Summary Files, historical lookup offsets and
+  sequence keys, missing calculation components, zero-count MOEs, CPI errors,
+  yearly tract unions, and reader caching.
+- Prepare source inventories before annual calculations and pass them explicitly
+  to the release writer; metadata serialization no longer fetches lookup files.
 - Add an MIT license for original code and documentation, source-data reuse
   guidance, a suggested citation, and this changelog.
 

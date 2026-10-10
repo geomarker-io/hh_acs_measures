@@ -35,13 +35,16 @@ release_software_versions <- function(description_path = 'DESCRIPTION') {
 }
 
 # get_year returns one calculated year. Only that year's rows need to be in memory.
+# sources is prepared by the caller; serialization never discovers/downloads sources.
 write_release_assets <- function(
   get_year,
   catalog,
   geography,
   version,
-  directory
+  directory,
+  sources
 ) {
+  force(sources)
   paths <- release_asset_paths(catalog, geography, version, directory)
   if (any(file.exists(paths))) {
     stop('Release assets already exist; use a new version or empty directory')
@@ -117,7 +120,6 @@ write_release_assets <- function(
   sink <- NULL
   snapshot <- catalog
   snapshot$dataset$inflation$file <- basename(paths[3])
-  sources <- summary_source_files(catalog, geography)
   snapshot$release <- list(
     name = geo$resource,
     tag = paste0('v', version),

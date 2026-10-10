@@ -326,24 +326,3 @@ required_acs_variables <- function(catalog, year) {
     use.names = FALSE
   ))
 }
-
-summary_source_files <- function(catalog, geography) {
-  dplyr::bind_rows(lapply(
-    rule_years(catalog$geographies[[geography]]),
-    function(year) {
-      if (year < 2021L) {
-        return(sequence_source_files(catalog, geography, year))
-      }
-      tables <- unique(sub('_.*', '', required_acs_variables(catalog, year)))
-      data.frame(
-        year = year,
-        table = tables,
-        url = vapply(
-          tables,
-          function(table) summary_file_url(year, table),
-          character(1)
-        )
-      )
-    }
-  ))
-}

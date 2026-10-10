@@ -14,10 +14,14 @@ preparing releases. For downloading and using the data, see [README.md](README.m
 | `R/catalog.R` | Catalog validation, year-rule selection, and source-file inventories |
 | `R/summary_files.R` | Source downloads, missing-value parsing, and table-based Summary File reading |
 | `R/sequence_files.R` | Sequence-based Summary File reading |
+| `R/sources.R` | Source-file inventories and historical lookup preparation |
 | `R/calculations.R` and `R/moe.R` | Estimate calculations, inflation adjustment, rounding, and derived MOEs |
 | `make_hh_acs_data.R` and `R/release.R` | Annual builds and versioned release-asset preparation |
 | `tests/test-corrections.R` | Regression checks for MOEs, source parsing, catalog validation, and annual calculations |
 | `tests/test-release.R` | Fixture-based checks for release output and annual column types |
+| `tests/test-parsers.R` | Summary table, lookup, geography, and ZIP parser fixtures |
+| `tests/test-calculations.R` | Aggregation, denominators, inflation, rounding, and annual tract unions |
+| `tests/test-sources.R` | Source inventories, offline settings, and reader caching |
 
 ## Maintain the catalog
 
@@ -113,6 +117,14 @@ counts, primary keys, columns, yearly row groups, and source-file URLs. The CPI
 input is copied into the release, and the snapshot references its versioned
 filename.
 
+Source preparation is separate from serialization. Before calculating years,
+the command-line script calls `summary_source_files()` in `R/sources.R` with its
+explicit offline setting. Historical URL inventories need the annual lookup
+files; modern inventories can be enumerated directly from the catalog. The
+prepared inventory is passed to `write_release_assets(..., sources)` so saving
+release metadata never discovers or downloads source files. The annual readers
+continue to fetch their required data through the existing cache.
+
 Each release catalog also records `release.software`: the R version, R platform,
 and loaded versions of all build packages listed in `DESCRIPTION`'s `Imports`.
 These are captured when release writing starts and saved in the matching
@@ -126,6 +138,9 @@ Run the release tests from the repository root:
 ```sh
 Rscript tests/test-release.R
 Rscript tests/test-corrections.R
+Rscript tests/test-parsers.R
+Rscript tests/test-calculations.R
+Rscript tests/test-sources.R
 ```
 
 Tests also require `nanoparquet` in addition to the build dependencies. They use
