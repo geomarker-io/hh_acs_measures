@@ -2,6 +2,7 @@ Type: Project
 Title: Harmonized Historical ACS Measures
 Description: Build and release historical American Community Survey five-year
     measures and margins of error for census tracts using a shared measure catalog.
+License: MIT + file LICENSE
 Depends:
     R (>= 4.1.0)
 Imports:
