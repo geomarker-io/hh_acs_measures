@@ -5,6 +5,7 @@ source('R/moe.R')
 source('R/calculations.R')
 source('R/summary_files.R')
 source('R/sequence_files.R')
+source('R/sources.R')
 source('R/release.R')
 
 args <- commandArgs(trailingOnly = TRUE)
@@ -26,6 +27,7 @@ if (any(file.exists(paths))) {
 }
 offline <- nzchar(Sys.getenv('HH_ACS_OFFLINE'))
 cpi <- read.csv(catalog$dataset$inflation$file)
+sources <- summary_source_files(catalog, 'tract', offline = offline)
 
 get_year <- function(year) {
   message('Building tract ', year)
@@ -38,4 +40,4 @@ get_year <- function(year) {
   )
 }
 
-write_release_assets(get_year, catalog, 'tract', version, directory)
+write_release_assets(get_year, catalog, 'tract', version, directory, sources)

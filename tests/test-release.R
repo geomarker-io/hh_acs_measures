@@ -4,6 +4,7 @@ source('R/moe.R')
 source('R/calculations.R')
 source('R/summary_files.R')
 source('R/sequence_files.R')
+source('R/sources.R')
 source('R/release.R')
 
 run_release_tests <- function() {
@@ -13,6 +14,17 @@ run_release_tests <- function() {
   catalog <- read_catalog()
   stopifnot(identical(names(catalog$geographies), 'tract'))
   catalog$geographies$tract$years <- c(2021L, 2023L)
+  sources <- summary_source_files(catalog, 'tract', download = function(...) {
+    stop('Table-based inventories must not download files')
+  })
+  # The writer must use the supplied inventory, even when source discovery is
+  # unavailable. This catches accidental file access while saving metadata.
+  writer <- new.env(parent = globalenv())
+  writer$summary_source_files <- writer$stow_source_file <- function(...) {
+    stop('Release serialization must not discover or download sources')
+  }
+  sys.source('R/release.R', envir = writer)
+  write_release_assets <- writer$write_release_assets
   columns <- measure_columns(catalog, 'tract')
   get_year <- function(year) {
     d <- data.frame(
@@ -28,7 +40,14 @@ run_release_tests <- function() {
     }
     d[columns]
   }
-  paths <- write_release_assets(get_year, catalog, 'tract', '3.0.0', directory)
+  paths <- write_release_assets(
+    get_year,
+    catalog,
+    'tract',
+    '3.0.0',
+    directory,
+    sources
+  )
   saved <- as.data.frame(arrow::read_parquet(paths[1]))
   ordinary <- nanoparquet::read_parquet(paths[1])
   expected <- dplyr::bind_rows(lapply(2021:2023, function(year) {
@@ -92,6 +111,12 @@ run_release_tests <- function() {
       c('census_tract_id', 'year')
     ),
     length(snapshot$release$row_groups) == 3L,
+    identical(
+      snapshot$release$source_files,
+      lapply(seq_len(nrow(sources)), function(i) {
+        as.list(sources[i, ])
+      })
+    ),
     setequal(
       vapply(snapshot$release$source_files, function(x) x$year, integer(1)),
       2021:2023
@@ -117,6 +142,11 @@ run_release_tests <- function() {
       expected$census_tract_id == '39061000200',
     names(result)
   ]
+  # Parallel Arrow scans need not return row groups in file order.
+  result <- result[order(result$year, result$census_tract_id), ]
+  expected_query <- expected_query[
+    order(expected_query$year, expected_query$census_tract_id),
+  ]
   stopifnot(isTRUE(all.equal(
     as.data.frame(result),
     expected_query,
@@ -131,7 +161,14 @@ run_release_tests <- function() {
     )
   }
   rejected(
-    write_release_assets(get_year, catalog, 'tract', '3.0.0', directory),
+    write_release_assets(
+      get_year,
+      catalog,
+      'tract',
+      '3.0.0',
+      directory,
+      sources
+    ),
     'already exist'
   )
   rejected(
@@ -142,6 +179,21 @@ run_release_tests <- function() {
     release_asset_paths(catalog, 'tract', 'bad', directory),
     'semantic release version'
   )
+  # A failed inventory must surface before invoking the year builder or
+  # creating output files, including when the caller passes a lazy expression.
+  target <- file.path(directory, 'inventory_failure')
+  rejected(
+    write_release_assets(
+      function(year) stop('Year builder must not run'),
+      catalog,
+      'tract',
+      '3.0.0',
+      target,
+      stop('Source preparation failed')
+    ),
+    'Source preparation failed'
+  )
+  stopifnot(!dir.exists(target))
   failures <- list(
     missing_year = function(year) {
       d <- get_year(year)
@@ -182,7 +234,14 @@ run_release_tests <- function() {
   for (name in names(failures)) {
     target <- file.path(directory, name)
     error <- tryCatch(
-      write_release_assets(failures[[name]], catalog, 'tract', '3.0.0', target),
+      write_release_assets(
+        failures[[name]],
+        catalog,
+        'tract',
+        '3.0.0',
+        target,
+        sources
+      ),
       error = identity
     )
     stopifnot(
