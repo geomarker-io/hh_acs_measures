@@ -2,8 +2,8 @@ source('R/catalog.R')
 source('R/moe.R')
 source('R/calculations.R')
 source('R/summary_files.R')
+source('R/sequence_files.R')
 source('R/release.R')
-source('R/harmonize_ct_tracts.R')
 
 build_release <- function(
   geography,
@@ -19,12 +19,10 @@ build_release <- function(
     stop('Release assets already exist; use a new version or empty directory')
   }
   offline <- nzchar(Sys.getenv('HH_ACS_OFFLINE'))
-  scaffold <- make_scaffold(catalog, geography, offline = offline)
   cpi <- read.csv(catalog$dataset$inflation$file)
   d <- build_measure_data(
     catalog,
     geography,
-    scaffold,
     summary_file_getter(catalog, geography, offline = offline),
     cpi
   )

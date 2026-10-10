@@ -13,7 +13,7 @@ release_asset_paths <- function(catalog, geography, version, directory) {
 
 write_release_assets <- function(d, catalog, geography, version, directory) {
   geo <- catalog$geographies[[geography]]
-  keys <- c(geo$id, geo$vintage, 'year')
+  keys <- c(geo$id, 'year')
   columns <- c(
     keys,
     unlist(

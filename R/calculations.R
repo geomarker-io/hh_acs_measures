@@ -89,22 +89,15 @@ round_measure <- function(x, spec) {
   )
 }
 
-build_measure_data <- function(catalog, geography, scaffold, get_acs, cpi) {
+build_measure_data <- function(catalog, geography, get_acs, cpi) {
   geo <- catalog$geographies[[geography]]
   if (is.null(geo)) {
     stop('Unknown geography: ', geography)
   }
-  keys <- c(geo$id, geo$vintage, 'year')
-  if (anyDuplicated(scaffold[c(geo$id, geo$vintage)])) {
-    stop('Duplicate scaffold keys')
-  }
-  # The scaffold determines the rows, including years where a measure is absent.
-  output <- dplyr::bind_rows(lapply(rule_years(geo), function(year) {
-    vintage <- geography_vintage(catalog, geography, year)
-    d <- scaffold[scaffold[[geo$vintage]] == vintage, , drop = FALSE]
-    d$year <- year
-    d
-  }))
+  keys <- c(geo$id, 'year')
+  # Each table contributes its published records; retain their union by ACS year.
+  output <- data.frame(id = character(), year = integer())
+  names(output)[1] <- geo$id
   names_order <- names(catalog$measures)
   # Derivations use unrounded source estimates and MOEs.
   names_order <- c(
@@ -126,7 +119,13 @@ build_measure_data <- function(catalog, geography, scaffold, get_acs, cpi) {
   computed <- list()
   for (name in names_order) {
     spec <- catalog$measures[[name]]
-    parts <- lapply(measure_years(catalog, name, geography), function(year) {
+    years <- measure_years(catalog, name, geography)
+    if (!length(years)) {
+      output[[name]] <- round_measure(rep(NA_real_, nrow(output)), spec)
+      output[[paste0(name, '_moe')]] <- rep(NA_real_, nrow(output))
+      next
+    }
+    parts <- lapply(years, function(year) {
       rule <- select_rule(spec$rules, year, name)
       if (spec$calculation == 'inflation_adjusted') {
         d <- computed[[rule$source_measure]]
@@ -146,17 +145,10 @@ build_measure_data <- function(catalog, geography, scaffold, get_acs, cpi) {
     d <- dplyr::bind_rows(parts)
     computed[[name]] <- d
     names(d)[names(d) == 'GEOID'] <- geo$id
-    d[[geo$vintage]] <- vapply(
-      d$year,
-      function(year) {
-        geography_vintage(catalog, geography, year)
-      },
-      character(1)
-    )
     d[[name]] <- round_measure(d$estimate, spec)
     d[[paste0(name, '_moe')]] <- d$moe
     d <- d[c(keys, name, paste0(name, '_moe'))]
-    output <- dplyr::left_join(output, d, by = keys)
+    output <- dplyr::full_join(output, d, by = keys)
   }
   output[c(
     keys,
