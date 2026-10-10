@@ -157,7 +157,7 @@ measure_years <- function(catalog, name, geography) {
   )
 }
 
-# Only table-based five-year Summary Files (2021 onward) are supported.
+# URL helper for table-based five-year Summary Files (2021 onward).
 summary_file_url <- function(year, table) {
   if (
     length(year) != 1L || is.na(year) || year < 2021 || year != as.integer(year)

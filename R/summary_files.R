@@ -1,12 +1,18 @@
 # Each reader uses the path returned by stow directly. etag = FALSE pins the
 # local copy to its year-specific URL and avoids repeated network probes.
 stow_source_file <- function(url, subdir, offline = FALSE) {
+  validate <- if (grepl('\\.zip$', url)) {
+    function(path) nrow(utils::unzip(path, list = TRUE)) > 0L
+  } else {
+    NULL
+  }
   stow::stow(
     url,
     package = 'hh.acs.measures',
     subdir = subdir,
     etag = FALSE,
-    offline = offline
+    offline = offline,
+    validate = validate
   )
 }
 

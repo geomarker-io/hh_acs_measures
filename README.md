@@ -21,7 +21,8 @@ calculation rules, geographic coverage, and year-specific notes.
 Read the downloaded data in R:
 
 ```r
-data <- arrow::read_parquet("path/to/downloaded-file.parquet")
+# install.packages("nanoparquet")
+data <- nanoparquet::read_parquet("path/to/downloaded-file.parquet")
 ```
 
 You can use `stow` to download and cache release assets. Use the catalog attached
@@ -120,7 +121,8 @@ catalog requires 15–19 tables per year, depending on historical availability.
 For 2021 onward, each table file supplies both tract and ZCTA data, so builds
 share downloads. For 2010–2020, the annual lookup maps table variables to
 sequence-file columns. The importer downloads only required sequence ZIPs and
-geography CSVs: state files for tracts and national files for ZCTAs. It joins
+geography CSVs: state files for tracts and separate US and Puerto Rico files for
+ZCTAs. It joins
 estimates and MOEs to geographic records by `LOGRECNO`, preserves leading zeros,
 and reads the selected columns. Neither importer requires a Census API key.
 
@@ -139,10 +141,19 @@ grouped further by geography and state; their lookup files are shared. Downloads
 `etag = FALSE`, so an existing year-specific copy is reused without contacting
 the server. Parsed tables are reused within a build; measures are recalculated.
 
-Use `stow::stow_path(package = "hh.acs.measures")` to locate the cache,
-`stow::stow_info()` to inspect its files, and `stow::stow_remove()` to remove a
-copy before downloading a revised source file. `R_USER_DATA_DIR` can relocate
-the cache.
+Locate and inspect the build's cache, or remove a copy before downloading a
+revised source file:
+
+```r
+stow::stow_path(package = "hh.acs.measures")
+stow::stow_info(package = "hh.acs.measures")
+
+# Remove a specific cached source file when it needs to be downloaded again:
+# stow::stow_remove(source_url, package = "hh.acs.measures", subdir = "summary-files/2024")
+```
+
+For removal, use the source URL and cache subdirectory used by the importer.
+`R_USER_DATA_DIR` can relocate the cache.
 
 Once all source files are cached, builds can run offline:
 

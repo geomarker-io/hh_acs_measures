@@ -69,9 +69,9 @@ read_sequence_lookup <- function(path) {
 sequence_units <- function(catalog, geography) {
   if (geography == 'zcta') {
     return(data.frame(
-      state = 'US',
-      abbreviation = 'us',
-      directory = 'UnitedStates'
+      state = c('US', '72'),
+      abbreviation = c('us', 'pr'),
+      directory = c('UnitedStates', 'PuertoRico')
     ))
   }
   state_fips <- c(

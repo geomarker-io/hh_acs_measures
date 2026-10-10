@@ -1,16 +1,6 @@
 # ACS approximation formulas, independent of a data-access package.
 # Census guidance: https://www2.census.gov/programs-surveys/acs/tech_docs/accuracy/MultiyearACSAccuracyofData2023.pdf
 # Inputs retain the published 90% confidence level.
-acs_moe_sum <- function(moe, estimate) {
-  if (length(moe) != length(estimate)) {
-    stop('Estimate and MOE lengths differ')
-  }
-  # Multiple zero-count categories contribute only their largest MOE.
-  zero <- !is.na(estimate) & estimate == 0
-  terms <- if (any(zero)) c(max(moe[zero]), moe[!zero]) else moe
-  sqrt(sum(terms^2))
-}
-
 acs_moe_proportion <- function(num, denom, moe_num, moe_denom) {
   if (length(unique(lengths(list(num, denom, moe_num, moe_denom)))) != 1L) {
     stop('Proportion inputs must have equal lengths')
