@@ -59,7 +59,6 @@ read_summary_table <- function(path, variables, geography, states = NULL) {
   pattern <- switch(
     geography,
     tract = '^1400000US[0-9]{11}$',
-    zcta = '^860Z200US[0-9]{5}$',
     stop('Unknown geography')
   )
   d <- d[grepl(pattern, d$GEO_ID), , drop = FALSE]

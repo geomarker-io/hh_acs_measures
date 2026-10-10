@@ -67,12 +67,8 @@ read_sequence_lookup <- function(path) {
 }
 
 sequence_units <- function(catalog, geography) {
-  if (geography == 'zcta') {
-    return(data.frame(
-      state = c('US', '72'),
-      abbreviation = c('us', 'pr'),
-      directory = c('UnitedStates', 'PuertoRico')
-    ))
+  if (geography != 'tract') {
+    stop('Only census tract releases are supported')
   }
   state_fips <- c(
     1,
@@ -149,11 +145,10 @@ sequence_units <- function(catalog, geography) {
 
 sequence_data_url <- function(year, geography, unit, sequence = NULL) {
   sequence_lookup_url(year) # Check the supported range.
-  part <- if (geography == 'tract') {
-    'Tracts_Block_Groups_Only'
-  } else {
-    'All_Geographies_Not_Tracts_Block_Groups'
+  if (geography != 'tract') {
+    stop('Only census tract releases are supported')
   }
+  part <- 'Tracts_Block_Groups_Only'
   file <- if (is.null(sequence)) {
     paste0('g', year, '5', unit$abbreviation, '.csv')
   } else {
@@ -184,10 +179,13 @@ read_sequence_geography <- function(path, geography) {
     showProgress = FALSE
   )
   names(d) <- c('level', 'component', 'LOGRECNO', 'GEO_ID')
-  level <- if (geography == 'tract') '140' else '860'
+  if (geography != 'tract') {
+    stop('Only census tract releases are supported')
+  }
+  level <- '140'
   d <- d[d$level == level & d$component == '00', , drop = FALSE]
   d$GEOID <- sub('^.*US', '', d$GEO_ID)
-  width <- if (geography == 'tract') 11L else 5L
+  width <- 11L
   if (
     !nrow(d) ||
       any(nchar(d$GEOID) != width) ||

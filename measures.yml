@@ -30,7 +30,7 @@ dataset:
     inputs at the same confidence level.
   - Each measure has an accompanying _moe field in the same units. Rounding rules
     apply to estimates only; MOEs retain their precision.
-  - Coverage starts in 2010 for tracts and 2011 for ZCTAs. Sequence-based Summary
+  - Coverage starts in 2010 for tracts. Sequence-based Summary
     Files are used through 2020, and table-based Summary Files from 2021 onward.
   source:
     format: ACS five-year Summary File (sequence-based through 2020; table-based from 2021)
@@ -97,13 +97,6 @@ geographies:
     - '54'
     - '55'
     - '56'
-  zcta:
-    years: [2011, 2024]
-    id: zcta
-    resource: hh_acs_measures_zcta
-    notes:
-    - Each ACS year retains the ZCTA identifiers published in its Summary Files.
-    - Coverage includes Puerto Rico; historical releases use separate US and Puerto Rico files.
 measures:
   fraction_poverty:
     title: Fraction of People in Poverty
