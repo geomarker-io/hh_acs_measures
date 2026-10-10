@@ -12,139 +12,264 @@ select_rule <- function(rules, year, label, allow_missing = FALSE) {
   matches[[1]]
 }
 
-validate_catalog <- function(catalog) {
-  fail <- function(...) stop(..., call. = FALSE)
-  check_range <- function(rule) {
-    years <- unlist(rule$years)
-    if (
-      length(years) != 2L ||
-        anyNA(years) ||
-        !is.numeric(years) ||
-        any(years != as.integer(years)) ||
-        years[1] > years[2]
-    ) {
-      fail('Each year range must contain two ordered integer years')
+catalog_error <- function(...) stop(..., call. = FALSE)
+
+is_catalog_string <- function(x) {
+  is.character(x) && length(x) == 1L && !is.na(x) && nzchar(x)
+}
+
+validate_year_range <- function(spec) {
+  years <- unlist(spec$years)
+  if (
+    length(years) != 2L ||
+      !is.numeric(years) ||
+      anyNA(years) ||
+      any(!is.finite(years)) ||
+      any(years != as.integer(years)) ||
+      years[1] > years[2]
+  ) {
+    catalog_error('Each year range must contain two ordered integer years')
+  }
+}
+
+validate_measure_fields <- function(spec, name) {
+  for (field in c(
+    'title',
+    'domain',
+    'definition',
+    'units',
+    'calculation',
+    'moe_method'
+  )) {
+    if (!is_catalog_string(spec[[field]])) {
+      catalog_error(name, ': missing ', field)
     }
   }
-  if (!identical(catalog$schema_version, 3L)) {
-    fail('Unsupported catalog schema_version')
+  if (
+    !spec$calculation %in%
+      c('proportion', 'count', 'estimate', 'inflation_adjusted')
+  ) {
+    catalog_error(name, ': unknown calculation')
   }
-  if (!identical(catalog$dataset$moe_level, 90L)) {
-    fail('Use the published 90% ACS MOEs')
+  if (!length(spec$rules)) {
+    catalog_error(name, ': missing rules')
   }
-  if (!length(catalog$measures) || anyDuplicated(names(catalog$measures))) {
-    fail('Measures must have unique names')
+  method <- spec$rounding$method
+  digits <- spec$rounding$digits
+  if (
+    !is_catalog_string(method) ||
+      !method %in% c('integer', 'decimal', 'significant') ||
+      !is.numeric(digits) ||
+      length(digits) != 1L ||
+      is.na(digits) ||
+      !is.finite(digits) ||
+      digits < 0 ||
+      digits != as.integer(digits) ||
+      (method == 'significant' && digits == 0)
+  ) {
+    catalog_error(name, ': invalid rounding')
   }
-  calculators <- c('proportion', 'count', 'estimate', 'inflation_adjusted')
-  for (name in names(catalog$measures)) {
-    spec <- catalog$measures[[name]]
-    for (field in c(
-      'title',
-      'domain',
-      'definition',
-      'units',
-      'calculation',
-      'moe_method'
-    )) {
+}
+
+validate_measure_rules <- function(spec, name, measures) {
+  for (rule in spec$rules) {
+    validate_year_range(rule)
+    if (rule$years[[1]] < 2010L) {
+      catalog_error(name, ': source rules must begin in 2010 or later')
+    }
+    if (spec$calculation == 'inflation_adjusted') {
+      source <- rule$source_measure
       if (
-        !is.character(spec[[field]]) ||
-          length(spec[[field]]) != 1L ||
-          !nzchar(spec[[field]])
+        !is_catalog_string(source) ||
+          !source %in% names(measures) ||
+          measures[[source]]$calculation == 'inflation_adjusted'
       ) {
-        fail(name, ': missing ', field)
+        catalog_error(name, ': inflation source must be an unadjusted measure')
       }
-    }
-    if (!spec$calculation %in% calculators) {
-      fail(name, ': unknown calculation')
-    }
-    if (!length(spec$rules)) {
-      fail(name, ': missing rules')
-    }
-    if (
-      !spec$rounding$method %in% c('integer', 'decimal', 'significant') ||
-        length(spec$rounding$digits) != 1L ||
-        !is.numeric(spec$rounding$digits) ||
-        spec$rounding$digits < 0
-    ) {
-      fail(name, ': invalid rounding')
-    }
-    for (rule in spec$rules) {
-      check_range(rule)
-      if (rule$years[[1]] < 2010L) {
-        fail(name, ': source rules must begin in 2010 or later')
+    } else {
+      variables <- unlist(rule$variables)
+      if (
+        !length(variables) ||
+          !is.character(variables) ||
+          anyNA(variables) ||
+          anyDuplicated(variables) ||
+          any(!grepl('^[BC][0-9]{5}_[0-9]{3}$', variables))
+      ) {
+        catalog_error(name, ': invalid ACS variables')
       }
-      if (spec$calculation == 'inflation_adjusted') {
-        source <- rule$source_measure
+      if (spec$calculation == 'estimate' && length(variables) != 1L) {
+        catalog_error(name, ': estimate requires one variable')
+      }
+      if (spec$calculation == 'proportion') {
         if (
-          is.null(source) ||
-            !source %in% names(catalog$measures) ||
-            catalog$measures[[source]]$calculation == 'inflation_adjusted'
+          !is_catalog_string(rule$denominator) ||
+            !grepl('^[BC][0-9]{5}_[0-9]{3}$', rule$denominator)
         ) {
-          fail(name, ': inflation source must be an unadjusted measure')
+          catalog_error(name, ': invalid denominator')
         }
-      } else {
-        variables <- unlist(rule$variables)
-        if (
-          !length(variables) ||
-            anyDuplicated(variables) ||
-            any(!grepl('^[BC][0-9]{5}_[0-9]{3}$', variables))
-        ) {
-          fail(name, ': invalid ACS variables')
-        }
-        if (spec$calculation == 'estimate' && length(variables) != 1L) {
-          fail(name, ': estimate requires one variable')
-        }
-        if (
-          spec$calculation == 'proportion' &&
-            (length(rule$denominator) != 1L ||
-              !grepl('^[BC][0-9]{5}_[0-9]{3}$', rule$denominator))
-        ) {
-          fail(name, ': invalid denominator')
-        }
-        if (
-          spec$calculation == 'proportion' &&
-            !sub('_.*', '', rule$denominator) %in% sub('_.*', '', variables)
-        ) {
-          fail(
+        if (!sub('_.*', '', rule$denominator) %in% sub('_.*', '', variables)) {
+          catalog_error(
             name,
             ': denominator must share a table with a numerator component'
           )
         }
       }
     }
-    years <- unlist(lapply(spec$rules, rule_years))
-    if (anyDuplicated(years)) {
-      fail(name, ': overlapping year rules')
-    }
-    if (!identical(sort(years), seq.int(min(years), max(years)))) {
-      fail(name, ': gaps between year rules')
+  }
+  years <- unlist(lapply(spec$rules, rule_years))
+  if (anyDuplicated(years)) {
+    catalog_error(name, ': overlapping year rules')
+  }
+  if (!identical(sort(years), seq.int(min(years), max(years)))) {
+    catalog_error(name, ': gaps between year rules')
+  }
+}
+
+# The supported 50 states and DC, in FIPS order.
+acs_state_fips <- c(
+  '01',
+  '02',
+  '04',
+  '05',
+  '06',
+  '08',
+  '09',
+  '10',
+  '11',
+  '12',
+  '13',
+  '15',
+  '16',
+  '17',
+  '18',
+  '19',
+  '20',
+  '21',
+  '22',
+  '23',
+  '24',
+  '25',
+  '26',
+  '27',
+  '28',
+  '29',
+  '30',
+  '31',
+  '32',
+  '33',
+  '34',
+  '35',
+  '36',
+  '37',
+  '38',
+  '39',
+  '40',
+  '41',
+  '42',
+  '44',
+  '45',
+  '46',
+  '47',
+  '48',
+  '49',
+  '50',
+  '51',
+  '53',
+  '54',
+  '55',
+  '56'
+)
+
+validate_geography <- function(spec, geography, measures) {
+  validate_year_range(spec)
+  if (spec$years[[1]] < 2010L) {
+    catalog_error(geography, ': supported ACS coverage begins in 2010')
+  }
+  for (field in c('id', 'resource')) {
+    if (!is_catalog_string(spec[[field]])) {
+      catalog_error(geography, ': missing ', field)
     }
   }
-  if (!identical(names(catalog$geographies), 'tract')) {
-    fail('Only census tract releases are supported')
+  states <- spec$state_fips
+  if (
+    !is.character(states) ||
+      !length(states) ||
+      anyNA(states) ||
+      anyDuplicated(states) ||
+      any(!states %in% acs_state_fips)
+  ) {
+    catalog_error(
+      geography,
+      ': state_fips must contain unique supported two-digit codes'
+    )
   }
-  for (geography in names(catalog$geographies)) {
-    spec <- catalog$geographies[[geography]]
-    check_range(spec)
-    first_year <- 2010L
-    if (spec$years[[1]] < first_year) {
-      fail(geography, ': supported ACS coverage begins in ', first_year)
+  final_year <- spec$years[[2]]
+  for (name in names(measures)) {
+    measure <- measures[[name]]
+    years <- unlist(lapply(measure$rules, rule_years))
+    if (!final_year %in% years) {
+      catalog_error(
+        name,
+        ': source rules must cover the final release year ',
+        final_year
+      )
     }
-    for (year in rule_years(spec)) {
-      for (name in names(catalog$measures)) {
-        measure <- catalog$measures[[name]]
-        rule <- select_rule(measure$rules, year, name, allow_missing = TRUE)
-        if (!is.null(rule) && measure$calculation == 'inflation_adjusted') {
-          select_rule(
-            catalog$measures[[rule$source_measure]]$rules,
-            year,
-            rule$source_measure
-          )
-        }
+    for (year in intersect(rule_years(spec), years)) {
+      if (measure$calculation == 'inflation_adjusted') {
+        rule <- select_rule(measure$rules, year, name)
+        select_rule(
+          measures[[rule$source_measure]]$rules,
+          year,
+          rule$source_measure
+        )
       }
     }
   }
+}
+
+validate_catalog <- function(catalog) {
+  if (!identical(catalog$schema_version, 3L)) {
+    catalog_error('Unsupported catalog schema_version')
+  }
+  if (!identical(catalog$dataset$moe_level, 90L)) {
+    catalog_error('Use the published 90% ACS MOEs')
+  }
+  measure_names <- names(catalog$measures)
+  if (
+    !length(catalog$measures) ||
+      length(measure_names) != length(catalog$measures) ||
+      anyNA(measure_names) ||
+      any(!nzchar(measure_names)) ||
+      anyDuplicated(measure_names)
+  ) {
+    catalog_error('Measures must have unique names')
+  }
+  # Check every measure's fields before resolving references between measures.
+  for (name in measure_names) {
+    validate_measure_fields(catalog$measures[[name]], name)
+  }
+  for (name in measure_names) {
+    validate_measure_rules(catalog$measures[[name]], name, catalog$measures)
+  }
+  if (!identical(names(catalog$geographies), 'tract')) {
+    catalog_error('Only census tract releases are supported')
+  }
+  validate_geography(catalog$geographies$tract, 'tract', catalog$measures)
   invisible(catalog)
+}
+
+# Calculations and serialization use the same catalog-defined column order.
+measure_columns <- function(catalog, geography) {
+  c(
+    catalog$geographies[[geography]]$id,
+    'year',
+    unlist(
+      lapply(names(catalog$measures), function(name) {
+        c(name, paste0(name, '_moe'))
+      }),
+      use.names = FALSE
+    )
+  )
 }
 
 read_catalog <- function(path = 'measures.yml') {

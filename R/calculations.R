@@ -1,5 +1,8 @@
 # All calculators consume the same ACS long-table input. The input reader is
 # supplied separately to keep file access independent of the calculations.
+# get_acs(variables, year, summary_var = NULL) returns GEOID, variable, estimate,
+# and moe, plus summary_est and summary_moe when a denominator is requested.
+# Each GEOID must have one row for every requested component, including NAs.
 calculate_acs_measure <- function(spec, rule, year, get_acs) {
   variables <- unlist(rule$variables, use.names = FALSE)
   args <- list(variables = variables, year = year)
@@ -89,71 +92,63 @@ round_measure <- function(x, spec) {
   )
 }
 
-build_measure_data <- function(catalog, geography, get_acs, cpi) {
+# Build exactly one year without changing the catalog's release coverage.
+build_year_data <- function(catalog, geography, year, get_acs, cpi) {
   geo <- catalog$geographies[[geography]]
   if (is.null(geo)) {
     stop('Unknown geography: ', geography)
   }
+  if (
+    length(year) != 1L ||
+      !is.numeric(year) ||
+      is.na(year) ||
+      !is.finite(year) ||
+      year != as.integer(year) ||
+      !year %in% rule_years(geo)
+  ) {
+    stop('Year must be an integer within catalog coverage')
+  }
+  year <- as.integer(year)
   keys <- c(geo$id, 'year')
-  # Each table contributes its published records; retain their union by ACS year.
+  # Each table contributes its published records; retain their union for this year.
   output <- data.frame(id = character(), year = integer())
   names(output)[1] <- geo$id
-  names_order <- names(catalog$measures)
-  # Derivations use unrounded source estimates and MOEs.
-  names_order <- c(
-    names_order[vapply(
-      catalog$measures,
-      function(x) {
-        x$calculation != 'inflation_adjusted'
-      },
-      logical(1)
-    )],
-    names_order[vapply(
-      catalog$measures,
-      function(x) {
-        x$calculation == 'inflation_adjusted'
-      },
-      logical(1)
-    )]
+  measure_names <- names(catalog$measures)
+  adjusted <- vapply(
+    catalog$measures,
+    function(spec) {
+      spec$calculation == 'inflation_adjusted'
+    },
+    logical(1)
   )
+  # Derivations use unrounded source estimates and MOEs.
+  names_order <- c(measure_names[!adjusted], measure_names[adjusted])
   computed <- list()
   for (name in names_order) {
     spec <- catalog$measures[[name]]
-    years <- measure_years(catalog, name, geography)
-    if (!length(years)) {
+    rule <- select_rule(spec$rules, year, name, allow_missing = TRUE)
+    if (is.null(rule)) {
       output[[name]] <- round_measure(rep(NA_real_, nrow(output)), spec)
       output[[paste0(name, '_moe')]] <- rep(NA_real_, nrow(output))
       next
     }
-    parts <- lapply(years, function(year) {
-      rule <- select_rule(spec$rules, year, name)
-      if (spec$calculation == 'inflation_adjusted') {
-        d <- computed[[rule$source_measure]]
-        d <- d[d$year == year, c('GEOID', 'estimate', 'moe'), drop = FALSE]
-        d <- adjust_for_inflation(
-          d,
-          cpi,
-          year,
-          catalog$dataset$inflation$base_year
-        )
-      } else {
-        d <- calculate_acs_measure(spec, rule, year, get_acs)
-      }
-      d$year <- rep(year, nrow(d))
-      d
-    })
-    d <- dplyr::bind_rows(parts)
+    if (spec$calculation == 'inflation_adjusted') {
+      d <- adjust_for_inflation(
+        computed[[rule$source_measure]],
+        cpi,
+        year,
+        catalog$dataset$inflation$base_year
+      )
+    } else {
+      d <- calculate_acs_measure(spec, rule, year, get_acs)
+    }
     computed[[name]] <- d
     names(d)[names(d) == 'GEOID'] <- geo$id
+    d$year <- rep(year, nrow(d))
     d[[name]] <- round_measure(d$estimate, spec)
     d[[paste0(name, '_moe')]] <- d$moe
     d <- d[c(keys, name, paste0(name, '_moe'))]
     output <- dplyr::full_join(output, d, by = keys)
   }
-  output[c(
-    keys,
-    unlist(lapply(names(catalog$measures), function(name) {
-      c(name, paste0(name, '_moe'))
-    }))
-  )]
+  output[measure_columns(catalog, geography)]
 }
