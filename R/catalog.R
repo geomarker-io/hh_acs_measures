@@ -120,10 +120,13 @@ validate_catalog <- function(catalog) {
       fail(name, ': gaps between year rules')
     }
   }
+  if (!identical(names(catalog$geographies), 'tract')) {
+    fail('Only census tract releases are supported')
+  }
   for (geography in names(catalog$geographies)) {
     spec <- catalog$geographies[[geography]]
     check_range(spec)
-    first_year <- if (geography == 'zcta') 2011L else 2010L
+    first_year <- 2010L
     if (spec$years[[1]] < first_year) {
       fail(geography, ': supported ACS coverage begins in ', first_year)
     }
