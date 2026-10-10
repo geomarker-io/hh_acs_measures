@@ -40,7 +40,7 @@ follow each ACS release and are not harmonized across years**, so match geograph
 assignments to the selected ACS year.
 
 [Browse measure definitions](measures.yml) ·
-[Development guide](develop.md)
+[Development guide](develop.md) · [Release changelog](CHANGELOG.md)
 
 ## Read into R
 
@@ -71,3 +71,45 @@ d <-
   dplyr::filter(year == 2024, substr(census_tract_id, 1, 2) == "39") |>
   dplyr::collect()
 ```
+
+## License and source data
+
+Original project code, documentation, and any copyrightable contributions to
+released datasets are available under the [MIT license](LICENSE). Retain its
+copyright and permission notice when redistributing that material.
+
+The public ACS Summary File data are U.S. government works and are not subject
+to copyright protection in the United States. They may be used and redistributed
+without copyright permission; the MIT license does not impose restrictions on
+these public-domain source data. See
+[17 U.S.C. § 105](https://www.copyright.gov/title17/92chap1.html#105) and the
+[Census Bureau's public-access policy](https://www2.census.gov/foia/ds_policies/ds027.pdf).
+The BLS inflation inputs are also public domain under its
+[copyright policy](https://www.bls.gov/bls/linksite.htm).
+
+Credit the U.S. Census Bureau as the source of the original ACS data and BLS as
+the source of the inflation inputs. Identify this project as the source of the
+derived measures and calculations. These derived measures are produced by the
+project contributors; they are not official Census Bureau estimates. Census's
+[citation guidance](https://www.census.gov/about/policies/citation.html) explains
+how to acknowledge original data separately from subsequent analyses.
+
+## Suggested citation
+
+> Harmonized Historical ACS Measures contributors. *Harmonized Historical ACS
+> Measures* (version VERSION) [Data set]. geomarker.io.
+> https://github.com/geomarker-io/hh_acs_measures/releases/tag/TAG
+
+Replace `VERSION` and `TAG` with the version and exact release tag used in your
+analysis. Use the release's publication year when your citation style requires
+one. [CITATION.cff](CITATION.cff) supplies citation metadata for GitHub and other
+tools; the template above identifies the specific dataset snapshot.
+
+Also acknowledge the original inputs:
+
+> Original data: U.S. Census Bureau, American Community Survey 5-Year Summary
+> Files, 2010–2024. Inflation inputs: U.S. Bureau of Labor Statistics, Consumer
+> Price Index retroactive series using current methods (R-CPI-U-RS).
+
+Adjust the ACS years to those used in your analysis. The matching release
+catalog records the source URLs and CPI documentation.

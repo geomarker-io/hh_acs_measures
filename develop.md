@@ -137,6 +137,14 @@ use the `v3.0.0` release tag. Adding a year or changing definitions, calculation
 or CPI inputs produces a new complete snapshot under a new version. Keep
 published releases available so analyses can pin an exact dataset.
 
+Before publishing, update [CHANGELOG.md](CHANGELOG.md) with the version's data,
+calculation, and compatibility changes, and replace its preparation status with
+the publication date. Set `version` and `date-released` in
+[CITATION.cff](CITATION.cff) to that published release. The
+[README citation](README.md#suggested-citation) should always point readers to the
+specific snapshot they used. Include the license and source-data acknowledgments
+in the release notes.
+
 ## Source downloads and caching
 
 The pipeline downloads Census Summary Files through `stow::stow()`. The catalog
