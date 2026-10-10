@@ -103,6 +103,7 @@ geographies:
     resource: hh_acs_measures_zcta
     notes:
     - Each ACS year retains the ZCTA identifiers published in its Summary Files.
+    - Coverage includes Puerto Rico; historical releases use separate US and Puerto Rico files.
 measures:
   fraction_poverty:
     title: Fraction of People in Poverty
