@@ -4,7 +4,8 @@ release_asset_paths <- function(catalog, geography, version, directory) {
     stop('Unknown geography')
   }
   if (
-    length(version) != 1L || is.na(version) ||
+    length(version) != 1L ||
+      is.na(version) ||
       !grepl('^[0-9]+\\.[0-9]+\\.[0-9]+([.-][A-Za-z0-9.-]+)?$', version)
   ) {
     stop('Supply a semantic release version, e.g. 3.0.0')
@@ -13,36 +14,39 @@ release_asset_paths <- function(catalog, geography, version, directory) {
   file.path(directory, paste0(stem, c('.parquet', '.measures.yml', '.CPI.csv')))
 }
 
-release_columns <- function(catalog, geography) {
-  c(
-    catalog$geographies[[geography]]$id,
-    'year',
-    unlist(lapply(names(catalog$measures), function(name) {
-      c(name, paste0(name, '_moe'))
-    }), use.names = FALSE)
-  )
-}
-
 # get_year returns one calculated year. Only that year's rows need to be in memory.
-write_release_assets <- function(get_year, catalog, geography, version, directory) {
+write_release_assets <- function(
+  get_year,
+  catalog,
+  geography,
+  version,
+  directory
+) {
   paths <- release_asset_paths(catalog, geography, version, directory)
   if (any(file.exists(paths))) {
     stop('Release assets already exist; use a new version or empty directory')
   }
   geo <- catalog$geographies[[geography]]
   keys <- c(geo$id, 'year')
-  columns <- release_columns(catalog, geography)
+  columns <- measure_columns(catalog, geography)
   years <- rule_years(geo)
   dir.create(directory, recursive = TRUE, showWarnings = FALSE)
   staging <- tempfile('.release-', tmpdir = directory)
   dir.create(staging)
   staged <- file.path(staging, basename(paths))
   writer <- sink <- NULL
-  on.exit({
-    if (!is.null(writer)) try(writer$Close(), silent = TRUE)
-    if (!is.null(sink)) try(sink$close(), silent = TRUE)
-    unlink(staging, recursive = TRUE)
-  }, add = TRUE)
+  on.exit(
+    {
+      if (!is.null(writer)) {
+        try(writer$Close(), silent = TRUE)
+      }
+      if (!is.null(sink)) {
+        try(sink$close(), silent = TRUE)
+      }
+      unlink(staging, recursive = TRUE)
+    },
+    add = TRUE
+  )
   groups <- vector('list', length(years))
   schema <- NULL
   for (i in seq_along(years)) {
@@ -54,7 +58,9 @@ write_release_assets <- function(get_year, catalog, geography, version, director
     if (!nrow(d) || anyNA(d$year) || any(d$year != year)) {
       stop('Missing or incorrect release coverage for ', year)
     }
-    if (!is.character(d[[geo$id]]) || anyNA(d[[geo$id]]) || !is.integer(d$year)) {
+    if (
+      !is.character(d[[geo$id]]) || anyNA(d[[geo$id]]) || !is.integer(d$year)
+    ) {
       stop('Release identifiers must be strings and year must be an integer')
     }
     if (anyDuplicated(d[keys])) {
@@ -66,9 +72,16 @@ write_release_assets <- function(get_year, catalog, geography, version, director
       schema <- table$schema
       sink <- arrow::FileOutputStream$create(staged[1])
       properties <- arrow::ParquetWriterProperties$create(
-        columns, version = '2.4', compression = 'snappy', write_statistics = TRUE
+        columns,
+        version = '2.4',
+        compression = 'snappy',
+        write_statistics = TRUE
       )
-      writer <- arrow::ParquetFileWriter$create(schema, sink, properties = properties)
+      writer <- arrow::ParquetFileWriter$create(
+        schema,
+        sink,
+        properties = properties
+      )
     } else if (!schema$Equals(table$schema)) {
       stop('Inconsistent release column types for ', year)
     }
@@ -96,7 +109,9 @@ write_release_assets <- function(get_year, catalog, geography, version, director
     primary_key = keys,
     columns = columns,
     row_groups = groups,
-    source_files = lapply(seq_len(nrow(sources)), function(i) as.list(sources[i, ]))
+    source_files = lapply(seq_len(nrow(sources)), function(i) {
+      as.list(sources[i, ])
+    })
   )
   yaml::write_yaml(snapshot, staged[2])
   if (!file.copy(catalog$dataset$inflation$file, staged[3])) {
@@ -113,6 +128,10 @@ write_release_assets <- function(get_year, catalog, geography, version, director
     }
     moved <- c(moved, paths[i])
   }
-  message('Staged release assets in ', directory, '. Upload separately to GitHub Releases.')
+  message(
+    'Staged release assets in ',
+    directory,
+    '. Upload separately to GitHub Releases.'
+  )
   invisible(paths)
 }

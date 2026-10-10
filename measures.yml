@@ -26,6 +26,7 @@ dataset:
     fraction and MOE.
   - Inflation-adjusted estimates and MOEs use the same CPI ratio. Revised CPI inputs
     can change earlier estimates in later releases.
+  - Controlled-estimate MOEs (***** or -555555555) are treated as zero sampling error.
   - Source MOEs retain the published 90% confidence level. Derived MOEs use these
     inputs at the same confidence level.
   - Each measure has an accompanying _moe field in the same units. Rounding rules
@@ -105,7 +106,8 @@ measures:
       12 months, among people for whom poverty status is determined
     units: fraction
     calculation: proportion
-    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+    moe_method: ACS subset-proportion formula; ratio fallback for negative radicands;
+      numerator MOE divided by denominator when the proportion equals one;
       component MOEs combined by root-sum-of-squares with the largest MOE retained
       among zero-estimate components
     rounding:
@@ -191,7 +193,8 @@ measures:
       population.
     units: fraction
     calculation: proportion
-    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+    moe_method: ACS subset-proportion formula; ratio fallback for negative radicands;
+      numerator MOE divided by denominator when the proportion equals one;
       component MOEs combined by root-sum-of-squares with the largest MOE retained
       among zero-estimate components
     rounding:
@@ -228,7 +231,8 @@ measures:
       stamps/SNAP in the past 12 months
     units: fraction
     calculation: proportion
-    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+    moe_method: ACS subset-proportion formula; ratio fallback for negative radicands;
+      numerator MOE divided by denominator when the proportion equals one;
       component MOEs combined by root-sum-of-squares with the largest MOE retained
       among zero-estimate components
     rounding:
@@ -246,7 +250,8 @@ measures:
       present divided by all family households.
     units: fraction
     calculation: proportion
-    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+    moe_method: ACS subset-proportion formula; ratio fallback for negative radicands;
+      numerator MOE divided by denominator when the proportion equals one;
       component MOEs combined by root-sum-of-squares with the largest MOE retained
       among zero-estimate components
     rounding:
@@ -263,7 +268,8 @@ measures:
     definition: Fraction of people employed in civilian labor force
     units: fraction
     calculation: proportion
-    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+    moe_method: ACS subset-proportion formula; ratio fallback for negative radicands;
+      numerator MOE divided by denominator when the proportion equals one;
       component MOEs combined by root-sum-of-squares with the largest MOE retained
       among zero-estimate components
     rounding:
@@ -326,7 +332,8 @@ measures:
     definition: fraction denominator is number of *occupied* housing units
     units: fraction
     calculation: proportion
-    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+    moe_method: ACS subset-proportion formula; ratio fallback for negative radicands;
+      numerator MOE divided by denominator when the proportion equals one;
       component MOEs combined by root-sum-of-squares with the largest MOE retained
       among zero-estimate components
     rounding:
@@ -359,7 +366,8 @@ measures:
       in gross rent divided by all renter-occupied housing units in B25070.
     units: fraction
     calculation: proportion
-    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+    moe_method: ACS subset-proportion formula; ratio fallback for negative radicands;
+      numerator MOE divided by denominator when the proportion equals one;
       component MOEs combined by root-sum-of-squares with the largest MOE retained
       among zero-estimate components
     rounding:
@@ -382,7 +390,8 @@ measures:
       30% or more of household income spent on rent or owner costs'
     units: fraction
     calculation: proportion
-    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+    moe_method: ACS subset-proportion formula; ratio fallback for negative radicands;
+      numerator MOE divided by denominator when the proportion equals one;
       component MOEs combined by root-sum-of-squares with the largest MOE retained
       among zero-estimate components
     rounding:
@@ -407,7 +416,8 @@ measures:
     definition: Housing units built before 1970 divided by all housing units.
     units: fraction
     calculation: proportion
-    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+    moe_method: ACS subset-proportion formula; ratio fallback for negative radicands;
+      numerator MOE divided by denominator when the proportion equals one;
       component MOEs combined by root-sum-of-squares with the largest MOE retained
       among zero-estimate components
     rounding:
@@ -437,7 +447,8 @@ measures:
     definition: Vacant housing units divided by all housing units.
     units: fraction
     calculation: proportion
-    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+    moe_method: ACS subset-proportion formula; ratio fallback for negative radicands;
+      numerator MOE divided by denominator when the proportion equals one;
       component MOEs combined by root-sum-of-squares with the largest MOE retained
       among zero-estimate components
     rounding:
@@ -454,7 +465,8 @@ measures:
     definition: Fraction of People Not Hispanic/Latino divided by the total population.
     units: fraction
     calculation: proportion
-    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+    moe_method: ACS subset-proportion formula; ratio fallback for negative radicands;
+      numerator MOE divided by denominator when the proportion equals one;
       component MOEs combined by root-sum-of-squares with the largest MOE retained
       among zero-estimate components
     rounding:
@@ -472,7 +484,8 @@ measures:
       population.
     units: fraction
     calculation: proportion
-    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+    moe_method: ACS subset-proportion formula; ratio fallback for negative radicands;
+      numerator MOE divided by denominator when the proportion equals one;
       component MOEs combined by root-sum-of-squares with the largest MOE retained
       among zero-estimate components
     rounding:
@@ -490,7 +503,8 @@ measures:
       population.
     units: fraction
     calculation: proportion
-    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+    moe_method: ACS subset-proportion formula; ratio fallback for negative radicands;
+      numerator MOE divided by denominator when the proportion equals one;
       component MOEs combined by root-sum-of-squares with the largest MOE retained
       among zero-estimate components
     rounding:
@@ -508,7 +522,8 @@ measures:
       by the total population.
     units: fraction
     calculation: proportion
-    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+    moe_method: ACS subset-proportion formula; ratio fallback for negative radicands;
+      numerator MOE divided by denominator when the proportion equals one;
       component MOEs combined by root-sum-of-squares with the largest MOE retained
       among zero-estimate components
     rounding:
@@ -531,7 +546,8 @@ measures:
     definition: Fraction of People Hispanic/Latino divided by the total population.
     units: fraction
     calculation: proportion
-    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+    moe_method: ACS subset-proportion formula; ratio fallback for negative radicands;
+      numerator MOE divided by denominator when the proportion equals one;
       component MOEs combined by root-sum-of-squares with the largest MOE retained
       among zero-estimate components
     rounding:
@@ -549,7 +565,8 @@ measures:
       population.
     units: fraction
     calculation: proportion
-    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+    moe_method: ACS subset-proportion formula; ratio fallback for negative radicands;
+      numerator MOE divided by denominator when the proportion equals one;
       component MOEs combined by root-sum-of-squares with the largest MOE retained
       among zero-estimate components
     rounding:
@@ -567,7 +584,8 @@ measures:
       population.
     units: fraction
     calculation: proportion
-    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+    moe_method: ACS subset-proportion formula; ratio fallback for negative radicands;
+      numerator MOE divided by denominator when the proportion equals one;
       component MOEs combined by root-sum-of-squares with the largest MOE retained
       among zero-estimate components
     rounding:
@@ -585,7 +603,8 @@ measures:
       by the total population.
     units: fraction
     calculation: proportion
-    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+    moe_method: ACS subset-proportion formula; ratio fallback for negative radicands;
+      numerator MOE divided by denominator when the proportion equals one;
       component MOEs combined by root-sum-of-squares with the largest MOE retained
       among zero-estimate components
     rounding:
@@ -608,7 +627,8 @@ measures:
     definition: Limited English speaking households divided by all households in C16002.
     units: fraction
     calculation: proportion
-    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+    moe_method: ACS subset-proportion formula; ratio fallback for negative radicands;
+      numerator MOE divided by denominator when the proportion equals one;
       component MOEs combined by root-sum-of-squares with the largest MOE retained
       among zero-estimate components
     rounding:
@@ -659,7 +679,8 @@ measures:
       or equivalent divided by all people age 25 years and older.
     units: fraction
     calculation: proportion
-    moe_method: ACS subset-proportion formula; ratio fallback for nonpositive radicands;
+    moe_method: ACS subset-proportion formula; ratio fallback for negative radicands;
+      numerator MOE divided by denominator when the proportion equals one;
       component MOEs combined by root-sum-of-squares with the largest MOE retained
       among zero-estimate components
     rounding:

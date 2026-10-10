@@ -16,7 +16,9 @@ stow_source_file <- function(url, subdir, offline = FALSE) {
   )
 }
 
-acs_numeric <- function(x) {
+# Controlled values have zero sampling error only when parsing an MOE column.
+acs_numeric <- function(x, type = c('estimate', 'moe')) {
+  type <- match.arg(type)
   x <- trimws(as.character(x))
   missing <- is.na(x) |
     x %in%
@@ -30,6 +32,9 @@ acs_numeric <- function(x) {
   }
   # Published sentinel values are annotations, not negative estimates or MOEs.
   value[missing | value %in% (-111111111 * seq_len(9))] <- NA_real_
+  if (type == 'moe') {
+    value[x %in% c('*****', '-555555555')] <- 0
+  }
   value
 }
 
@@ -76,11 +81,16 @@ read_summary_table <- function(path, variables, geography, states = NULL) {
     estimate <- sub('_', '_E', variable, fixed = TRUE)
     moe <- sub('_', '_M', variable, fixed = TRUE)
     d[[estimate]] <- acs_numeric(d[[estimate]])
-    d[[moe]] <- acs_numeric(d[[moe]])
+    d[[moe]] <- acs_numeric(d[[moe]], type = 'moe')
   }
   d[c('GEOID', setdiff(columns, 'GEO_ID'))]
 }
 
+# Returns get_acs(variables, year, summary_var = NULL). Its long table has one
+# row per GEOID and requested variable, with numeric estimate and moe columns.
+# With summary_var, each row also contains summary_est and summary_moe for that
+# GEOID's denominator. Missing source values remain NA; missing table records
+# contribute no rows. Calculations require all components within each GEOID.
 summary_file_getter <- function(
   catalog,
   geography,

@@ -29,12 +29,11 @@ cpi <- read.csv(catalog$dataset$inflation$file)
 
 get_year <- function(year) {
   message('Building tract ', year)
-  annual <- catalog
-  annual$geographies$tract$years <- rep(as.integer(year), 2L)
-  build_measure_data(
-    annual,
+  build_year_data(
+    catalog,
     'tract',
-    summary_file_getter(annual, 'tract', offline = offline),
+    year,
+    summary_file_getter(catalog, 'tract', offline = offline),
     cpi
   )
 }

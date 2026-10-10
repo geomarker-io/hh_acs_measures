@@ -15,7 +15,8 @@ preparing releases. For downloading and using the data, see [README.md](README.m
 | `R/sequence_files.R` | Sequence-based Summary File reading |
 | `R/calculations.R` and `R/moe.R` | Estimate calculations, inflation adjustment, rounding, and derived MOEs |
 | `make_hh_acs_data.R` and `R/release.R` | Annual builds and versioned release-asset preparation |
-| `tests/test-release.R` | Fixture-based checks for calculations, source readers, and release output |
+| `tests/test-corrections.R` | Regression checks for MOEs, source parsing, catalog validation, and annual calculations |
+| `tests/test-release.R` | Fixture-based checks for release output and annual column types |
 
 ## Maintain the catalog
 
@@ -44,6 +45,13 @@ Catalog schema version 3 keys each row by geography identifier and ACS year.
 It records coverage and preserves each year's published identifiers. Overlapping
 rules and gaps between rules are rejected. A measure can begin later than
 geography coverage; its earlier estimates and MOEs remain missing.
+Every measure's rules must cover the final release year, so a forgotten year
+extension fails validation instead of silently producing missing values.
+
+Proportion MOEs use the ACS subset formula, with the ratio approximation only
+when the radicand is negative. A proportion equal to one uses the numerator MOE
+divided by the denominator. Controlled-estimate MOE markers (`*****` and
+`-555555555`) are parsed as zero; suppressed and unavailable MOEs remain missing.
 
 The catalog specifies employment from 2011, health insurance and education from
 2012, and limited-English households (`C16002`) from 2016. Pre-1970 housing uses
@@ -107,6 +115,7 @@ Run the release tests from the repository root:
 
 ```sh
 Rscript tests/test-release.R
+Rscript tests/test-corrections.R
 ```
 
 Tests also require `nanoparquet` in addition to the build dependencies. They use
