@@ -14,6 +14,26 @@ release_asset_paths <- function(catalog, geography, version, directory) {
   file.path(directory, paste0(stem, c('.parquet', '.measures.yml', '.CPI.csv')))
 }
 
+# Record the loaded versions of the build dependencies declared in DESCRIPTION.
+# Optional reader/test dependencies do not need to be installed for a build.
+release_software_versions <- function(description_path = 'DESCRIPTION') {
+  imports <- read.dcf(description_path, fields = 'Imports')[1, 'Imports']
+  packages <- trimws(strsplit(imports, ',', fixed = TRUE)[[1]])
+  packages <- sub('[[:space:]]*\\(.*\\)$', '', packages)
+  versions <- vapply(
+    packages,
+    function(package) {
+      as.character(getNamespaceVersion(loadNamespace(package)))
+    },
+    character(1)
+  )
+  list(
+    r_version = as.character(getRversion()),
+    platform = R.version$platform,
+    packages = as.list(versions)
+  )
+}
+
 # get_year returns one calculated year. Only that year's rows need to be in memory.
 write_release_assets <- function(
   get_year,
@@ -26,6 +46,7 @@ write_release_assets <- function(
   if (any(file.exists(paths))) {
     stop('Release assets already exist; use a new version or empty directory')
   }
+  software <- release_software_versions()
   geo <- catalog$geographies[[geography]]
   keys <- c(geo$id, 'year')
   columns <- measure_columns(catalog, geography)
@@ -104,6 +125,7 @@ write_release_assets <- function(
     geography = geography,
     data_file = basename(paths[1]),
     format = 'parquet',
+    software = software,
     rows = sum(vapply(groups, function(x) x$rows, integer(1))),
     years = years,
     primary_key = keys,

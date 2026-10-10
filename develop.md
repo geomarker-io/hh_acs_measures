@@ -7,6 +7,7 @@ preparing releases. For downloading and using the data, see [README.md](README.m
 
 | File | Role |
 | --- | --- |
+| `DESCRIPTION` | R version requirement, build dependencies, and optional test dependency |
 | `measures.yml` | Measure definitions, source-variable rules, geography coverage, and calculation settings |
 | `CPI_2010-2024.csv` | R-CPI-U-RS inputs for inflation adjustment |
 | `make_hh_acs_data.R` | Command-line entry point for a complete tract release |
@@ -79,7 +80,10 @@ tract `36111954401` (Ulster County, NY), which was absent in 2023. It receives a
 
 ## Build a release
 
-Run commands from the repository root. Install the R dependencies:
+Run commands from the repository root. `DESCRIPTION` is a dependency manifest
+for this script-based project. `Depends` records the R requirement, `Imports`
+lists the build dependencies, and `Suggests` lists the optional Parquet reader
+used by the tests. Install the build dependencies:
 
 ```r
 install.packages(c("yaml", "dplyr", "data.table", "stow", "arrow"))
@@ -108,6 +112,12 @@ The release catalog snapshots the measure definitions and adds coverage, row
 counts, primary keys, columns, yearly row groups, and source-file URLs. The CPI
 input is copied into the release, and the snapshot references its versioned
 filename.
+
+Each release catalog also records `release.software`: the R version, R platform,
+and loaded versions of all build packages listed in `DESCRIPTION`'s `Imports`.
+These are captured when release writing starts and saved in the matching
+`.measures.yml` asset. The manifest declares dependencies; the release metadata
+records the exact versions used. Optional test packages are excluded.
 
 ## Test and publish
 

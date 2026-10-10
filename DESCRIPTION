@@ -1,0 +1,14 @@
+Type: Project
+Title: Harmonized Historical ACS Measures
+Description: Build and release historical American Community Survey five-year
+    measures and margins of error for census tracts using a shared measure catalog.
+Depends:
+    R (>= 4.1.0)
+Imports:
+    arrow,
+    data.table,
+    dplyr,
+    stow (>= 0.3.0),
+    yaml
+Suggests:
+    nanoparquet

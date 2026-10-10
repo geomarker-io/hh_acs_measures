@@ -65,6 +65,23 @@ run_release_tests <- function() {
     stopifnot(identical(unique(group$year), 2021L + i), nrow(group) == 2L)
   }
   snapshot <- yaml::read_yaml(paths[2])
+  software <- snapshot$release$software
+  build_packages <- c('arrow', 'data.table', 'dplyr', 'stow', 'yaml')
+  stopifnot(
+    software$r_version == as.character(getRversion()),
+    software$platform == R.version$platform,
+    identical(names(software$packages), build_packages),
+    identical(
+      unlist(software$packages),
+      vapply(
+        build_packages,
+        function(package) {
+          as.character(utils::packageVersion(package))
+        },
+        character(1)
+      )
+    )
+  )
   stopifnot(
     snapshot$release$tag == 'v3.0.0',
     snapshot$release$rows == 6L,
