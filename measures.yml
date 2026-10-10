@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 3
 dataset:
   name: hh_acs_measures
   title: Harmonized Historical ACS Measures
@@ -13,8 +13,15 @@ dataset:
       comparison guidance; earlier annual values are retained from the prior input.
     documentation: https://www.census.gov/programs-surveys/acs/guidance/comparing-acs-data/2024.html
   notes:
+  - Harmonization applies to measure definitions and year-specific ACS variable mappings;
+    geographic boundaries are not harmonized across years.
   - Year is the ending year of the five-year ACS estimate, not a single-year estimate.
-  - Coverage is defined by each geography and its measure year rules.
+  - Output rows are the union of geography identifiers present in the required ACS
+    source tables for each year, within the stated geographic coverage.
+  - Identifiers are retained as published, with no boundary scaffold, crosswalk,
+    or spatial interpolation. The primary key is geography identifier plus ACS year.
+  - Geographic boundaries and identifiers can change between ACS years; an unchanged
+    identifier alone does not guarantee comparable boundaries.
   - Suppressed or missing ACS values remain missing. A zero denominator yields a missing
     fraction and MOE.
   - Inflation-adjusted estimates and MOEs use the same CPI ratio. Revised CPI inputs
@@ -23,36 +30,29 @@ dataset:
     inputs at the same confidence level.
   - Each measure has an accompanying _moe field in the same units. Rounding rules
     apply to estimates only; MOEs retain their precision.
-  - This build supports 2021 onward table-based Summary Files; the current release
-    coverage is 2021–2024.
+  - Coverage starts in 2010 for tracts and 2011 for ZCTAs. Sequence-based Summary
+    Files are used through 2020, and table-based Summary Files from 2021 onward.
   source:
-    format: ACS table-based five-year Summary File
-    first_supported_year: 2021
+    format: ACS five-year Summary File (sequence-based through 2020; table-based from 2021)
+    first_supported_year: 2010
     published_moe_level: 90
     documentation: https://www.census.gov/programs-surveys/acs/data/summary-file.html
 geographies:
   tract:
-    years: [2021, 2024]
+    years: [2010, 2024]
     id: census_tract_id
-    vintage: census_tract_vintage
     resource: hh_acs_measures
-    vintage_rules:
-    - years: [2021, 2024]
-      value: '2020'
     notes:
-    - years: [2022, 2024]
-      text: Connecticut planning-region tract IDs are mapped one-to-one back to 2020
-        tract IDs using data-raw/ct_tract_crosswalk_2022_2020.csv. Estimates are not
-        interpolated; water-only tracts outside the cartographic scaffold are excluded.
-      source: data-raw/README.md
+    - Each ACS year retains the tract identifiers published in its Summary Files.
+    - Connecticut planning-region identifiers are retained as published from 2022 onward.
     state_fips:
     - '01'
     - '02'
     - '04'
     - '05'
     - '06'
-    - 08
-    - 09
+    - '08'
+    - '09'
     - '10'
     - '11'
     - '12'
@@ -97,23 +97,12 @@ geographies:
     - '54'
     - '55'
     - '56'
-    scaffold:
-      url: https://www2.census.gov/geo/tiger/GENZ2020/shp/cb_2020_us_tract_500k.zip
-      id_column: GEOID
   zcta:
-    years: [2021, 2024]
+    years: [2011, 2024]
     id: zcta
-    vintage: zcta_vintage
     resource: hh_acs_measures_zcta
-    vintage_rules:
-    - years: [2021, 2024]
-      value: '2020'
     notes:
-    - years: [2021, 2024]
-      text: All supported ACS years use 2020 ZCTA boundaries.
-    scaffold:
-      url: https://www2.census.gov/geo/tiger/GENZ2020/shp/cb_2020_us_zcta520_500k.zip
-      id_column: GEOID20
+    - Each ACS year retains the ZCTA identifiers published in its Summary Files.
 measures:
   fraction_poverty:
     title: Fraction of People in Poverty
@@ -129,7 +118,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2024]
       variables: B17001_002
       denominator: B17001_001
     notes: []
@@ -145,7 +134,7 @@ measures:
       method: integer
       digits: 0
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2024]
       variables:
       - B01001_003
       - B01001_004
@@ -168,7 +157,7 @@ measures:
       method: integer
       digits: 0
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2024]
       variables: B01001_001
     notes: []
   n_household_lt18:
@@ -183,7 +172,7 @@ measures:
       method: integer
       digits: 0
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2024]
       variables: B11005_002
     notes: []
   n_household:
@@ -198,7 +187,7 @@ measures:
       method: integer
       digits: 0
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2024]
       variables: B11005_001
     notes: []
   fraction_insured:
@@ -215,7 +204,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2024]
+    - years: [2012, 2024]
       variables:
       - B27001_004
       - B27001_007
@@ -236,7 +225,8 @@ measures:
       - B27001_053
       - B27001_056
       denominator: B27001_001
-    notes: []
+    notes:
+    - Five-year health insurance estimates are available from 2012; earlier years remain missing.
   fraction_snap:
     title: Fraction of Households Receiving Assisted Income
     domain: Socioeconomic
@@ -251,7 +241,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2024]
       variables: B19058_002
       denominator: B19058_001
     notes: []
@@ -269,7 +259,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2024]
       variables: B11001_004
       denominator: B11001_002
     notes: []
@@ -286,10 +276,11 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2024]
+    - years: [2011, 2024]
       variables: B23025_004
       denominator: B23025_003
-    notes: []
+    notes:
+    - B23025 is available from 2011; 2010 remains missing.
   n_housing_units:
     title: Number of Housing Units
     domain: Housing
@@ -303,7 +294,7 @@ measures:
       method: integer
       digits: 0
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2024]
       variables: B25001_001
     notes: []
   median_home_value:
@@ -317,7 +308,7 @@ measures:
       method: significant
       digits: 3
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2024]
       variables: B25077_001
     notes: []
   median_home_value_2010adj:
@@ -332,7 +323,7 @@ measures:
       method: significant
       digits: 3
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2024]
       source_measure: median_home_value
     notes: []
   fraction_housing_renters:
@@ -348,7 +339,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2024]
       variables: B25003_003
       denominator: B25003_001
     notes: []
@@ -364,7 +355,7 @@ measures:
       method: significant
       digits: 3
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2024]
       variables: B25071_001
     notes: []
   fraction_high_rent:
@@ -381,7 +372,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2024]
       variables:
       - B25070_007
       - B25070_008
@@ -404,7 +395,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2024]
       variables:
       - B25123_003
       - B25123_004
@@ -429,7 +420,14 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2014]
+      variables:
+      - B25034_007
+      - B25034_008
+      - B25034_009
+      - B25034_010
+      denominator: B25034_001
+    - years: [2015, 2024]
       variables:
       - B25034_008
       - B25034_009
@@ -452,7 +450,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2024]
       variables: B25002_003
       denominator: B25002_001
     notes: []
@@ -469,7 +467,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2024]
       variables: B03002_002
       denominator: B03002_001
     notes: []
@@ -487,7 +485,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2024]
       variables: B03002_003
       denominator: B03002_001
     notes: []
@@ -505,7 +503,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2024]
       variables: B03002_004
       denominator: B03002_001
     notes: []
@@ -523,7 +521,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2024]
       variables:
       - B03002_005
       - B03002_006
@@ -546,7 +544,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2024]
       variables: B03002_012
       denominator: B03002_001
     notes: []
@@ -564,7 +562,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2024]
       variables: B03002_013
       denominator: B03002_001
     notes: []
@@ -582,7 +580,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2024]
       variables: B03002_014
       denominator: B03002_001
     notes: []
@@ -600,7 +598,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2024]
       variables:
       - B03002_015
       - B03002_016
@@ -623,14 +621,15 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2024]
+    - years: [2016, 2024]
       variables:
       - C16002_004
       - C16002_007
       - C16002_010
       - C16002_013
       denominator: C16002_001
-    notes: []
+    notes:
+    - This measure uses C16002 from 2016; earlier years remain missing.
   median_income:
     title: Median Household Income
     domain: Socioeconomic
@@ -642,7 +641,7 @@ measures:
       method: significant
       digits: 3
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2024]
       variables: B19013_001
     notes: []
   median_income_2010adj:
@@ -656,7 +655,7 @@ measures:
       method: significant
       digits: 3
     rules:
-    - years: [2021, 2024]
+    - years: [2010, 2024]
       source_measure: median_income
     notes: []
   fraction_hs:
@@ -673,7 +672,7 @@ measures:
       method: decimal
       digits: 3
     rules:
-    - years: [2021, 2024]
+    - years: [2012, 2024]
       variables:
       - B15003_017
       - B15003_018
@@ -685,4 +684,5 @@ measures:
       - B15003_024
       - B15003_025
       denominator: B15003_001
-    notes: []
+    notes:
+    - B15003 is available from 2012; earlier years remain missing.

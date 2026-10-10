@@ -13,7 +13,8 @@ stow_source_file <- function(url, subdir, offline = FALSE) {
 acs_numeric <- function(x) {
   x <- trimws(as.character(x))
   missing <- is.na(x) |
-    x %in% c('', 'NA', 'N', 'null', 'NULL', '-', '(X)', '**', '***', '*****')
+    x %in%
+      c('', '.', 'NA', 'N', 'null', 'NULL', '-', '(X)', '**', '***', '*****')
   value <- suppressWarnings(as.numeric(x))
   if (any(is.na(value) & !missing)) {
     stop(
@@ -82,6 +83,7 @@ summary_file_getter <- function(
   download = stow_source_file
 ) {
   tables <- new.env(parent = emptyenv())
+  legacy <- sequence_file_reader(catalog, geography, offline, download)
   function(variables, year, summary_var = NULL) {
     if (!year %in% rule_years(catalog$geographies[[geography]])) {
       stop('Year outside catalog coverage')
@@ -92,19 +94,20 @@ summary_file_getter <- function(
       if (!exists(key, tables, inherits = FALSE)) {
         needed <- unique(c(required_acs_variables(catalog, year), requested))
         needed <- needed[sub('_.*', '', needed) == table]
-        path <- download(
-          summary_file_url(year, table),
-          paste0('summary-files/', year),
-          offline = offline
-        )
-        d <- read_summary_table(
-          path,
-          needed,
-          geography,
-          catalog$geographies[[geography]]$state_fips
-        )
-        if (geography == 'tract') {
-          d <- harmonize_ct_tracts(d, year)
+        if (year < 2021L) {
+          d <- legacy(needed, year)
+        } else {
+          path <- download(
+            summary_file_url(year, table),
+            paste0('summary-files/', year),
+            offline = offline
+          )
+          d <- read_summary_table(
+            path,
+            needed,
+            geography,
+            catalog$geographies[[geography]]$state_fips
+          )
         }
         assign(key, d, tables)
       }
@@ -139,37 +142,4 @@ summary_file_getter <- function(
     }
     output
   }
-}
-
-read_boundary_scaffold <- function(path, geo) {
-  files <- utils::unzip(path, list = TRUE)$Name
-  dbf <- files[grepl('[.]dbf$', files, ignore.case = TRUE)]
-  if (length(dbf) != 1L) {
-    stop('Expected one boundary attribute table')
-  }
-  directory <- tempfile('hh-acs-boundary-')
-  dir.create(directory)
-  on.exit(unlink(directory, recursive = TRUE), add = TRUE)
-  utils::unzip(path, files = dbf, exdir = directory)
-  d <- foreign::read.dbf(file.path(directory, dbf), as.is = TRUE)
-  if (!geo$scaffold$id_column %in% names(d)) {
-    stop('Boundary identifier column is absent')
-  }
-  if (!is.null(geo$state_fips)) {
-    d <- d[d$STATEFP %in% geo$state_fips, , drop = FALSE]
-  }
-  result <- data.frame(id = d[[geo$scaffold$id_column]], vintage = '2020')
-  names(result) <- c(geo$id, geo$vintage)
-  result
-}
-
-make_scaffold <- function(
-  catalog,
-  geography,
-  offline = FALSE,
-  download = stow_source_file
-) {
-  geo <- catalog$geographies[[geography]]
-  path <- download(geo$scaffold$url, 'boundaries', offline = offline)
-  read_boundary_scaffold(path, geo)
 }

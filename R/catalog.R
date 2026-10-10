@@ -26,7 +26,7 @@ validate_catalog <- function(catalog) {
       fail('Each year range must contain two ordered integer years')
     }
   }
-  if (!identical(catalog$schema_version, 1L)) {
+  if (!identical(catalog$schema_version, 3L)) {
     fail('Unsupported catalog schema_version')
   }
   if (!identical(catalog$dataset$moe_level, 90L)) {
@@ -70,8 +70,8 @@ validate_catalog <- function(catalog) {
     }
     for (rule in spec$rules) {
       check_range(rule)
-      if (rule$years[[1]] < 2021L) {
-        fail(name, ': source rules must begin in 2021 or later')
+      if (rule$years[[1]] < 2010L) {
+        fail(name, ': source rules must begin in 2010 or later')
       }
       if (spec$calculation == 'inflation_adjusted') {
         source <- rule$source_measure
@@ -123,14 +123,11 @@ validate_catalog <- function(catalog) {
   for (geography in names(catalog$geographies)) {
     spec <- catalog$geographies[[geography]]
     check_range(spec)
-    if (spec$years[[1]] < 2021L) {
-      fail('Supported ACS coverage begins in 2021')
-    }
-    for (rule in spec$vintage_rules) {
-      check_range(rule)
+    first_year <- if (geography == 'zcta') 2011L else 2010L
+    if (spec$years[[1]] < first_year) {
+      fail(geography, ': supported ACS coverage begins in ', first_year)
     }
     for (year in rule_years(spec)) {
-      select_rule(spec$vintage_rules, year, geography)
       for (name in names(catalog$measures)) {
         measure <- catalog$measures[[name]]
         rule <- select_rule(measure$rules, year, name, allow_missing = TRUE)
@@ -158,14 +155,6 @@ measure_years <- function(catalog, name, geography) {
     rule_years(catalog$geographies[[geography]]),
     unlist(lapply(catalog$measures[[name]]$rules, rule_years))
   )
-}
-
-geography_vintage <- function(catalog, geography, year) {
-  select_rule(
-    catalog$geographies[[geography]]$vintage_rules,
-    year,
-    geography
-  )$value
 }
 
 # Only table-based five-year Summary Files (2021 onward) are supported.
@@ -214,6 +203,9 @@ summary_source_files <- function(catalog, geography) {
   dplyr::bind_rows(lapply(
     rule_years(catalog$geographies[[geography]]),
     function(year) {
+      if (year < 2021L) {
+        return(sequence_source_files(catalog, geography, year))
+      }
       tables <- unique(sub('_.*', '', required_acs_variables(catalog, year)))
       data.frame(
         year = year,
