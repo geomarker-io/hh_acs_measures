@@ -18,6 +18,9 @@ measure definitions, units, source variables, available years, and release
 coverage. The accompanying `.CPI.csv` records the inflation-adjustment inputs;
 adjusted values are already included in the data.
 
+The release description includes formatted measure tables and expandable source
+and calculation details, generated from that release's catalog.
+
 ## Data structure
 
 The dataset is one wide table with **one row per census tract and ACS ending

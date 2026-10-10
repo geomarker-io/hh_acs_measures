@@ -11,7 +11,10 @@ release_asset_paths <- function(catalog, geography, version, directory) {
     stop('Supply a semantic release version, e.g. 3.0.0')
   }
   stem <- paste0(catalog$geographies[[geography]]$resource, '-v', version)
-  file.path(directory, paste0(stem, c('.parquet', '.measures.yml', '.CPI.csv')))
+  file.path(
+    directory,
+    paste0(stem, c('.parquet', '.measures.yml', '.CPI.csv', '.notes.md'))
+  )
 }
 
 # Record the loaded versions of the build dependencies declared in DESCRIPTION.
@@ -141,6 +144,7 @@ write_release_assets <- function(
   if (!file.copy(catalog$dataset$inflation$file, staged[3])) {
     stop('Could not copy CPI input')
   }
+  writeLines(release_notes_markdown(snapshot), staged[4])
   if (any(file.exists(paths))) {
     stop('Release assets already exist; use a new version or empty directory')
   }

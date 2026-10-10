@@ -17,6 +17,8 @@ preparing releases. For downloading and using the data, see [README.md](README.m
 | `R/sources.R` | Source-file inventories and historical lookup preparation |
 | `R/calculations.R` and `R/moe.R` | Estimate calculations, inflation adjustment, rounding, and derived MOEs |
 | `make_hh_acs_data.R` and `R/release.R` | Annual builds and versioned release-asset preparation |
+| `R/release_notes.R` and `make_release_notes.R` | Generate browsable catalog tables for the GitHub release description |
+| `publish_release.sh` | Create a draft GitHub release with the staged assets and generated notes |
 | `tests/test-corrections.R` | Regression checks for MOEs, source parsing, catalog validation, and annual calculations |
 | `tests/test-release.R` | Fixture-based checks for release output and annual column types |
 | `tests/test-parsers.R` | Summary table, lookup, geography, and ZIP parser fixtures |
@@ -99,11 +101,18 @@ Choose a semantic release version and build the complete tract history:
 ./make_hh_acs_data.R 3.0.0
 ```
 
-This example stages three assets under `data/v3.0.0/`:
+This example stages three data assets and generated release notes under `data/v3.0.0/`:
 
 - `hh_acs_measures-v3.0.0.parquet`
 - `hh_acs_measures-v3.0.0.measures.yml`
 - `hh_acs_measures-v3.0.0.CPI.csv`
+- `hh_acs_measures-v3.0.0.notes.md`
+
+The notes are generated from the matching release catalog, with measure tables
+grouped by domain and expandable source-variable and calculation details.
+Use them as the GitHub release description so the catalog is rendered directly
+in the browser. The generated file stays under ignored `data/`; no generated
+Markdown needs to be committed back to the repository.
 
 An optional second argument selects another output directory. The builder
 calculates one year at a time and writes one Parquet row group per year, keeping
@@ -141,10 +150,13 @@ Rscript tests/test-corrections.R
 Rscript tests/test-parsers.R
 Rscript tests/test-calculations.R
 Rscript tests/test-sources.R
+Rscript tests/test-release-notes.R
+bash tests/test-publish.sh
 ```
 
 Tests also require `nanoparquet` in addition to the build dependencies. They use
-generated fixtures and do not download Census source files.
+generated fixtures and do not download Census source files. The publishing test
+uses a fake `gh` command and never contacts GitHub.
 
 Upload the completed assets to the matching GitHub release separately; the
 builder stages local files and does not publish them. For the example above,
@@ -159,6 +171,46 @@ the publication date. Set `version` and `date-released` in
 [README citation](README.md#suggested-citation) should always point readers to the
 specific snapshot they used. Include the license and source-data acknowledgments
 in the release notes.
+
+To generate or refresh notes for an already built release without rebuilding
+the dataset or downloading source files:
+
+```sh
+Rscript make_release_notes.R data/v3.0.0/hh_acs_measures-v3.0.0.measures.yml
+```
+
+To prepare a draft release, run the Bash script from the repository root. It requires
+the GitHub CLI (`gh`), an authenticated account with repository write access,
+and the intended `vVERSION` tag already on GitHub. Sign in with `gh auth login`
+if needed, then create the draft:
+
+```sh
+./publish_release.sh 3.0.0
+```
+
+The script checks that the Parquet, YAML, CPI, and notes files exist and are
+nonempty. It creates a draft release in `geomarker-io/hh_acs_measures`, uploads the
+three data assets, and passes `.notes.md` through `--notes-file` to set the
+formatted release description. `--draft` keeps the release unpublished, and
+`--verify-tag` prevents automatic tag creation.
+The script does not regenerate notes, so any edits to them are retained.
+
+An optional second argument selects the directory used when building:
+
+```sh
+./publish_release.sh 3.0.0 /path/to/release-assets
+```
+
+The script prints the draft URL and instructions for finishing on the website:
+
+1. Open the draft URL on GitHub and review the uploaded assets and rendered notes.
+2. Click the edit (pencil) button to open the release editor.
+3. When ready, click **Publish release** to make it public.
+
+The script creates a new draft; it does not replace an existing release or its
+assets. The builder and note generator only write local files. Review the
+generated notes and add any version-specific changelog summary above the catalog
+before running the script.
 
 ## Source downloads and caching
 
